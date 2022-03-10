@@ -328,7 +328,7 @@ function Header(props) {
         <div className={classes.ErrorContent}>
           <WrongNetworkIcon className={ classes.networkIcon } />
           <Typography className={classes.ErrorTxt}>
-            The chain you're connected to isn't supported. Please check that your wallet is connected to BSC Mainnet.
+            The chain you're connected to isn't supported. Please check that your wallet is connected to BSC Testnet.
           </Typography>
           <Button className={classes.switchNetworkBtn} variant="contained" onClick={()=>switchChain()} >Switch to { process.env.NEXT_PUBLIC_CHAINID == '97' ? 'Fantom Testnet' : 'Fantom Mainnet' }</Button>
         </div>
