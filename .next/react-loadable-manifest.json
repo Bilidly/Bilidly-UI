@@ -1,0 +1,20 @@
+{
+  "../node_modules/@web3-react/walletconnect-connector/dist/walletconnect-connector.esm.js -> @walletconnect/ethereum-provider": {
+    "id": "./node_modules/@walletconnect/ethereum-provider/dist/esm/index.js",
+    "files": [
+      "static/chunks/1.js"
+    ]
+  },
+  "../node_modules/@web3-react/walletlink-connector/dist/walletlink-connector.esm.js -> walletlink": {
+    "id": "./node_modules/walletlink/dist/index.js",
+    "files": [
+      "static/chunks/0.js"
+    ]
+  },
+  "../node_modules/next/dist/client/next-dev.js -> ./dev/noop": {
+    "id": "./node_modules/next/dist/client/dev/noop.js",
+    "files": [
+      "static/chunks/2.js"
+    ]
+  }
+}

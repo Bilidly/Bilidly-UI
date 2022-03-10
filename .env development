@@ -1,0 +1,6 @@
+NODE_ENV=test
+NEXT_PUBLIC_CHAINID=4002
+NEXT_PUBLIC_API= http://localhost:3000
+NEXT_PUBLIC_API_TOKEN=12345
+npm_config_build_from_source=true
+npm_config_loglevel=verbose

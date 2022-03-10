@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+
+<!-- Created with Vectornator (http://vectornator.io/) -->
+<svg height="100%" stroke-miterlimit="10" style="fill-rule:nonzero;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;" version="1.1" viewBox="0 0 812 375" width="100%" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:vectornator="http://vectornator.io" xmlns:xlink="http://www.w3.org/1999/xlink">
+<metadata>
+<vectornator:setting key="IsTimeLapseWatermarkDisabled" value="false"/>
+<vectornator:setting key="UndoHistoryDisabled" value="true"/>
+<vectornator:setting key="VNDimensionsVisible" value="true"/>
+<vectornator:setting key="VNSnapToGuides" value="true"/>
+<vectornator:setting key="WDCMYKEnabledKey" value="false"/>
+<vectornator:setting key="WDDisplayWhiteBackground" value="false"/>
+<vectornator:setting key="WDDynamicGuides" value="false"/>
+<vectornator:setting key="WDGuidesVisible" value="true"/>
+<vectornator:setting key="WDIsolateActiveLayer" value="false"/>
+<vectornator:setting key="WDOutlineMode" value="false"/>
+<vectornator:setting key="WDRulersVisible" value="true"/>
+<vectornator:setting key="WDSnapToEdges" value="false"/>
+<vectornator:setting key="WDSnapToGrid" value="false"/>
+<vectornator:setting key="WDSnapToPoints" value="false"/>
+<vectornator:setting key="WDUnits" value="Points"/>
+</metadata>
+<defs>
+<clipPath id="TextBounds">
+<rect height="225.815" width="792.234" x="23.8649" y="106.256"/>
+</clipPath>
+<clipPath id="TextBounds_2">
+<rect height="225.815" width="604.133" x="232.965" y="106.256"/>
+</clipPath>
+</defs>
+<g id="Layer-1" vectornator:layerName="Layer 1">
+<g fill="#ffc800" opacity="1" stroke="none">
+<path clip-path="url(#TextBounds)" d="M34.0449 236.256L84.5849 236.256C107.965 236.256 121.685 226.036 121.685 209.236L121.685 208.956C121.685 195.656 114.125 188.936 102.225 185.016C110.905 181.236 117.345 174.516 117.345 163.176L117.345 162.896C117.345 156.176 114.965 150.996 111.045 147.076C105.305 141.336 96.6249 138.256 84.3049 138.256L34.0449 138.256L34.0449 236.256ZM60.5049 177.316L60.5049 160.096L78.1449 160.096C86.2649 160.096 90.4649 163.176 90.4649 168.496L90.4649 168.776C90.4649 174.516 85.8449 177.316 77.5849 177.316L60.5049 177.316ZM60.5049 214.416L60.5049 196.356L81.2249 196.356C90.3249 196.356 94.5249 199.856 94.5249 205.176L94.5249 205.456C94.5249 211.196 89.7649 214.416 81.5049 214.416L60.5049 214.416Z" fill-rule="evenodd"/>
+<path clip-path="url(#TextBounds)" d="M166.105 236.256L193.405 236.256L193.405 138.256L166.105 138.256L166.105 236.256Z" fill-rule="evenodd"/>
+</g>
+<g fill="#ffffff" opacity="1" stroke="none">
+<path clip-path="url(#TextBounds_2)" d="M243.145 236.256L317.765 236.256L317.765 212.456L270.305 212.456L270.305 138.256L243.145 138.256L243.145 236.256Z" fill-rule="evenodd"/>
+<path clip-path="url(#TextBounds_2)" d="M361.345 236.256L388.645 236.256L388.645 138.256L361.345 138.256L361.345 236.256Z" fill-rule="evenodd"/>
+<path clip-path="url(#TextBounds_2)" d="M437.965 236.256L475.205 236.256C510.485 236.256 531.065 215.256 531.065 186.976L531.065 186.696C531.065 158.416 510.765 138.256 475.765 138.256L437.965 138.256L437.965 236.256ZM465.125 212.176L465.125 162.336L476.185 162.336C492.425 162.336 503.205 171.436 503.205 187.116L503.205 187.396C503.205 203.216 492.425 212.176 476.185 212.176L465.125 212.176Z" fill-rule="evenodd"/>
+<path clip-path="url(#TextBounds_2)" d="M576.465 236.256L651.085 236.256L651.085 212.456L603.625 212.456L603.625 138.256L576.465 138.256L576.465 236.256Z" fill-rule="evenodd"/>
+<path clip-path="url(#TextBounds_2)" d="M704.185 236.256L731.485 236.256L731.485 199.156L768.725 138.256L738.345 138.256L718.045 173.956L697.885 138.256L666.945 138.256L704.185 199.576L704.185 236.256Z" fill-rule="evenodd"/>
+</g>
+</g>
+</svg>
