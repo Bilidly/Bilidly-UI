@@ -1,1 +1,0 @@
-{"ast":null,"code":"import Route from \"./route.js\";\nexport default Route;","map":{"version":3,"sources":["/Users/pierremarieriviere/Code/solidly-master/pages/index.js"],"names":["Route"],"mappings":"AAAA,OAAOA,KAAP,MAAkB,YAAlB;AAEA,eAAeA,KAAf","sourcesContent":["import Route from \"./route.js\";\n\nexport default Route;\n"]},"metadata":{},"sourceType":"module"}

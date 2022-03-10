@@ -1,6 +1,6 @@
 ## Bilidly
 
-![gameplay](images/monkey-pong.gif)
+![gameplay](public/images/monkey-pong.gif)
 
 ## What is it?
 
