@@ -1,3 +1,5 @@
+// @0xve Change this on deploy
+
 import abis from "../abis";
 
 export const GOV_TOKEN_ADDRESS = '0x888EF71766ca594DED1F0FA3AE64eD2941740A20'
@@ -20,9 +22,9 @@ export const WFTM_SYMBOL = 'WFTM'
 export const WFTM_DECIMALS = 18
 export const WFTM_ABI = abis.wftmABI
 
-export const FTM_ADDRESS = 'FTM'
+export const FTM_ADDRESS = 'BNB'
 export const FTM_NAME = 'Fantom'
-export const FTM_SYMBOL = 'FTM'
+export const FTM_SYMBOL = 'BNB'
 export const FTM_DECIMALS = 18
 export const FTM_LOGO = 'https://assets.coingecko.com/coins/images/4001/large/Fantom.png'
 

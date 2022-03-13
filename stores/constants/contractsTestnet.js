@@ -1,30 +1,30 @@
 import abis from "../abis";
 
 export const GOV_TOKEN_ADDRESS = '0x0DB76C03fFF8F9f8d6600ca1f9aC004FDB73d442'
-export const GOV_TOKEN_NAME = 'Solid'
-export const GOV_TOKEN_SYMBOL = 'SOLID'
+export const GOV_TOKEN_NAME = 'Test' // 'Solid'
+export const GOV_TOKEN_SYMBOL ='TEST' // 'SOLID'
 export const GOV_TOKEN_DECIMALS = 18
-export const GOV_TOKEN_LOGO = 'https://prod.solidly.exchange/Solidly-O.svg'
+export const GOV_TOKEN_LOGO = process.env.NEXT_PUBLIC_TEST_URL + 'Solidly-O.svg'
 export const GOV_TOKEN_ABI = abis.tokenABI
 
 export const VE_TOKEN_ADDRESS = '0x74a91F1cEe46A20f5a15183aB54AEe89b015C21f'
 export const VE_TOKEN_NAME = 'veNFT'
 export const VE_TOKEN_SYMBOL = 'veNFT'
 export const VE_TOKEN_DECIMALS = 18
-export const VE_TOKEN_LOGO = 'https://prod.solidly.exchange/Solidly-O.svg'
+export const VE_TOKEN_LOGO = process.env.NEXT_PUBLIC_TEST_URL + 'Solidly-O.svg'
 export const VE_TOKEN_ABI = abis.veTokenABI
 
-export const WFTM_ADDRESS = '0x27Ce41c3cb9AdB5Edb2d8bE253A1c6A64Db8c96d'
-export const WFTM_NAME = 'Wrapped Fantom'
-export const WFTM_SYMBOL = 'WFTM'
+export const WFTM_ADDRESS = '0xae13d989dac2f0debff460ac112a837c89baa7cd'
+export const WFTM_NAME = 'Wrapped BNB'
+export const WFTM_SYMBOL = 'WBNB'
 export const WFTM_DECIMALS = 18
 export const WFTM_ABI = abis.wftmABI
 
-export const FTM_ADDRESS = 'FTM'
-export const FTM_NAME = 'Fantom'
-export const FTM_SYMBOL = 'FTM'
+export const FTM_ADDRESS = 'BNB'
+export const FTM_NAME = 'BNB' // BSC
+export const FTM_SYMBOL = 'BNB'
 export const FTM_DECIMALS = 18
-export const FTM_LOGO = 'https://assets.coingecko.com/coins/images/4001/large/Fantom.png'
+export const FTM_LOGO = 'https://assets.coingecko.com/coins/images/825/large/bnb-icon2_2x.png'
 
 export const FACTORY_ADDRESS = '0x7dbA586e00D868EeFA13fC549B63D62b4a45a244'
 export const FACTORY_ABI = abis.factoryABI
