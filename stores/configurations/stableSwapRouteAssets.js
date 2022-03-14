@@ -1,6 +1,6 @@
 // list of assets we support for providing liquidity to the factory. We will have to expand on this.
 export default [{
-  address: '0xed24fc36d5ee211ea25a80239fb8c4cfd80f12ee',
+  address: '0xeD24FC36d5Ee211Ea25A80239Fb8C4Cfd80f12Ee',
   name: 'BUSD',
   symbol: 'BUSD',
   decimals: 18,

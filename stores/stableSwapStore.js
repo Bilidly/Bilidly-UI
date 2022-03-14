@@ -459,10 +459,10 @@ class Store {
 
   getPair = async (addressA, addressB, stab) => {
     try {
-      if(addressA === 'FTM') {
+      if(addressA === 'BNB') {
         addressA = CONTRACTS.WFTM_ADDRESS
       }
-      if(addressB === 'FTM') {
+      if(addressB === 'BNB') {
         addressB = CONTRACTS.WFTM_ADDRESS
       }
 
@@ -1167,7 +1167,7 @@ class Store {
   _getBalanceOfs = async (web3, multicall, baseAssets, account) => {
     try {
       const balanceOfCalls = baseAssets.map((asset) => {
-        if(asset.address === 'FTM') {
+        if(asset.address === 'BNB') {
           return multicall.getEthBalance(account.address)
         }
 
@@ -1204,7 +1204,7 @@ class Store {
 
       const whitelistedCalls = baseAssets.map((asset) => {
         let addy = asset.address
-        if(asset.address === 'FTM') {
+        if(asset.address === 'BNB') {
           addy = CONTRACTS.WFTM_ADDRESS
         }
 
@@ -1285,10 +1285,10 @@ class Store {
 
       let toki0 = token0.address
       let toki1 = token1.address
-      if(token0.address === 'FTM') {
+      if(token0.address === 'BNB') {
         toki0 = CONTRACTS.WFTM_ADDRESS
       }
-      if(token1.address === 'FTM') {
+      if(token1.address === 'BNB') {
         toki1 = CONTRACTS.WFTM_ADDRESS
       }
 
@@ -1348,7 +1348,7 @@ class Store {
       let allowance1 = 0
 
       // CHECK ALLOWANCES AND SET TX DISPLAY
-      if(token0.address !== 'FTM') {
+      if(token0.address !== 'BNB') {
         allowance0 = await this._getDepositAllowance(web3, token0, account)
         if(BigNumber(allowance0).lt(amount0)) {
           this.emitter.emit(ACTIONS.TX_STATUS, {
@@ -1371,7 +1371,7 @@ class Store {
         })
       }
 
-      if(token1.address !== 'FTM') {
+      if(token1.address !== 'BNB') {
         allowance1 = await this._getDepositAllowance(web3, token1, account)
         if(BigNumber(allowance1).lt(amount1)) {
           this.emitter.emit(ACTIONS.TX_STATUS, {
@@ -1450,12 +1450,12 @@ class Store {
       let params = [token0.address, token1.address, isStable, sendAmount0, sendAmount1, sendAmount0Min, sendAmount1Min, account.address, deadline]
       let sendValue = null
 
-      if(token0.address === 'FTM') {
+      if(token0.address === 'BNB') {
         func = 'addLiquidityFTM'
         params = [token1.address, isStable, sendAmount1, sendAmount1Min, sendAmount0Min, account.address, deadline]
         sendValue = sendAmount0
       }
-      if(token1.address === 'FTM') {
+      if(token1.address === 'BNB') {
         func = 'addLiquidityFTM'
         params = [token0.address, isStable, sendAmount0, sendAmount0Min, sendAmount1Min, account.address, deadline]
         sendValue = sendAmount1
@@ -1470,10 +1470,10 @@ class Store {
         // GET PAIR FOR NEWLY CREATED LIQUIDITY POOL
         let tok0 = token0.address
         let tok1 = token1.address
-        if(token0.address === 'FTM') {
+        if(token0.address === 'BNB') {
           tok0 = CONTRACTS.WFTM_ADDRESS
         }
-        if(token1.address === 'FTM') {
+        if(token1.address === 'BNB') {
           tok1 = CONTRACTS.WFTM_ADDRESS
         }
         const pairFor = await factoryContract.methods.getPair(tok0, tok1, isStable).call()
@@ -1570,10 +1570,10 @@ class Store {
 
       let toki0 = token0.address
       let toki1 = token1.address
-      if(token0.address === 'FTM') {
+      if(token0.address === 'BNB') {
         toki0 = CONTRACTS.WFTM_ADDRESS
       }
-      if(token1.address === 'FTM') {
+      if(token1.address === 'BNB') {
         toki1 = CONTRACTS.WFTM_ADDRESS
       }
 
@@ -1622,7 +1622,7 @@ class Store {
       let allowance1 = 0
 
       // CHECK ALLOWANCES AND SET TX DISPLAY
-      if(token0.address !== 'FTM') {
+      if(token0.address !== 'BNB') {
         allowance0 = await this._getDepositAllowance(web3, token0, account)
         if(BigNumber(allowance0).lt(amount0)) {
           this.emitter.emit(ACTIONS.TX_STATUS, {
@@ -1645,7 +1645,7 @@ class Store {
         })
       }
 
-      if(token1.address !== 'FTM') {
+      if(token1.address !== 'BNB') {
         allowance1 = await this._getDepositAllowance(web3, token1, account)
         if(BigNumber(allowance1).lt(amount1)) {
           this.emitter.emit(ACTIONS.TX_STATUS, {
@@ -1725,12 +1725,12 @@ class Store {
       let params = [token0.address, token1.address, isStable, sendAmount0, sendAmount1, sendAmount0Min, sendAmount1Min, account.address, deadline]
       let sendValue = null
 
-      if(token0.address === 'FTM') {
+      if(token0.address === 'BNB') {
         func = 'addLiquidityFTM'
         params = [token1.address, isStable, sendAmount1, sendAmount1Min, sendAmount0Min, account.address, deadline]
         sendValue = sendAmount0
       }
-      if(token1.address === 'FTM') {
+      if(token1.address === 'BNB') {
         func = 'addLiquidityFTM'
         params = [token0.address, isStable, sendAmount0, sendAmount0Min, sendAmount1Min, account.address, deadline]
         sendValue = sendAmount1
@@ -1745,10 +1745,10 @@ class Store {
         // GET PAIR FOR NEWLY CREATED LIQUIDITY POOL
         let tok0 = token0.address
         let tok1 = token1.address
-        if(token0.address === 'FTM') {
+        if(token0.address === 'BNB') {
           tok0 = CONTRACTS.WFTM_ADDRESS
         }
-        if(token1.address === 'FTM') {
+        if(token1.address === 'BNB') {
           tok1 = CONTRACTS.WFTM_ADDRESS
         }
         const pairFor = await factoryContract.methods.getPair(tok0, tok1, isStable).call()
@@ -1842,7 +1842,7 @@ class Store {
       let allowance1 = 0
 
       // CHECK ALLOWANCES AND SET TX DISPLAY
-      if(token0.address !== 'FTM') {
+      if(token0.address !== 'BNB') {
         allowance0 = await this._getDepositAllowance(web3, token0, account)
         if(BigNumber(allowance0).lt(amount0)) {
           this.emitter.emit(ACTIONS.TX_STATUS, {
@@ -1865,7 +1865,7 @@ class Store {
         })
       }
 
-      if(token1.address !== 'FTM') {
+      if(token1.address !== 'BNB') {
         allowance1 = await this._getDepositAllowance(web3, token1, account)
         if(BigNumber(allowance1).lt(amount1)) {
           this.emitter.emit(ACTIONS.TX_STATUS, {
@@ -1947,12 +1947,12 @@ class Store {
       let params = [token0.address, token1.address, pair.isStable, sendAmount0, sendAmount1, sendAmount0Min, sendAmount1Min, account.address, deadline]
       let sendValue = null
 
-      if(token0.address === 'FTM') {
+      if(token0.address === 'BNB') {
         func = 'addLiquidityFTM'
         params = [token1.address, pair.isStable, sendAmount1, sendAmount1Min, sendAmount0Min, account.address, deadline]
         sendValue = sendAmount0
       }
-      if(token1.address === 'FTM') {
+      if(token1.address === 'BNB') {
         func = 'addLiquidityFTM'
         params = [token0.address, pair.isStable, sendAmount0, sendAmount0Min, sendAmount1Min, account.address, deadline]
         sendValue = sendAmount1
@@ -2131,7 +2131,7 @@ class Store {
       let allowance1 = 0
 
       // CHECK ALLOWANCES AND SET TX DISPLAY
-      if(token0.address !== 'FTM') {
+      if(token0.address !== 'BNB') {
         allowance0 = await this._getDepositAllowance(web3, token0, account)
         if(BigNumber(allowance0).lt(amount0)) {
           this.emitter.emit(ACTIONS.TX_STATUS, {
@@ -2154,7 +2154,7 @@ class Store {
         })
       }
 
-      if(token1.address !== 'FTM') {
+      if(token1.address !== 'BNB') {
         allowance1 = await this._getDepositAllowance(web3, token1, account)
         if(BigNumber(allowance1).lt(amount1)) {
           this.emitter.emit(ACTIONS.TX_STATUS, {
@@ -2271,12 +2271,12 @@ class Store {
       let params = [token0.address, token1.address, pair.isStable, sendAmount0, sendAmount1, sendAmount0Min, sendAmount1Min, account.address, deadline]
       let sendValue = null
 
-      if(token0.address === 'FTM') {
+      if(token0.address === 'BNB') {
         func = 'addLiquidityFTM'
         params = [token1.address, pair.isStable, sendAmount1, sendAmount1Min, sendAmount0Min, account.address, deadline]
         sendValue = sendAmount0
       }
-      if(token1.address === 'FTM') {
+      if(token1.address === 'BNB') {
         func = 'addLiquidityFTM'
         params = [token0.address, pair.isStable, sendAmount0, sendAmount0Min, sendAmount1Min, account.address, deadline]
         sendValue = sendAmount1
@@ -2373,10 +2373,10 @@ class Store {
       let addy0 = token0.address
       let addy1 = token1.address
 
-      if(token0.address === 'FTM') {
+      if(token0.address === 'BNB') {
         addy0 = CONTRACTS.WFTM_ADDRESS
       }
-      if(token1.address === 'FTM') {
+      if(token1.address === 'BNB') {
         addy1 = CONTRACTS.WFTM_ADDRESS
       }
 
@@ -2850,10 +2850,10 @@ class Store {
       let addy0 = fromAsset.address
       let addy1 = toAsset.address
 
-      if(fromAsset.address === 'FTM') {
+      if(fromAsset.address === 'BNB') {
         addy0 = CONTRACTS.WFTM_ADDRESS
       }
-      if(toAsset.address === 'FTM') {
+      if(toAsset.address === 'BNB') {
         addy1 = CONTRACTS.WFTM_ADDRESS
       }
 
@@ -3033,7 +3033,7 @@ class Store {
       let allowance = 0
 
       // CHECK ALLOWANCES AND SET TX DISPLAY
-      if(fromAsset.address !== 'FTM') {
+      if(fromAsset.address !== 'BNB') {
         allowance = await this._getSwapAllowance(web3, fromAsset, account)
 
         if(BigNumber(allowance).lt(fromAmount)) {
@@ -3095,12 +3095,12 @@ class Store {
       let params = [sendFromAmount, sendMinAmountOut, quote.output.routes, account.address, deadline]
       let sendValue = null
 
-      if(fromAsset.address === 'FTM') {
+      if(fromAsset.address === 'BNB') {
         func = 'swapExactFTMForTokens'
         params = [sendMinAmountOut, quote.output.routes, account.address, deadline]
         sendValue = sendFromAmount
       }
-      if(toAsset.address === 'FTM') {
+      if(toAsset.address === 'BNB') {
         func = 'swapExactTokensForFTM'
       }
 
@@ -3133,7 +3133,7 @@ class Store {
       const ba = await Promise.all(
         baseAssets.map(async (asset) => {
           if(asset.address.toLowerCase() === assetAddress.toLowerCase()) {
-            if(asset.address === 'FTM') {
+            if(asset.address === 'BNB') {
               let bal = await web3.eth.getBalance(account.address)
               asset.balance = BigNumber(bal).div(10 ** asset.decimals).toFixed(asset.decimals)
             } else {
