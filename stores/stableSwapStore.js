@@ -783,9 +783,9 @@ class Store {
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API}/api/v1/baseAssets`, {
       	method: 'get',
-      	/*headers: {
+      	headers: {
           'Authorization': `Basic ${process.env.NEXT_PUBLIC_API_TOKEN}`,
-        }*/
+        }
       })
       const baseAssetsCall = await response.json()
 
