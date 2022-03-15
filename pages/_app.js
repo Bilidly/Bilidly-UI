@@ -20,7 +20,7 @@ export default function MyApp({ Component, pageProps }) {
   const router = useRouter();
 
   const [themeConfig, setThemeConfig] = useState(darkTheme);
-  const [stalbeSwapConfigured, setStableSwapConfigured] = useState(false);
+  const [stableSwapConfigured, setStableSwapConfigured] = useState(false);
   const [accountConfigured, setAccountConfigured] = useState(false);
 
   useEffect(() => {

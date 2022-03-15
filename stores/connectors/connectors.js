@@ -24,8 +24,8 @@ export const injected = new InjectedConnector({
 
 export const walletconnect = new WalletConnectConnector({
   rpc: {
-    250: RPC_URLS[250],
-    4002: RPC_URLS[4002]
+    56: RPC_URLS[56],
+    97: RPC_URLS[97]
   },
   chainId: parseInt(process.env.NEXT_PUBLIC_CHAINID),
   bridge: "https://bridge.walletconnect.org",
