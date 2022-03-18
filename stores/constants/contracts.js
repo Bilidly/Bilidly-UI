@@ -23,7 +23,7 @@ export const WFTM_DECIMALS = 18
 export const WFTM_ABI = abis.wftmABI
 
 export const FTM_ADDRESS = 'BNB'
-export const FTM_NAME = 'Fantom'
+export const FTM_NAME = 'BSC'
 export const FTM_SYMBOL = 'BNB'
 export const FTM_DECIMALS = 18
 export const FTM_LOGO = 'https://assets.coingecko.com/coins/images/4001/large/Fantom.png'
@@ -46,4 +46,4 @@ export const GAUGE_ABI = abis.gaugeABI
 export const BRIBE_ABI = abis.bribeABI
 export const TOKEN_ABI = abis.tokenABI
 
-export const MULTICALL_ADDRESS = '0x11473d6e641df17cd6331d45b135e35b49edbea8'
+export const MULTICALL_ADDRESS = '0x41263cba59eb80dc200f3e2544eda4ed6a90e76c'

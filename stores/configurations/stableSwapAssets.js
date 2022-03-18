@@ -2,16 +2,16 @@
 // list of assets we support for providing liquidity to the factory. We will have to expand on this.
 export default [{
   address: '0xeD24FC36d5Ee211Ea25A80239Fb8C4Cfd80f12Ee',
-  name: 'BUSD',
+  name: 'Binance USD',
   symbol: 'BUSD',
-  decimals: 6,
-  logo: 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x4Fabb145d64652a948d72533023f6E7A623C7C53/logo.png'
+  decimals: 18,
+  logo: 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/binance/assets/BUSD-BD1/logo.png'
 },{
-  address: '0x64544969ed7EBf5f083679233325356EbE738930',
+  address: '0x9780881Bf45B83Ee028c4c1De7e0C168dF8e9eEF',
   name: 'USDC',
   symbol: 'USDC',
-  decimals: 18,
-  logo: 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48/logo.png'
+  decimals: 6,
+  logo: 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/binance/assets/USDC-CD2/logo.png'
 },{
   address: '0xa39AE32880c31E51870f56DdCA087A5F17dEA508',
   name: 'test',

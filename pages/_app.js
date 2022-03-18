@@ -40,7 +40,7 @@ export default function MyApp({ Component, pageProps }) {
     setAccountConfigured(true);
   };
 
-  const stalbeSwapConfigureReturned = () => {
+  const stableSwapConfigureReturned = () => {
     setStableSwapConfigured(true);
   };
 
@@ -50,13 +50,13 @@ export default function MyApp({ Component, pageProps }) {
   }, []);
 
   useEffect(function () {
-    stores.emitter.on(ACTIONS.CONFIGURED_SS, stalbeSwapConfigureReturned);
+    stores.emitter.on(ACTIONS.CONFIGURED_SS, stableSwapConfigureReturned);
     stores.emitter.on(ACTIONS.ACCOUNT_CONFIGURED, accountConfigureReturned);
 
     stores.dispatcher.dispatch({ type: ACTIONS.CONFIGURE });
 
     return () => {
-      stores.emitter.removeListener(ACTIONS.CONFIGURED_SS, stalbeSwapConfigureReturned);
+      stores.emitter.removeListener(ACTIONS.CONFIGURED_SS, stableSwapConfigureReturned);
       stores.emitter.removeListener(ACTIONS.ACCOUNT_CONFIGURED, accountConfigureReturned);
     };
   }, []);
