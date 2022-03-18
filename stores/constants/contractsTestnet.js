@@ -24,7 +24,7 @@ export const FTM_ADDRESS = 'BNB'
 export const FTM_NAME = 'BNB' // BSC
 export const FTM_SYMBOL = 'BNB'
 export const FTM_DECIMALS = 18
-export const FTM_LOGO = 'https://assets.coingecko.com/coins/images/825/large/bnb-icon2_2x.png'
+export const FTM_LOGO = 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/binance/info/logo.png'
 
 export const FACTORY_ADDRESS = '0xedF4D694f3F7767C10446D5fecB33C54743fc978'
 export const FACTORY_ABI = abis.factoryABI
