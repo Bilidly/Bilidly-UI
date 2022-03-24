@@ -11,7 +11,7 @@ export default function Layout({
   return (
     <div className={classes.container}>
       <Head>
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/favicon.png" />
         <link
           rel="preload"
           href="/fonts/Inter/Inter-Regular.otf"
