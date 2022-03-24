@@ -49,10 +49,10 @@ function Home({ changeTheme }) {
 
         <Grid container spacing={2} className={classes.homeContentMain}>
           <Grid item lg={12} md={12} sm={12} xs={12}>
-            <Typography variant="h1" className={classes.preTitle}>0.01% fee</Typography>
+            <Typography variant="h1" className={classes.preTitle}>0.01% swap fee</Typography>
           </Grid>
           <Grid item lg={12} md={12} sm={12} xs={12}>
-            <Typography variant="h1" className={classes.mainTitle}>— No fee — just ponzi</Typography>
+            <Typography variant="h1" className={classes.mainTitle}>Essentially Free</Typography>
           </Grid>
           <Grid item lg={12} md={12} sm={12} xs={12}>
             <Grid container spacing={2}>
@@ -60,7 +60,7 @@ function Home({ changeTheme }) {
                 <Button className={classes.buttonInfo} onClick={() => scrollTo({ top: 1000, left: 0, behavior: 'smooth' })}>Learn More</Button>
               </Grid>
               <Grid item lg={6} md={6} sm={12} xs={12}>
-                <Button className={classes.buttonEnter} onClick={() => router.push('/swap')}>Enter App</Button>
+                <Button className={classes.buttonEnter} onClick={() => router.push('/swap')}>Swap</Button>
               </Grid>
             </Grid>
           </Grid>
@@ -77,13 +77,10 @@ function Home({ changeTheme }) {
           </Grid>
           <Grid item lg={12} md={12} sm={12} xs={12}>
             <Typography variant="body1" className={classes.mainDescription}>
-              Bilidly is a decentralized exchange with low fees and near 0 slippage on all types of pairs. 
-            </Typography>
-            <Typography variant="body1" className={classes.mainDescription}>
-              Bilidly is an enhanced roll over of Solidly on BNB Chain. 
+              Bilidly is a decentralized exchange for all types of pairs on BNB chain.
             </Typography>
             <Typography variant="body2" className={classes.secDescription}>
-              One segment of the cryptocurrency landscape that has shown incredible potential is the swapping of stablecoins and volatile assets. Bilidly Swap offers users quick, seamless and cheap transactions while utilizing strategies to maximize their yield.
+              Based on Andre Cronje's Solidly protocol, Bilidly aims at providing essentially free atomic swap on stable and volatile token pairs, while maintaining deep liquidity through ve(3,3) ponzitivization of liquidity providers.
             </Typography>
           </Grid>
           <Grid item lg={12} md={12} sm={12} xs={12}>

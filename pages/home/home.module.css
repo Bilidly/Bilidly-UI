@@ -24,8 +24,8 @@
 }
 
 .mainTitle {
-  font-family: 'Monument' !important;
-  font-size: 60px !important;
+  font-family: 'CottonCandies' !important;
+  font-size: 100px !important;
   margin-bottom: 30px !important;
   animation: mainTitleAnim 1s ease 1;
   animation-delay: 200ms;
@@ -82,8 +82,8 @@
 }
 
 .secTitle {
-  font-family: 'Monument' !important;
-  font-size: 30px !important;
+  font-family: 'CottonCandies' !important;
+  font-size: 60px !important;
   margin-bottom: 20px !important;
   text-align: center !important;
 }
@@ -130,7 +130,7 @@
 
 .buttonEnter {
   animation: buttonInfoAnim 1s ease 1;
-  animation-delay: 600ms;
+  animation-delay: 500ms;
   animation-fill-mode: forwards;
   position: relative;
   bottom: 0;
@@ -145,21 +145,6 @@
   min-width: 100% !important;
   text-transform: capitalize !important;
   color: #ffb405 !important;
-}
-
-.floatingSphere {
-    height: 600px;
-    width: 600px;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-image: url('/images/sphere_001.png');
-    background-size: cover;
-    background-repeat: no-repeat;
-    z-index: 1;
-    mix-blend-mode: lighten;
-    opacity: 0.5;
 }
 
 @media screen and (max-width: 960px) {

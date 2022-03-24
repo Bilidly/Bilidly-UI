@@ -155,7 +155,7 @@ const coreTheme = {
         maxWidth: "800px",
       }
     },
-    MuiToggleButton: {
+    /*MuiToggleButton: {
       root: {
         border: "none",
         borderRadius: "12px",
@@ -164,7 +164,7 @@ const coreTheme = {
         border: '1px solid #ffb405',
         backgroundColor: 'rgba(0,0,0,0)'
       }
-    },
+    },*/
     MuiSnackbar: {
       root: {
         maxWidth: "calc(100vw - 24px)"

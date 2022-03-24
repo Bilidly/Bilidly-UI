@@ -2959,15 +2959,13 @@ class Store {
         this.emitter.emit(ACTIONS.ERROR, 'No valid route found to complete swap')
         return null
       }
-
-      const libraryContract = new web3.eth.Contract(CONTRACTS.LIBRARY_ABI, CONTRACTS.LIBRARY_ADDRESS)
       let totalRatio = 1
 
       for(let i = 0; i < bestAmountOut.routes.length; i++) {
         let amountIn = bestAmountOut.receiveAmounts[i]
         let amountOut = bestAmountOut.receiveAmounts[i+1]
 
-        const res = await libraryContract.methods.getTradeDiff(amountIn, bestAmountOut.routes[i].from, bestAmountOut.routes[i].to, bestAmountOut.routes[i].stable).call()
+        const res = await routerContract.methods.getTradeDiff(amountIn, bestAmountOut.routes[i].from, bestAmountOut.routes[i].to, bestAmountOut.routes[i].stable).call()
 
         const ratio = BigNumber(res.b).div(res.a)
         totalRatio = BigNumber(totalRatio).times(ratio).toFixed(18)

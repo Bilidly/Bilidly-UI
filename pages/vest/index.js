@@ -1,5 +1,6 @@
 import { Typography, Button, Paper, SvgIcon } from "@material-ui/core";
 import VestsNFTs from '../../components/ssVests';
+import Toggle from '../../components/toggle';
 
 import React, { useState, useEffect } from 'react';
 import { ACTIONS } from '../../stores/constants';
@@ -47,11 +48,11 @@ function Vesting({ changeTheme }) {
     <div className={classes.ffContainer}>
       {account && account.address ?
         <div className={classes.connected}>
+          <Toggle />
           <VestsNFTs />
         </div>
       :
         <Paper className={classes.notConnectedContent}>
-          <div className={classes.sphere}></div>
           <div className={classes.contentFloat}>
           <Typography className={classes.mainHeadingNC} variant='h1'>Vesting NFTs</Typography>
           <Typography className={classes.mainDescNC} variant='body2'>

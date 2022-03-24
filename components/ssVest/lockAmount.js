@@ -23,7 +23,7 @@ export default function ffLockAmount({ nft, govToken, updateLockAmount }) {
   useEffect(() => {
     const lockReturned = () => {
       setLockLoading(false)
-      router.push('/vest')
+      router.push('/governance/vest')
     }
 
     const errorReturned = () => {

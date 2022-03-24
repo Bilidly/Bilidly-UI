@@ -228,7 +228,7 @@ export default function ssBribeCreate() {
   }
 
   const onBack = () => {
-    router.push('/vote')
+    router.push('/governance/vote')
   }
 
   const renderCreateInfo = () => {

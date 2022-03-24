@@ -11,16 +11,16 @@ export default function Layout({
   return (
     <div className={classes.container}>
       <Head>
-        <link rel="icon" href="/favicon.png" />
+        <link rel="icon" href="/favicon.ico" />
         <link
           rel="preload"
-          href="/fonts/Inter/Inter-Regular.ttf"
+          href="/fonts/Inter/Inter-Regular.otf"
           as="font"
           crossOrigin=""
         />
         <link
           rel="preload"
-          href="/fonts/Inter/Inter-Bold.ttf"
+          href="/fonts/Inter/Inter-Bold.otf"
           as="font"
           crossOrigin=""
         />
@@ -37,6 +37,14 @@ export default function Layout({
           as="font"
           crossOrigin=""
         />
+
+          <link
+          rel="preload"
+          href="/fonts/CottonCandies/CottonCandies.otf"
+          as="font"
+          crossOrigin=""
+        />
+
         <meta name="description" content="Solidly allows low cost, near 0 slippage trades on uncorrelated or tightly correlated assets built on BNB chain." />
         <meta name="og:title" content="Solidly" />
         <meta name="twitter:card" content="summary_large_image" />

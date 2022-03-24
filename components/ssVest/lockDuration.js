@@ -23,7 +23,7 @@ export default function ffLockDuration({ nft, updateLockDuration }) {
   useEffect(() => {
     const lockReturned = () => {
       setLockLoading(false)
-      router.push('/vest')
+      router.push('/governance/vest')
     }
     const errorReturned = () => {
       setLockLoading(false)

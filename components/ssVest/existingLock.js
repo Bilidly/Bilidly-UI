@@ -18,7 +18,7 @@ export default function existingLock({ nft, govToken, veToken }) {
   const router = useRouter();
 
   const onBack = () => {
-    router.push('/vest')
+    router.push('/governance/vest')
   }
 
   const updateLockAmount = (amount) => {

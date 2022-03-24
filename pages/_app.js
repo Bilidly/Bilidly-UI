@@ -5,6 +5,7 @@ import Layout from '../components/layout/layout.js';
 import { ThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { useRouter } from 'next/router';
+import GovMenu from '../components/govMenu';
 
 import lightTheme from '../theme/light';
 import darkTheme from '../theme/dark';
@@ -79,11 +80,23 @@ export default function MyApp({ Component, pageProps }) {
       <ThemeProvider theme={themeConfig}>
         {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
         <CssBaseline />
-        { validateConfigured() && (
+        { router.pathname.startsWith('/governance') ? validateConfigured() && (
+          <Layout changeTheme={changeTheme}>
+            <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginTop: "100px",
+            marginBottom: "-80px"
+        }}><GovMenu /></div>
+          <Component {...pageProps} changeTheme={changeTheme} />
+          </Layout>
+        ) : validateConfigured() && (
           <Layout changeTheme={changeTheme}>
             <Component {...pageProps} changeTheme={changeTheme} />
           </Layout>
-        )}
+        )
+      }
         {!validateConfigured() && <Configure {...pageProps} />}
       </ThemeProvider>
     </React.Fragment>

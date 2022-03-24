@@ -293,11 +293,11 @@ function Header(props) {
             onClose={handleClose}
             className={classes.userMenu}
           >
-            <StyledMenuItem className={classes.hidden} onClick={() => router.push('/dashboard')}>
+            <StyledMenuItem className={classes.hidden} onClick={() => router.push('/governance')}>
               <ListItemIcon className={classes.userMenuIcon}>
                 <DashboardOutlinedIcon fontSize="small" />
               </ListItemIcon>
-              <ListItemText className={classes.userMenuText} primary="Dashboard" />
+              <ListItemText className={classes.userMenuText} primary="Governance" />
             </StyledMenuItem>
             <StyledMenuItem onClick={onAddressClicked}>
               <ListItemIcon className={classes.userMenuIcon}>

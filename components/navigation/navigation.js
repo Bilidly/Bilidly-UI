@@ -113,6 +113,12 @@ function Navigation(props) {
       setActive(val)
       handleNavigate('/' + val);
     }
+    else {
+      console.log("path " + router.pathname.split('/')[1])
+      let routeTo = router.pathname.split('/')[1];
+      setActive(routeTo)
+      handleNavigate('/' + routeTo);
+    }
   }
 
   useEffect(() => {
@@ -135,8 +141,8 @@ function Navigation(props) {
     if(activePath.includes('rewards')) {
       setActive('rewards')
     }
-    if(activePath.includes('dashboard')) {
-      setActive('dashboard')
+    if(activePath.includes('governance')) {
+      setActive('governance')
     }
     if(activePath.includes('whitelist')) {
       setActive('whitelist')
@@ -148,7 +154,7 @@ function Navigation(props) {
       <ToggleButtonGroup
         value={active}
         exclusive
-        onChange={onActiveClick}
+        onChange={(event, val) => onActiveClick(event, val)}
         className={ classes.navToggles}
       >
         {renderSubNav(
@@ -160,20 +166,12 @@ function Navigation(props) {
           'liquidity',
         )}
         {renderSubNav(
-          'Vest',
-          'vest',
-        )}
-        {renderSubNav(
-          'Vote',
-          'vote',
+          'Governance',
+          'governance',
         )}
         {renderSubNav(
           'Rewards',
           'rewards',
-        )}
-        {renderSubNav(
-          'Whitelist',
-          'whitelist',
         )}
       </ToggleButtonGroup>
     );

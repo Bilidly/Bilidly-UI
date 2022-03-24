@@ -290,7 +290,7 @@
 }
 
 .swapIconSubContainer {
-  background: #161B2C;
+  background: #2c1a16;
   border-radius: 9px;
   height: 38px;
   z-index: 1;
@@ -335,7 +335,7 @@
 }
 
 .displayAssetIconSmall {
-  border: 1px solid rgba(126, 153, 153, 0.5);
+  border: 1px solid rgba(153, 144, 126, 0.5);
   border-radius: 30px;
   background: rgb(56, 56, 56);
   padding: 6px;

@@ -1,0 +1,25 @@
+/** Scale Animation */
+.moving-indicator {
+  -webkit-animation: scale-animation 200ms linear;
+  animation: scale-animation 250ms linear;
+  transform-origin: var(--transform-origin);
+  transform-style: preserve-3d;
+}
+
+@keyframes scale-animation {
+  0% {
+    transform: scaleX(1);
+  }
+  50% {
+    transform: scaleX(1.4);
+  }
+  100% {
+    transform: scaleX(1);
+  }
+}
+
+.px-3 {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+

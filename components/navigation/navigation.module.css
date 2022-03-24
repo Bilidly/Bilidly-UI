@@ -52,7 +52,7 @@ a.linkz { cursor: pointer !important; }
   width: 100%;
   border-radius: 10px;
   cursor: pointer;
-  background: radial-gradient(circle, rgba(63,94,251,0.7) 0%, rgba(47,128,237,0.7) 48%) rgba(63,94,251,0.7) 100%;
+  background: radial-gradient(circle, rgba(255, 190, 49,0.7) 0%, rgba(237, 177, 47,0.7) 48%) rgba(255, 190, 49,0.7) 100%;
 }
 
 .socials {
@@ -198,7 +198,7 @@ a.linkz { cursor: pointer !important; }
 }
 
 .sectionText {
-  color: rgba(104, 108, 128, 0.8);
+  color: rgba(128, 118, 104, 0.8);
   /* color: #ed3700; */
   font-size: 13px !important;
   cursor: default;
@@ -402,11 +402,11 @@ a.linkz { cursor: pointer !important; }
     border-radius: 10px;
     text-align: center !important;
     cursor: pointer;
-    background: radial-gradient(circle, rgba(63,94,251,0.7) 0%, rgba(47,128,237,0.7) 48%) rgba(63,94,251,0.7) 100%;
+    background: radial-gradient(circle, rgba(255, 190, 49, 0.726) 0%, rgba(237, 177, 47, 0.7) 48%) rgba(255, 190, 49,0.7) 100%;
   }
 
   .sectionText {
-    color: rgba(104, 108, 128, 0.8);
+    color: rgba(128, 118, 104, 0.8);
     /* color: #ed3700; */
     font-size: 13px !important;
     cursor: default;
@@ -496,6 +496,6 @@ a.linkz { cursor: pointer !important; }
     width: 100%;
     text-align: center;
     padding: 15px 0;
-    border-bottom: 1px solid rgba(176, 154, 126,0.2);
+    border-bottom: 1px solid rgba(214, 188, 153, 0.2);
   }
 }

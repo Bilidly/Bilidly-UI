@@ -29,7 +29,7 @@ export default function ssLock({ govToken, veToken }) {
   useEffect(() => {
     const lockReturned = () => {
       setLockLoading(false)
-      router.push('/vest')
+      router.push('/governance/vest')
     }
     const errorReturned = () => {
       setLockLoading(false)
@@ -235,7 +235,7 @@ export default function ssLock({ govToken, veToken }) {
   }
 
   const onBack = () => {
-    router.push('/vest')
+    router.push('/governance/vest')
   }
 
   return (

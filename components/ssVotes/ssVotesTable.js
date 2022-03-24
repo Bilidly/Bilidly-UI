@@ -264,7 +264,7 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     flexWrap: 'wrap',
     borderBottom: '1px solid rgba(128, 128, 128, 0.32)',
-    background: 'radial-gradient(circle, rgba(63,94,251,0.7) 0%, rgba(47,128,237,0.7) 48%) rgba(63,94,251,0.7) 100%',
+    background: 'radial-gradient(circle, rgba(255, 190, 49,0.7) 0%, rgba(237, 177, 47,0.7) 48%) rgba(255, 190, 49,0.7) 100%',
   },
   assetInfoError: {
     display: 'flex',

@@ -177,7 +177,7 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     flexWrap: 'wrap',
     borderBottom: '1px solid rgba(104, 108, 122, 0.25)',
-    background: 'radial-gradient(circle, rgba(63,94,251,0.7) 0%, rgba(47,128,237,0.7) 48%) rgba(63,94,251,0.7) 100%',
+    background: 'radial-gradient(circle, rgba(255, 190, 49,0.7) 0%, rgba(237, 177, 47,0.7) 48%) rgba(255, 190, 49,0.7) 100%',
   },
   assetInfoError: {
     display: 'flex',
@@ -258,45 +258,6 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const EnhancedTableToolbar = (props) => {
-  const classes = useStyles()
-  const router = useRouter()
-
-  const [search, setSearch] = useState('');
-
-  const onSearchChanged = (event) => {
-    setSearch(event.target.value);
-  };
-
-  const onCreate = () => {
-    router.push('/vest/create')
-  }
-
-  return (
-    <Toolbar className={ classes.toolbar }>
-
-      <Grid container spacing={1}>
-        <Grid lg='auto' md={12} sm={12} xs={12} item>
-          <Button
-            variant="contained"
-            color="secondary"
-            startIcon={<EnhancedEncryptionOutlinedIcon />}
-            size='large'
-            className={ classes.buttonOverride }
-            color='primary'
-            onClick={ onCreate }
-          >
-            <Typography className={ classes.actionButtonText }>Create Lock</Typography>
-          </Button>
-        </Grid>
-        <Grid item lg={true} md={true} sm={false} xs={false}></Grid>
-      </Grid>
-
-
-    </Toolbar>
-  );
-};
-
 export default function EnhancedTable({ vestNFTs, govToken, veToken }) {
   const classes = useStyles();
   const router = useRouter();
@@ -335,14 +296,13 @@ export default function EnhancedTable({ vestNFTs, govToken, veToken }) {
   }
 
   const onView = (nft) => {
-    router.push(`/vest/${nft.id}`);
+    router.push(`/governance/vest/${nft.id}`);
   };
 
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, vestNFTs.length - page * rowsPerPage);
 
   return (
     <div className={classes.root}>
-      <EnhancedTableToolbar />
       <Paper elevation={0} className={ classes.tableContainer}>
         <TableContainer>
           <Table className={classes.table} aria-labelledby='tableTitle' size={'medium'} aria-label='enhanced table'>
