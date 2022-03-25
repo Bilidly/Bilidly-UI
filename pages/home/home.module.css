@@ -199,12 +199,12 @@
   }
 
   .mainTitle {
-    font-size: 32px !important;
+    font-size: 40px !important;
     margin-bottom: 25px !important;
   }
 
   .secTitle {
-    font-size: 20px !important;
+    font-size: 40px !important;
   }
 
   .mainDescription {
@@ -230,4 +230,44 @@
   .accountInfo {
     display: none;
   }
+}
+
+
+.socials {
+  margin-top: -40px;
+  align-items: center;
+  justify-content: space-evenly;
+  width: 100%;
+}
+
+.socialgrid {
+  width: 100%;
+  text-align: center;
+  padding: 0 0px;
+}
+
+.socialButton {
+  padding: 0px;
+  width: 20px !important;
+  height: 20px !important;
+  background-repeat: no-repeat;
+  background-position: center;
+  cursor: pointer;
+  box-sizing: unset;
+}
+
+.telegram {
+  background-image: url('/socials/telegram.svg');
+}
+.medium {
+  background-image: url('/socials/medium.svg');
+}
+.twitter {
+  background-image: url('/socials/twitter.svg');
+}
+.github {
+  background-image: url('/socials/github.svg');
+}
+.discord {
+  background-image: url('/socials/discord.svg');
 }

@@ -55,46 +55,6 @@ a.linkz { cursor: pointer !important; }
   background: radial-gradient(circle, rgba(255, 190, 49,0.7) 0%, rgba(237, 177, 47,0.7) 48%) rgba(255, 190, 49,0.7) 100%;
 }
 
-.socials {
-  display: flex;
-  align-items: center;
-  justify-content: space-evenly;
-  width: 100%;
-  margin-bottom: 20px;
-}
-
-.socialgrid {
-  text-align: center;
-  padding: 0 45px;
-}
-
-.socialButton {
-  padding: 0px;
-  width: 20px !important;
-  height: 20px !important;
-  background-size: 60%;
-  background-repeat: no-repeat;
-  background-position: center;
-  cursor: pointer;
-  box-sizing: unset;
-}
-
-.telegram {
-  background-image: url('/socials/telegram.svg');
-}
-.medium {
-  background-image: url('/socials/medium.svg');
-}
-.twitter {
-  background-image: url('/socials/twitter.svg');
-}
-.github {
-  background-image: url('/socials/github.svg');
-}
-.discord {
-  background-image: url('/socials/discord.svg');
-}
-
 .navigationContentNavs {
   display: flex;
   flex-direction: column;

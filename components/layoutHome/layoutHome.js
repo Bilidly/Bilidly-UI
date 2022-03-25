@@ -45,8 +45,8 @@ export default function Layout({
           crossOrigin=""
         />
 
-        <meta name="description" content="Solidly allows low cost, near 0 slippage trades on uncorrelated or tightly correlated assets built on BNB chain." />
-        <meta name="og:title" content="Solidly" />
+        <meta name="description" content="Bilidly is a low cost decentralized exchange for all types of pairs on BNB chain." />
+        <meta name="og:title" content="Bilidly" />
         <meta name="twitter:card" content="summary_large_image" />
       </Head>
       <div className={classes.content}>
