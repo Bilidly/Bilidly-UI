@@ -1,7 +1,7 @@
 import { Typography, Button, Paper, SvgIcon, Grid, Avatar } from "@material-ui/core";
-import Overview from '../../components/ffgovernanceOverview';
-import VoteOverview from '../../components/ffgovernanceVoteOverview';
-import ClaimAll from '../../components/ffgovernanceClaimAll';
+import Overview from '../../components/ffGovernanceOverview';
+import VoteOverview from '../../components/ffGovernanceVoteOverview';
+import ClaimAll from '../../components/ffGovernanceClaimAll';
 
 import classes from './governance.module.css';
 
