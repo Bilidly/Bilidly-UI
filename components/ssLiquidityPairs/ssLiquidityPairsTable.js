@@ -548,7 +548,6 @@ const EnhancedTableToolbar = (props) => {
           startIcon={<AddCircleOutlineIcon />}
           size='large'
           className={ classes.buttonOverride }
-          color='primary'
           onClick={ onCreate }
         >
           <Typography className={ classes.actionButtonText }>Add Liquidity</Typography>
