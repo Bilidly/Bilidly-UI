@@ -1,0 +1,7 @@
+NODE_ENV=test
+NEXT_PUBLIC_CHAINID=97
+NEXT_PUBLIC_API= https://main--determined-gates-7a0a15.netlify.app
+NEXT_PUBLIC_API_TOKEN=12345
+npm_config_build_from_source=true
+npm_config_loglevel=verbose
+NEXT_PUBLIC_TEST_URL=https://main--determined-gates-7a0a15.netlify.app/
