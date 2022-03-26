@@ -7,10 +7,10 @@ export default [{
   decimals: 18,
   logo: 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/binance/assets/BUSD-BD1/logo.png'
 },{
-  address: '0x9780881Bf45B83Ee028c4c1De7e0C168dF8e9eEF',
+  address: '0x64544969ed7EBf5f083679233325356EbE738930',
   name: 'USDC',
   symbol: 'USDC',
-  decimals: 6,
+  decimals: 18,
   logo: 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/binance/assets/USDC-CD2/logo.png'
 },{
   address: '0xa39AE32880c31E51870f56DdCA087A5F17dEA508',
