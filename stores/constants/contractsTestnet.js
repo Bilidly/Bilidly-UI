@@ -1,13 +1,13 @@
 import abis from "../abis";
 
-export const GOV_TOKEN_ADDRESS = '0xa39AE32880c31E51870f56DdCA087A5F17dEA508' // BSC testnet
+export const GOV_TOKEN_ADDRESS = '0x90944f4b4f13ad13e29b9DD5E9F1ba41038c08c2' // BSC testnet
 export const GOV_TOKEN_NAME = 'Test' // 'Solid'
 export const GOV_TOKEN_SYMBOL ='TEST' // 'SOLID'
 export const GOV_TOKEN_DECIMALS = 18
 export const GOV_TOKEN_LOGO = process.env.NEXT_PUBLIC_TEST_URL + 'Solidly-O.svg'
 export const GOV_TOKEN_ABI = abis.tokenABI
 
-export const VE_TOKEN_ADDRESS = '0xF1f467AdE2F398B09Be9A1080Cad86469cA72E41' // BSC testnet
+export const VE_TOKEN_ADDRESS = '0x78f6b87cfedd35aed1340e7c279614f000943b19' // BSC testnet
 export const VE_TOKEN_NAME = 'veNFT'
 export const VE_TOKEN_SYMBOL = 'veNFT'
 export const VE_TOKEN_DECIMALS = 18
@@ -26,16 +26,16 @@ export const FTM_SYMBOL = 'BNB'
 export const FTM_DECIMALS = 18
 export const FTM_LOGO = 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/binance/info/logo.png'
 
-export const FACTORY_ADDRESS = '0xedF4D694f3F7767C10446D5fecB33C54743fc978'
+export const FACTORY_ADDRESS = '0xe90bf4aa404f74098c8c6d4a496e5302296aa538'
 export const FACTORY_ABI = abis.factoryABI
 
-export const ROUTER_ADDRESS = '0x027aDaE4FF82B14fD3F28A3638B56e2F73DBd63b'
+export const ROUTER_ADDRESS = '0xf6813d36cfad0ed2fd15f6ef1fb8e5fa430c5e28'
 export const ROUTER_ABI = abis.routerABI
 
-export const VE_DIST_ADDRESS = '0x6dcAb799954c04A5fe584f6Ef8BB68138E40dD01'
+export const VE_DIST_ADDRESS = '0x0383f5846592feb64b94830ce6c9bdcdede49d61'
 export const VE_DIST_ABI = abis.veDistABI
 
-export const VOTER_ADDRESS = '0xBA0601b80c74aB674125C9975AdE8d45086134FF'
+export const VOTER_ADDRESS = '0x78a5d85fda167b6ca8a947b876d5dc0e19ab8b79'
 export const VOTER_ABI = abis.voterABI
 
 export const ERC20_ABI = abis.erc20ABI
