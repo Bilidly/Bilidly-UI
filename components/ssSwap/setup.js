@@ -182,7 +182,7 @@ function Setup() {
   }
 
   const calculateReceiveAmount = (amount, from, to) => {
-    if(amount !== '' && !isNaN(amount) && to != null) {
+    if(amount !== '' && amount != 0 && !isNaN(amount) && to != null) {
 
       setQuoteLoading(true)
       setQuoteError(false)
@@ -243,8 +243,10 @@ function Setup() {
   }
 
   const setBalance100 = () => {
-    setFromAmountValue(fromAssetValue.balance)
-    calculateReceiveAmount(fromAssetValue.balance, fromAssetValue, toAssetValue)
+    if(fromAssetValue.balance != fromAmountValue) {
+      setFromAmountValue(fromAssetValue.balance)
+      calculateReceiveAmount(fromAssetValue.balance, fromAssetValue, toAssetValue)
+    }
   }
 
   const swapAssets = () => {
@@ -410,8 +412,13 @@ function Setup() {
               onChange={ amountChanged }
               disabled={ loading || type === 'To' }
               InputProps={{
+                type: "number",
+                maxLength: 9,
                 className: classes.largeInput
               }}
+              onInput = {(e) =>{
+                e.target.value = Math.max(0, parseInt(e.target.value) ).toString().slice(0,18)
+              }}  
             />
 
             <Typography color='textSecondary' className={ classes.smallerText }>{ assetValue?.symbol }</Typography>

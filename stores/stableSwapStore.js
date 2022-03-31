@@ -2846,7 +2846,6 @@ class Store {
       if (!fromAsset || !toAsset || !fromAmount || !fromAsset.address || !toAsset.address || fromAmount === '') {
         return null
       }
-
       let addy0 = fromAsset.address
       let addy1 = toAsset.address
 
@@ -2856,13 +2855,11 @@ class Store {
       if(toAsset.address === 'BNB') {
         addy1 = CONTRACTS.WFTM_ADDRESS
       }
-
       const includesRouteAddress = routeAssets.filter((asset) => {
         return (asset.address.toLowerCase() == addy0.toLowerCase() || asset.address.toLowerCase() == addy1.toLowerCase())
       })
 
       let amountOuts = []
-
       if(includesRouteAddress.length === 0) {
         amountOuts = routeAssets.map((routeAsset) => {
           return [
@@ -2937,6 +2934,7 @@ class Store {
       })
 
       const multicall = await stores.accountStore.getMulticall()
+      console.log(amountOuts)
       const receiveAmounts = await multicall.aggregate(amountOuts.map((route) => {
         return routerContract.methods.getAmountsOut(sendFromAmount, route.routes)
       }))
@@ -2964,14 +2962,13 @@ class Store {
       for(let i = 0; i < bestAmountOut.routes.length; i++) {
         let amountIn = bestAmountOut.receiveAmounts[i]
         let amountOut = bestAmountOut.receiveAmounts[i+1]
-
         const res = await routerContract.methods.getTradeDiff(amountIn, bestAmountOut.routes[i].from, bestAmountOut.routes[i].to, bestAmountOut.routes[i].stable).call()
-
-        const ratio = BigNumber(res.b).div(res.a)
+        const ratio = BigNumber(res.rateB).div(res.rateA)
         totalRatio = BigNumber(totalRatio).times(ratio).toFixed(18)
       }
 
       const priceImpact = BigNumber(1).minus(totalRatio).times(100).toFixed(18)
+      console.log("price impaxt " + priceImpact)
 
       const returnValue = {
         inputs: {
