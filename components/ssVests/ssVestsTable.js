@@ -5,7 +5,7 @@ import Skeleton from '@material-ui/lab/Skeleton';
 import { Paper, Button, Table, TableBody, TableCell, InputAdornment, TableContainer, TableHead, TableRow, TableSortLabel, TablePagination, Typography, Tooltip, Toolbar, Grid } from '@material-ui/core';
 import { useRouter } from "next/router";
 import BigNumber from 'bignumber.js';
-import EnhancedEncryptionOutlinedIcon from '@material-ui/icons/EnhancedEncryptionOutlined';
+import FunctionIcon from '@material-ui/icons/Functions';
 import moment from 'moment';
 
 import { formatCurrency } from '../../utils';
@@ -258,6 +258,44 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
+const EnhancedTableToolbar = (props) => {
+  const classes = useStyles()
+  const router = useRouter()
+
+  const [search, setSearch] = useState('');
+
+  const onSearchChanged = (event) => {
+    setSearch(event.target.value);
+  };
+
+  const onBoost = () => {
+    router.push('/governance/vest/boost')
+  }
+
+  return (
+    <Toolbar className={ classes.toolbar }>
+
+      <Grid container spacing={1}>
+        <Grid lg={12} md={12} sm={12} xs={12} item>
+          <Button
+            variant="contained"
+            color="secondary"
+            startIcon={<FunctionIcon />}
+            size='large'
+            className={ classes.buttonOverride }
+            onClick={ onBoost }
+          >
+            <Typography className={ classes.actionButtonText }>Boost Calculator</Typography>
+          </Button>
+        </Grid>
+        <Grid item lg={true} md={true} sm={false} xs={false}></Grid>
+      </Grid>
+
+
+    </Toolbar>
+  );
+};
+
 export default function EnhancedTable({ vestNFTs, govToken, veToken }) {
   const classes = useStyles();
   const router = useRouter();
@@ -302,7 +340,8 @@ export default function EnhancedTable({ vestNFTs, govToken, veToken }) {
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, vestNFTs.length - page * rowsPerPage);
 
   return (
-    <div className={classes.root}>
+    <div className={classes.root}>  
+      <EnhancedTableToolbar />
       <Paper elevation={0} className={ classes.tableContainer}>
         <TableContainer>
           <Table className={classes.table} aria-labelledby='tableTitle' size={'medium'} aria-label='enhanced table'>

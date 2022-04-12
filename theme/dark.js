@@ -24,7 +24,7 @@ const theme = createTheme({
     MuiSnackbarContent: {
       root: {
         color: "#fff",
-        backgroundColor: "#2A2E3C",
+        backgroundColor: "#3c2d2a",
         padding: "0px",
         minWidth: "auto",
         "@media (min-width: 960px)": {

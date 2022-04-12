@@ -2,6 +2,7 @@ export const colors = {
   blue: "#2D7DDB",
   red: "#ed4337",
   orange: "#ffb347",
+  yellow: "ffb405",
   lightBlack: "rgba(0, 0, 0, 0.87)"
 };
 
@@ -46,8 +47,7 @@ const coreTheme = {
     h3: {
       // yearn title text YEARN
       fontFamily: [
-        "Druk Wide Bold",
-        "Inter",
+        "Monument",
         "Arial",
         "-apple-system",
         "BlinkMacSystemFont",
@@ -56,23 +56,32 @@ const coreTheme = {
         '"Helvetica Neue"',
         "sans-serif"
       ],
-      fontSize: "1.5rem",
-      fontWeight: 700,
+      fontSize: "1.3rem",
+      fontWeight: 500,
       lineHeight: 1.167,
       ["@media (max-width:576px)"]: {
         // eslint-disable-line no-useless-computed-key
-        fontSize: "1.2rem"
+        fontSize: "1.1rem"
       }
     },
     h4: {
-      // yearn title text finance
-      fontSize: "1.5rem",
-      letterSpacing: "0.3rem",
-      fontWeight: 300,
+      fontFamily: [
+        "Monument",
+        "Arial",
+        "-apple-system",
+        "BlinkMacSystemFont",
+        '"Segoe UI"',
+        "Roboto",
+        '"Helvetica Neue"',
+        "sans-serif"
+      ],
+      fontSize: "1rem",
+      letterSpacing: "0.1rem",
+      fontWeight: 500,
       lineHeight: 1.167,
       ["@media (max-width:576px)"]: {
         // eslint-disable-line no-useless-computed-key
-        fontSize: "1.2rem"
+        fontSize: "0.8rem"
       }
     },
     h5: {

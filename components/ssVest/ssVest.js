@@ -8,6 +8,7 @@ import moment from "moment";
 
 import ExistingLock from "./existingLock";
 import Unlock from "./unlock";
+import Boost from "./boost";
 import Loading from "./loading";
 import Lock from './lock';
 
@@ -53,6 +54,13 @@ export default function ssVest() {
           veToken={veToken}
         />
       )}
+      { router.query.id === 'boost' && (
+        <Boost
+          nft={nft}
+          govToken={govToken}
+          veToken={veToken}
+        />
+      )}
       { router.query.id !== 'create' && nft && BigNumber(nft.lockEnds).gte(moment().unix()) && BigNumber(nft.lockEnds).gt(0) && (
         <ExistingLock
           nft={nft}
@@ -62,6 +70,14 @@ export default function ssVest() {
       )}
       { router.query.id !== 'create' && nft && BigNumber(nft.lockEnds).lt(moment().unix()) && BigNumber(nft.lockEnds).gt(0) && (
           <Unlock
+            nft={nft}
+            govToken={govToken}
+            veToken={veToken}
+          />
+        )
+      }
+      { router.query.id !== 'boost' && nft && BigNumber(nft.lockEnds).lt(moment().unix()) && BigNumber(nft.lockEnds).gt(0) && (
+          <Boost
             nft={nft}
             govToken={govToken}
             veToken={veToken}

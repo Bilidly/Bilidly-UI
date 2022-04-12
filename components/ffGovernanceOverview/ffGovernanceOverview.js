@@ -13,15 +13,25 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 import Skeleton from "@material-ui/lab/Skeleton";
 import BigNumber from "bignumber.js";
 
+<<<<<<< HEAD
 import { formatCurrency } from "../../utils";
 import classes from "./ffGovernanceOverview.module.css";
 
 import stores from "../../stores";
 import { ACTIONS } from "../../stores/constants";
+=======
+import { formatCurrency } from '../../utils';
+import classes from './ffGovernanceOverview.module.css';
+import AccountBalanceWalletIcon from '@material-ui/icons/AccountBalanceWalletOutlined';
+
+import stores from '../../stores'
+import { ACTIONS} from '../../stores/constants';
+>>>>>>> 928ebbccd14e4a66a483d1711547608c26b60c42
 
 function BalanceIcon(props) {
   const { color, className } = props;
   return (
+<<<<<<< HEAD
     <SvgIcon viewBox="0 0 48 48" strokeWidth="3" className={className}>
       <g strokeWidth="3" transform="translate(0.5, 0.5)">
         <rect
@@ -58,6 +68,9 @@ function BalanceIcon(props) {
         ></path>
       </g>
     </SvgIcon>
+=======
+    <AccountBalanceWalletIcon color="primary" fontSize="large"/>
+>>>>>>> 928ebbccd14e4a66a483d1711547608c26b60c42
   );
 }
 
@@ -292,6 +305,7 @@ function IbBalanceIcon(props) {
 export default function ffOverview() {
   const formatBigNumber = (n) => BigNumber(n).times(asset.gauge.virtualPrice);
 
+<<<<<<< HEAD
   // const [govToken, setGovToken] = useState(null);
   const [veToken, setVeToken] = useState(null);
   const [rewards, setRewards] = useState(null);
@@ -309,6 +323,38 @@ export default function ffOverview() {
 
     calculateTotalBalance(as);
   };
+=======
+  const [ vestNFTs, setVestNFTs ] = useState([])
+  const [ govToken, setGovToken] = useState(null)
+  const [ veToken, setVeToken] = useState(null)
+  const [ vestedBalance, setVestedBalance ] = useState(null)
+  const [ rewards, setRewards] = useState(null)
+  const [ assets, setAssets] = useState(null)
+  const [ totalBalance, setTotalBalance ] = useState(0)
+
+
+  const ssUpdated = () => {
+
+    const as = stores.stableSwapStore.getStore('assets')
+    setAssets(as)
+
+    const nfts = stores.stableSwapStore.getStore('vestNFTs');
+    let govTokenBalance = stores.stableSwapStore.getStore('govToken')
+    let vestedBalance = 0;
+    let rewards = 0
+    for(let i = 0; i < nfts.length; i++) {
+      vestedBalance += Number(stores.stableSwapStore.getStore('vestNFTs')[i].lockAmount) || 0
+      rewards += Number(stores.stableSwapStore.getStore('rewards').rewards[i]) || 0
+    }
+
+    setGovToken(govTokenBalance)
+    setVestedBalance(vestedBalance)
+    setRewards(rewards)
+
+
+    calculateTotalBalance(as)
+  }
+>>>>>>> 928ebbccd14e4a66a483d1711547608c26b60c42
 
   useEffect(() => {
     const stableSwapUpdated = () => {
@@ -317,12 +363,16 @@ export default function ffOverview() {
 
     ssUpdated();
 
-    stores.emitter.on(ACTIONS.FIXED_FOREX_UPDATED, stableSwapUpdated);
+    stores.emitter.on(ACTIONS.GET_VEST_NFTS, stableSwapUpdated);
     return () => {
+<<<<<<< HEAD
       stores.emitter.removeListener(
         ACTIONS.FIXED_FOREX_UPDATED,
         stableSwapUpdated
       );
+=======
+      stores.emitter.removeListener(ACTIONS.GET_VEST_NFTS, stableSwapUpdated);
+>>>>>>> 928ebbccd14e4a66a483d1711547608c26b60c42
     };
   }, []);
 
@@ -399,6 +449,7 @@ export default function ffOverview() {
               >
                 <VestedBalanceIcon className={classes.overviewIcon} />
               </Grid>
+<<<<<<< HEAD
               <Grid
                 item
                 lg={9}
@@ -417,6 +468,13 @@ export default function ffOverview() {
                   <Typography className={classes.valueSymbol}>
                     {veToken?.symbol || ""}
                   </Typography>
+=======
+              <Grid item lg={9} md={9} sm={9} xs={9} className={ classes.itemContent }>
+                <Typography className={ classes.title }>Vested Balance:</Typography>
+                <div className={ classes.inline }>
+                  <Typography className={ classes.value }>{ formatCurrency(vestedBalance ? vestedBalance : 0) }</Typography>
+                  <Typography className={ classes.valueSymbol }>{ veToken ? veToken.symbol : '' }</Typography>
+>>>>>>> 928ebbccd14e4a66a483d1711547608c26b60c42
                 </div>
               </Grid>
             </Grid>

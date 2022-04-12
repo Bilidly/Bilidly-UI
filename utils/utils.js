@@ -1,4 +1,5 @@
 import BigNumber from "bignumber.js";
+import moment from 'moment';
 
 // todo: get navigator declared somehow? probably an issue with using nextjs
 // function getLang() {
@@ -106,4 +107,14 @@ export function multiplyArray(numbers) {
 // Joining classes
 export function joinClasses(...args) {
   return args.filter(Boolean).join(" ");
+}
+
+export function normalizeDate(inputDate) {
+  const week = 7 * 24 * 3600;
+  let normalizeTimestamp = Math.floor(moment(inputDate).unix() / week) * week + week;
+  const maxTimestamp = moment().unix() + 4 * 365 * 24 * 3600;
+  while (normalizeTimestamp > maxTimestamp) {
+    normalizeTimestamp -= week;
+  }
+  return moment.unix(normalizeTimestamp).format('YYYY-MM-DD');
 }

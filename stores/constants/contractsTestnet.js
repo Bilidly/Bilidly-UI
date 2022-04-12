@@ -26,6 +26,12 @@ export const FTM_SYMBOL = 'BNB'
 export const FTM_DECIMALS = 18
 export const FTM_LOGO = 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/binance/info/logo.png'
 
+export const BUSD_ADDRESS = '0xeD24FC36d5Ee211Ea25A80239Fb8C4Cfd80f12Ee'
+export const BUSD_NAME = 'Binance USD' // BSC
+export const BUSD_SYMBOL = 'BUSD'
+export const BUSD_DECIMALS = 18
+export const BUSD_LOGO = 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/binance/assets/BUSD-BD1/logo.png'
+
 export const FACTORY_ADDRESS = '0xe90bf4aa404f74098c8c6d4a496e5302296aa538'
 export const FACTORY_ABI = abis.factoryABI
 
