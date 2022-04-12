@@ -25,7 +25,7 @@ export default function ssVotes() {
   const [ veToken, setVeToken ] = useState(null)
   const [ token, setToken ] = useState(null)
   const [ vestNFTs, setVestNFTs ] = useState([])
-  const [search, setSearch] = useState('');
+  const [ search, setSearch ] = useState('');
 
 
   const ssUpdated = () => {
@@ -36,6 +36,8 @@ export default function ssVotes() {
       return asset.gauge && asset.gauge.address
     })
     setGauges(filteredAssets)
+    // price included
+    //console.log("ALL GAUGES " + JSON.stringify(filteredAssets))
 
 
     const nfts = stores.stableSwapStore.getStore('vestNFTs');

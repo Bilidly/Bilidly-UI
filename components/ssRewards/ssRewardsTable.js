@@ -487,8 +487,6 @@ export default function EnhancedTable({ rewards, vestNFTs, tokenID }) {
                 if (!row) {
                   return null;
                 }
-                console.log("THE BOOST2 IS " + row.gauge.boost)
-
                 return (
                   <TableRow
                     key={'ssRewardsTable'+index}

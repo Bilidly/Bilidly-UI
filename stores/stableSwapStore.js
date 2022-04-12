@@ -89,9 +89,6 @@ class Store {
             break;
 
           // SWAP
-          case ACTIONS.LP_TOKENS_PRICES:
-            this.getLPTokensPrices(payload)
-            break
           case ACTIONS.QUOTE_SWAP:
             this.quoteSwap(payload)
             break
@@ -2850,6 +2847,7 @@ class Store {
     }
   }
 
+  /*
   getLPTokensPrices = async (payload) => {
     try {
       const web3 = await stores.accountStore.getWeb3Provider()
@@ -3014,6 +3012,7 @@ class Store {
       this.emitter.emit(ACTIONS.ERROR, ex)
     }
   }
+  */
 
   quoteSwap = async (payload) => {
     try {
@@ -4162,49 +4161,45 @@ class Store {
           let possibleAddedStake;
           let needVeForMaxBoost;
           
-            const [ attachedTokenId, derivedBalance, gaugeTotal ] = await Promise.all([
-              gaugeContract.methods.tokenIds(account.address).call(),
-              gaugeContract.methods.derivedBalance(account.address).call(),
-              gaugeContract.methods.totalSupply().call()
-            ])
+          const [ attachedTokenId, derivedBalance, gaugeTotal ] = await Promise.all([
+            gaugeContract.methods.tokenIds(account.address).call(),
+            gaugeContract.methods.derivedBalance(account.address).call(),
+            gaugeContract.methods.totalSupply().call()
+          ])
 
-            const [ nftLockValue, veTotalSupply ] = await Promise.all([
-              vestingContract.methods.balanceOfNFT(attachedTokenId).call(),
-              vestingContract.methods.totalSupply().call()
-            ])
-            boost = derivedBalance / balance / 0.4
+          const [ nftLockValue, veTotalSupply ] = await Promise.all([
+            vestingContract.methods.balanceOfNFT(attachedTokenId).call(),
+            vestingContract.methods.totalSupply().call()
+          ])
+          boost = derivedBalance / balance / 0.4
 
+          const [ workingSupply ] = await Promise.all([
+            gaugeContract.methods.derivedSupply().call()
+          ])
 
-
-      const [ workingSupply ] = await Promise.all([
-        gaugeContract.methods.derivedSupply().call()
-      ])
-
-      console.log("DERIVED " + workingSupply + " VS TOTAL " + gaugeTotal + " OR " + workingSupply/gaugeTotal)
-
-            function userRemainingStake(balance, gaugeTotal, nftLockValue, veTotalSupply, boost) {
-              let maxStake = (gaugeTotal * nftLockValue) / veTotalSupply;
-            
-              if (balance > maxStake) {
-                return 0;
-              }
-            
-              if ((isNaN(boost) || boost === 0) && balance === 0) {
-                return maxStake;
-              }
-              return maxStake / (boost * 0.4) - balance
-            }
-
-            if(boost >= 2.5) {
-              const remainingStake = userRemainingStake(balance, gaugeTotal, nftLockValue, veTotalSupply, boost)
-              console.log("remaining in " + pair.gauge.address + " is " + remainingStake + " vs balance " + balance + " or " + remainingStake / balance + "%")
-              possibleAddedStake = (remainingStake / balance) + (remainingStake / gaugeTotal)
-            }
-            else {
-              needVeForMaxBoost = balance / (gaugeTotal - balance) * (veTotalSupply - nftLockValue) - nftLockValue
-            }
-            console.log("For " + pair.gauge.address + " reward is " + earned + " , boost is " + boost + " and " + needVeForMaxBoost + "locking needed for max boost and " + possibleAddedStake + " more can be staked")
+          function userRemainingStake(balance, gaugeTotal, nftLockValue, veTotalSupply, boost) {
+            let maxStake = (gaugeTotal * nftLockValue) / veTotalSupply;
           
+            if (balance > maxStake) {
+              return 0;
+            }
+          
+            if ((isNaN(boost) || boost === 0) && balance === 0) {
+              return maxStake;
+            }
+            return maxStake / (boost * 0.4) - balance
+          }
+
+          if(boost >= 2.5) {
+            const remainingStake = userRemainingStake(balance, gaugeTotal, nftLockValue, veTotalSupply, boost)
+            console.log("remaining in " + pair.gauge.address + " is " + remainingStake + " vs balance " + balance + " or " + remainingStake / balance + "%")
+            possibleAddedStake = (remainingStake / balance) + (remainingStake / gaugeTotal)
+          }
+          else {
+            needVeForMaxBoost = balance / (gaugeTotal - balance) * (veTotalSupply - nftLockValue) - nftLockValue
+          }
+          console.log("For " + pair.gauge.address + " reward is " + earned + " , boost is " + boost + " and " + needVeForMaxBoost + "locking needed for max boost and " + possibleAddedStake + " more can be staked")
+              
           pair.gauge.attachedToken = attachedTokenId
           pair.gauge.boost = boost
           pair.gauge.possibleAddedStake = possibleAddedStake * 100 // %

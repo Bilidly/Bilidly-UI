@@ -30,46 +30,6 @@ export default function Boost () {
   const [gaugeDerivedSupply, setGaugeDerivedSupply] = useState(0)
   const [gaugeTotalSupply, setgaugeTotalSupply] = useState(0)
 
-  const govTokenQuote = () => {
-    CONTRACTS.GOV_TOKEN_ADDRESS
-    CONTRACTS.GOV_TOKEN_SYMBOL
-    CONTRACTS.GOV_TOKEN_NAME
-    CONTRACTS.GOV_TOKEN_DECIMALS
-    CONTRACTS.GOV_TOKEN_LOGO
-    CONTRACTS.GOV_TOKEN_ABI
-
-
-    CONTRACTS.BUSD_ADDRESS
-    CONTRACTS.BUSD_SYMBOL
-    CONTRACTS.BUSD_NAME
-    CONTRACTS.BUSD_DECIMALS
-    CONTRACTS.BUSD_LOGO
-    CONTRACTS.BUSD_ABI
-
-    const from = {
-      "address":CONTRACTS.GOV_TOKEN_ADDRESS,
-      "name":CONTRACTS.GOV_TOKEN_NAME,
-      "symbol":CONTRACTS.GOV_TOKEN_SYMBOL,
-      "decimals":CONTRACTS.GOV_TOKEN_DECIMALS,
-      "logoURI":CONTRACTS.GOV_TOKEN_LOGO
-    };
-    const to = {
-      "address":CONTRACTS.BUSD_ADDRESS,
-      "name":CONTRACTS.BUSD_SYMBOL,
-      "symbol":CONTRACTS.BUSD_NAME,
-      "decimals":CONTRACTS.BUSD_DECIMALS,
-      "logoURI":CONTRACTS.BUSD_LOGO,
-    };
-    const amount ="1"
-
-       
-    stores.dispatcher.dispatch({ type: ACTIONS.QUOTE_SWAP, content: {
-      fromAsset: from,
-      toAsset: to,
-      fromAmount: amount,
-    }})
-  }
-
   const veTotalSupply = () => {
     stores.dispatcher.dispatch({ type: ACTIONS.TOTAL_VOTING_POWER })
   }
@@ -85,13 +45,6 @@ export default function Boost () {
        
   }
 
-  const quoteReturned = (val) => {
-    if(val) {
-    setGovTokenPrice(val.output.finalValue)
-    console.log("gov token price " + JSON.stringify(val))
-    }
-  }
-
   const veTotalSupplyReturned = (val) => {
     console.log("ve total supply " + JSON.stringify(val))
     setTotalVeSupply(val)
@@ -100,24 +53,24 @@ export default function Boost () {
   const onGaugeSelectChanged = async (event, pair) => {
     setGauge(pair);
 
-    stores.dispatcher.dispatch({ type: ACTIONS.LP_TOKENS_PRICES, content: pair})
-    stores.dispatcher.dispatch({ type: ACTIONS.GET_GAUGE_INFO, content: pair})
+    console.log("THE PAIR " + JSON.stringify(pair))
 
-    const lpValueReturned = (val) => {
-      const token0ReserveValue = val.tokens[0].finalValue * val.tokens[0].gaugeReserves
-      const token1ReserveValue = val.tokens[1].finalValue * val.tokens[1].gaugeReserves
-      setGaugeValue(token0ReserveValue + token1ReserveValue)
-    }
+    const gaugeVal = pair.token0.priceUSD * pair.gauge.reserve0 + pair.token1.priceUSD * pair.gauge.reserve1
+    setGaugeValue(gaugeVal)
+    
+    const govTokenInfo = await stores.stableSwapStore.getBaseAsset(CONTRACTS.GOV_TOKEN_ADDRESS)
+
+    setGovTokenPrice(govTokenInfo.priceUSD)
+
+    stores.dispatcher.dispatch({ type: ACTIONS.GET_GAUGE_INFO, content: pair})
 
     const gaugeInfoReturned = (val) => {
       setGaugeDerivedSupply(val.derivedSupply)
       setgaugeTotalSupply(val.gaugeTotal)
     }
 
-    stores.emitter.on(ACTIONS.LP_TOKENS_PRICES_RETURNED, lpValueReturned)
     stores.emitter.on(ACTIONS.GET_GAUGE_INFO_RETURNED, gaugeInfoReturned)
     return () => {
-      stores.emitter.removeListener(ACTIONS.LP_TOKENS_PRICES_RETURNED, lpValueReturned);
       stores.emitter.removeListener(ACTIONS.GET_GAUGE_INFO_RETURNED, gaugeInfoReturned);
     }
   };
@@ -198,15 +151,12 @@ export default function Boost () {
       setBoostLoading(false)
     }
 
-    govTokenQuote()
     ssUpdated()
     veTotalSupply()
 
     stores.emitter.on(ACTIONS.TOTAL_VOTING_POWER_RETURNED, veTotalSupplyReturned);
-    stores.emitter.on(ACTIONS.QUOTE_SWAP, quoteReturned)
     return () => {
       stores.emitter.removeListener(ACTIONS.TOTAL_VOTING_POWER_RETURNED, veTotalSupplyReturned);
-      stores.emitter.removeListener(ACTIONS.QUOTE_SWAP_RETURNED, quoteReturned);
     };
   }, []);
 
