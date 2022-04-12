@@ -3,7 +3,7 @@
   border-radius: 30px !important;
   display: flex;
   flex-direction: column;
-  border-bottom: 3px solid #0048FF;
+  border-bottom: 3px solid #ffb405;
 }
 
 .chainContainerPositive {
@@ -19,6 +19,7 @@
   display: flex;
   justify-content: center;
   margin-top: 24px !important;
+  color: #ffb405;
 }
 
 .descriptionPreText {
@@ -64,6 +65,7 @@
 .buttonLabel {
   text-transform: none !important;
   font-weight: 500 !important;
+  color: #ffb405;
 }
 
 .buttonText {
@@ -74,7 +76,7 @@
 }
 
 .avatar {
-  background-color: #0053FF;
+  background-color: #ffb405;
   border-radius: 90px;
   font-size: 63px !important;
   padding: 10px;

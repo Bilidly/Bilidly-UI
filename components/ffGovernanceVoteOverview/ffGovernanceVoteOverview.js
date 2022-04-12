@@ -3,6 +3,7 @@ import { Paper, Grid, Typography, SvgIcon } from '@material-ui/core';
 
 import { formatCurrency } from '../../utils';
 import classes from './ffGovernanceVoteOverview.module.css';
+import PieChartIcon from '@material-ui/icons/PieChartOutlined';
 
 import stores from '../../stores'
 import { ACTIONS } from '../../stores/constants';
@@ -25,20 +26,52 @@ function TotalVotesIcon(props) {
   );
 }
 
+function ShareOfVotesIcon(props) {
+  const { color, className } = props;
+  return (
+    <PieChartIcon color="primary" fontSize="large"/>
+  );
+}
+
 export default function ffVoteOverview() {
 
   const [ veToken, setVeToken] = useState(null)
+  const [ votingPower, setVotingPower ] = useState(null)
+  const [ totalVotingPower, setTotalVotingPower ] = useState(null)
+
+
+  const veTotalSupply = () => {
+    stores.dispatcher.dispatch({ type: ACTIONS.TOTAL_VOTING_POWER })
+  }
+
+  const ssUpdated = () => {
+    const nfts = stores.stableSwapStore.getStore('vestNFTs');
+    let votingPower = 0;
+    for(let i = 0; i < nfts.length; i++) {
+      votingPower += Number(stores.stableSwapStore.getStore('vestNFTs')[i].lockValue) || 0
+    }
+    setVotingPower(votingPower)
+  }
 
   useEffect(() => {
     const stableSwapUpdated = () => {
+      ssUpdated()
       setVeToken(stores.stableSwapStore.getStore('veToken'))
     }
+    const veTotalSupplyReturned = (val) => {
+      console.log("total voting power " + val) 
+      setTotalVotingPower(val)
+    }
+    ssUpdated()
+    veTotalSupply()
 
     setVeToken(stores.stableSwapStore.getStore('veToken'))
 
     stores.emitter.on(ACTIONS.UPDATED, stableSwapUpdated);
+    stores.emitter.on(ACTIONS.TOTAL_VOTING_POWER_RETURNED, veTotalSupplyReturned);
     return () => {
       stores.emitter.removeListener(ACTIONS.UPDATED, stableSwapUpdated);
+      stores.emitter.removeListener(ACTIONS.TOTAL_VOTING_POWER_RETURNED, veTotalSupplyReturned);
     };
   }, []);
 
@@ -55,8 +88,7 @@ export default function ffVoteOverview() {
             <Grid item lg={9} md={9} sm={9} xs={9} className={ classes.itemContent }>
               <Typography className={ classes.title }>Your Voting Power:</Typography>
               <div className={ classes.inline }>
-                <Typography className={ classes.value }>{ formatCurrency((veToken && veToken.vestingInfo) ? veToken.vestingInfo.votePower : 0) }</Typography>
-                <Typography className={ classes.valueSymbol }>{ veToken ? veToken.symbol : '' }</Typography>
+                <Typography className={ classes.value }>{ formatCurrency(votingPower ? votingPower : 0) }</Typography>
               </div>
             </Grid>
           </Grid>
@@ -72,8 +104,24 @@ export default function ffVoteOverview() {
             <Grid item lg={9} md={9} sm={9} xs={9} className={ classes.itemContent }>
               <Typography className={ classes.title }>Total Voting Power:</Typography>
               <div className={ classes.inline }>
-                <Typography className={ classes.value }>{ formatCurrency((veToken && veToken.vestingInfo) ? veToken.vestingInfo.totalSupply : 0) }</Typography>
-                <Typography className={ classes.valueSymbol }>{ veToken ? veToken.symbol : '' }</Typography>
+                <Typography className={ classes.value }>{ formatCurrency(totalVotingPower ? totalVotingPower : 0) }</Typography>
+              </div>
+            </Grid>
+          </Grid>
+          </Paper>
+        </Grid>
+
+        <Grid item lg={12} md={12} sm={12} xs={12}>
+          <Paper elevation={0} className={ classes.itemWrapGrid }>
+          <Grid container spacing={0}>
+            <Grid item lg={3} md={3} sm={3} xs={3} className={classes.iconWrap}>
+                <ShareOfVotesIcon className={ classes.overviewIcon } />
+            </Grid>
+            <Grid item lg={9} md={9} sm={9} xs={9} className={ classes.itemContent }>
+              <Typography className={ classes.title }>Share of Voting Power:</Typography>
+              <div className={ classes.inline }>
+                <Typography className={ classes.value }>{ formatCurrency(votingPower && totalVotingPower ? votingPower/totalVotingPower * 100 : 0) }</Typography>
+                <Typography className={ classes.valueSymbol }>%</Typography>
               </div>
             </Grid>
           </Grid>

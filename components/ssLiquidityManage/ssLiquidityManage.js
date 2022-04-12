@@ -785,7 +785,9 @@ export default function ssLiquidityManage() {
               fullWidth
               value={ value }
               disabled={ true }
+              onWheel={event => event.target.blur()}
               InputProps={{
+                type: "number",
                 className: classes.mediumInput,
               }}
             />
@@ -844,8 +846,10 @@ export default function ssLiquidityManage() {
               onChange={ amountChanged }
               disabled={ createLoading }
               onFocus={ onFocus ? onFocus : null }
+              onWheel={event => event.target.blur()}
               InputProps={{
-                className: classes.largeInput
+                type: "number",
+                className: classes.largeInput,
               }}
             />
             <Typography color='textSecondary' className={ classes.smallerText }>{ assetValue?.symbol }</Typography>

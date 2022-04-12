@@ -50,7 +50,7 @@ function Setup() {
   const [ toAssetError, setToAssetError ] = useState(false)
   const [ toAssetOptions, setToAssetOptions ] = useState([])
 
-  const [ slippage, setSlippage ] = useState('2')
+  const [ slippage, setSlippage ] = useState('0.1')
   const [ slippageError, setSlippageError ] = useState(false)
 
   const [ quoteError, setQuoteError ] = useState(null)
@@ -411,14 +411,11 @@ function Setup() {
               value={ amountValue }
               onChange={ amountChanged }
               disabled={ loading || type === 'To' }
+              onWheel={event => event.target.blur()}
               InputProps={{
                 type: "number",
-                maxLength: 9,
-                className: classes.largeInput
+                className: classes.largeInput,
               }}
-              onInput = {(e) =>{
-                e.target.value = Math.max(0, parseInt(e.target.value) ).toString().slice(0,18)
-              }}  
             />
 
             <Typography color='textSecondary' className={ classes.smallerText }>{ assetValue?.symbol }</Typography>

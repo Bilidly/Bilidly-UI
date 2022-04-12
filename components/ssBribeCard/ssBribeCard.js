@@ -14,7 +14,7 @@ import { ACTIONS } from '../../stores/constants';
 const theme = createTheme({
   palette: {
     type: 'dark',
-    secondary: {
+    primary: {
       main: '#fff'
     }
   },
@@ -40,7 +40,8 @@ const theme = createTheme({
     MuiButton: {
       root: {
         borderRadius: '32px',
-        padding: '9px 16px'
+        padding: '9px 16px',
+        color: '#ffb405',
       },
       containedPrimary: {
         backgroundColor: '#fff',
@@ -49,7 +50,7 @@ const theme = createTheme({
     },
     MuiFormControlLabel: {
       root: {
-        color: '#fff'
+        color: '#ffb405'
       }
     }
   },

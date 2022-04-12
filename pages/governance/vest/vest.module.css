@@ -121,6 +121,7 @@
 
   .ffContainer {
     padding-top: 0px;
+    margin-top: 16px;
   }
 
   .gridWrapper {
@@ -158,6 +159,7 @@
   }
 
   .ffContainer {
+    margin-top: 0px;
     padding-top: 30px;
   }
 }

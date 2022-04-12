@@ -12,6 +12,7 @@ import { formatCurrency } from '../utils'
 import stores from "./"
 
 import BigNumber from "bignumber.js"
+import { ContactsOutlined } from "@material-ui/icons"
 const fetch = require("node-fetch")
 
 class Store {
@@ -83,8 +84,14 @@ class Store {
           case ACTIONS.CREATE_GAUGE:
             this.createGauge(payload)
             break;
+          case ACTIONS.GET_GAUGE_INFO:
+            this.getGaugeInfo(payload)
+            break;
 
           // SWAP
+          case ACTIONS.LP_TOKENS_PRICES:
+            this.getLPTokensPrices(payload)
+            break
           case ACTIONS.QUOTE_SWAP:
             this.quoteSwap(payload)
             break
@@ -110,6 +117,9 @@ class Store {
             break
 
           //VOTE
+          case ACTIONS.TOTAL_VOTING_POWER:
+            this.getTotalVotingPower(payload)
+            break
           case ACTIONS.VOTE:
             this.vote(payload)
             break
@@ -870,8 +880,8 @@ class Store {
         console.warn('account not found')
         return null
       }
-
       const web3 = await stores.accountStore.getWeb3Provider()
+      console.log("account " +JSON.stringify(account)+ "web3 " + web3)
       if (!web3) {
         console.warn('web3 not found')
         return null
@@ -880,6 +890,7 @@ class Store {
       this._getGovTokenInfo(web3, account)
       await this._getBaseAssetInfo(web3, account)
       await this._getPairInfo(web3, account)
+      
     } catch(ex) {
       console.log(ex)
       this.emitter.emit(ACTIONS.ERROR, ex)
@@ -1344,8 +1355,12 @@ class Store {
         }
       ]})
 
+
+      const gasPrice = await stores.accountStore.getGasPrice()
+
+
       let allowance0 = 0
-      let allowance1 = 0
+      const allowanceCallsPromise0 = []
 
       // CHECK ALLOWANCES AND SET TX DISPLAY
       if(token0.address !== 'BNB') {
@@ -1371,6 +1386,30 @@ class Store {
         })
       }
 
+      // SUBMIT REQUIRED ALLOWANCE TRANSACTIONS 
+      if(BigNumber(allowance0).lt(amount0)) {
+        const tokenContract = new web3.eth.Contract(CONTRACTS.ERC20_ABI, token0.address)
+
+        const tokenPromise = new Promise((resolve, reject) => {
+          context._callContractWait(web3, tokenContract, 'approve', [CONTRACTS.ROUTER_ADDRESS, MAX_UINT256], account, gasPrice, null, null, allowance0TXID, (err) => {
+            if (err) {
+              reject(err)
+              return
+            }
+
+            resolve()
+          })
+        })
+
+        allowanceCallsPromise0.push(tokenPromise)
+      }
+
+      const done0 = await Promise.all(allowanceCallsPromise0)
+
+
+      let allowance1 = 0
+      const allowanceCallsPromise1 = []
+      // CHECK ALLOWANCES AND SET TX DISPLAY
       if(token1.address !== 'BNB') {
         allowance1 = await this._getDepositAllowance(web3, token1, account)
         if(BigNumber(allowance1).lt(amount1)) {
@@ -1394,29 +1433,6 @@ class Store {
         })
       }
 
-      const gasPrice = await stores.accountStore.getGasPrice()
-
-      const allowanceCallsPromises = []
-
-      // SUBMIT REQUIRED ALLOWANCE TRANSACTIONS
-      if(BigNumber(allowance0).lt(amount0)) {
-        const tokenContract = new web3.eth.Contract(CONTRACTS.ERC20_ABI, token0.address)
-
-        const tokenPromise = new Promise((resolve, reject) => {
-          context._callContractWait(web3, tokenContract, 'approve', [CONTRACTS.ROUTER_ADDRESS, MAX_UINT256], account, gasPrice, null, null, allowance0TXID, (err) => {
-            if (err) {
-              reject(err)
-              return
-            }
-
-            resolve()
-          })
-        })
-
-        allowanceCallsPromises.push(tokenPromise)
-      }
-
-
       if(BigNumber(allowance1).lt(amount1)) {
         const tokenContract = new web3.eth.Contract(CONTRACTS.ERC20_ABI, token1.address)
 
@@ -1431,10 +1447,10 @@ class Store {
           })
         })
 
-        allowanceCallsPromises.push(tokenPromise)
+        allowanceCallsPromise1.push(tokenPromise)
       }
 
-      const done = await Promise.all(allowanceCallsPromises)
+      const done1 = await Promise.all(allowanceCallsPromise1)
 
 
       // SUBMIT DEPOSIT TRANSACTION
@@ -1619,7 +1635,6 @@ class Store {
       ]})
 
       let allowance0 = 0
-      let allowance1 = 0
 
       // CHECK ALLOWANCES AND SET TX DISPLAY
       if(token0.address !== 'BNB') {
@@ -1645,6 +1660,36 @@ class Store {
         })
       }
 
+     
+      const gasPrice = await stores.accountStore.getGasPrice()
+
+      const allowanceCallsPromises0 = []
+
+      // SUBMIT REQUIRED ALLOWANCE TRANSACTIONS
+      if(BigNumber(allowance0).lt(amount0)) {
+        const tokenContract = new web3.eth.Contract(CONTRACTS.ERC20_ABI, token0.address)
+
+        const tokenPromise = new Promise((resolve, reject) => {
+          context._callContractWait(web3, tokenContract, 'approve', [CONTRACTS.ROUTER_ADDRESS, MAX_UINT256], account, gasPrice, null, null, allowance0TXID, (err) => {
+            if (err) {
+              reject(err)
+              return
+            }
+
+            resolve()
+          })
+        })
+
+        allowanceCallsPromises0.push(tokenPromise)
+      }
+
+      const done0 = await Promise.all(allowanceCallsPromises0)
+      
+
+      const allowanceCallsPromises1 = []
+      let allowance1 = 0
+
+      // CHECK ALLOWANCES AND SET TX DISPLAY
       if(token1.address !== 'BNB') {
         allowance1 = await this._getDepositAllowance(web3, token1, account)
         if(BigNumber(allowance1).lt(amount1)) {
@@ -1668,30 +1713,7 @@ class Store {
         })
       }
 
-      const gasPrice = await stores.accountStore.getGasPrice()
-
-      const allowanceCallsPromises = []
-
-
       // SUBMIT REQUIRED ALLOWANCE TRANSACTIONS
-      if(BigNumber(allowance0).lt(amount0)) {
-        const tokenContract = new web3.eth.Contract(CONTRACTS.ERC20_ABI, token0.address)
-
-        const tokenPromise = new Promise((resolve, reject) => {
-          context._callContractWait(web3, tokenContract, 'approve', [CONTRACTS.ROUTER_ADDRESS, MAX_UINT256], account, gasPrice, null, null, allowance0TXID, (err) => {
-            if (err) {
-              reject(err)
-              return
-            }
-
-            resolve()
-          })
-        })
-
-        allowanceCallsPromises.push(tokenPromise)
-      }
-
-
       if(BigNumber(allowance1).lt(amount1)) {
         const tokenContract = new web3.eth.Contract(CONTRACTS.ERC20_ABI, token1.address)
 
@@ -1706,10 +1728,10 @@ class Store {
           })
         })
 
-        allowanceCallsPromises.push(tokenPromise)
+        allowanceCallsPromises1.push(tokenPromise)
       }
 
-      const done = await Promise.all(allowanceCallsPromises)
+      const done1 = await Promise.all(allowanceCallsPromises1)
 
 
       // SUBMIT DEPOSIT TRANSACTION
@@ -2828,6 +2850,171 @@ class Store {
     }
   }
 
+  getLPTokensPrices = async (payload) => {
+    try {
+      const web3 = await stores.accountStore.getWeb3Provider()
+      if (!web3) {
+        console.warn('web3 not found')
+        return null
+      }
+      // some path logic. Have a base asset (FTM) swap from start asset to FTM, swap from FTM back to out asset. Don't know.
+      const routeAssets = this.getStore('routeAssets')
+      const froms = [payload.content.token0, payload.content.token1]
+      const lpReserves = [payload.content.reserve0, payload.content.reserve1]
+      const gaugeReserves = [payload.content.gauge.reserve0, payload.content.gauge.reserve1]
+      const returnValue = { tokens: [], lpPrice: 0 };
+      let i = 0;
+
+      for(const token of froms) {
+
+        if(token.address == CONTRACTS.BUSD_ADDRESS) {
+          const busd = { finalValue : 1, lpReserves: lpReserves[i], gaugeReserves: gaugeReserves[i] }
+          returnValue.tokens.push(busd)
+          i++
+        }
+        else {
+          const fromAsset = token
+          const toAsset = {
+            "address":CONTRACTS.BUSD_ADDRESS,
+            "name":CONTRACTS.BUSD_SYMBOL,
+            "symbol":CONTRACTS.BUSD_NAME,
+            "decimals":CONTRACTS.BUSD_DECIMALS,
+            "logoURI":CONTRACTS.BUSD_LOGO,
+          }
+          const fromAmount = 0.001
+
+          const routerContract = new web3.eth.Contract(CONTRACTS.ROUTER_ABI, CONTRACTS.ROUTER_ADDRESS)
+          const sendFromAmount = BigNumber(fromAmount).times(10**fromAsset.decimals).toFixed()
+          if (!fromAsset || !toAsset || !fromAmount || !fromAsset.address || !toAsset.address || fromAmount === '') {
+            return null
+          }
+
+          let addy0 = fromAsset.address
+          let addy1 = toAsset.address
+
+          if(fromAsset.address === 'BNB') {
+            addy0 = CONTRACTS.WFTM_ADDRESS
+          }
+          if(toAsset.address === 'BNB') {
+            addy1 = CONTRACTS.WFTM_ADDRESS
+          }
+          const includesRouteAddress = routeAssets.filter((asset) => {
+            return (asset.address.toLowerCase() == addy0.toLowerCase() || asset.address.toLowerCase() == addy1.toLowerCase())
+          })
+          let amountOuts = []
+          if(includesRouteAddress.length === 0) {
+            amountOuts = routeAssets.map((routeAsset) => {
+              return [
+                {
+                  routes: [{
+                    from: addy0,
+                    to: routeAsset.address,
+                    stable: true
+                  },{
+                    from: routeAsset.address,
+                    to: addy1,
+                    stable: true
+                  }],
+                  routeAsset: routeAsset
+                },
+                {
+                  routes: [{
+                    from: addy0,
+                    to: routeAsset.address,
+                    stable: false
+                  },{
+                    from: routeAsset.address,
+                    to: addy1,
+                    stable: false
+                  }],
+                  routeAsset: routeAsset
+                },
+                {
+                  routes: [{
+                    from: addy0,
+                    to: routeAsset.address,
+                    stable: true
+                  },{
+                    from: routeAsset.address,
+                    to: addy1,
+                    stable: false
+                  }],
+                  routeAsset: routeAsset
+                },
+                {
+                  routes: [{
+                    from: addy0,
+                    to: routeAsset.address,
+                    stable: false
+                  },{
+                    from: routeAsset.address,
+                    to: addy1,
+                    stable: true
+                  }],
+                  routeAsset: routeAsset
+                }
+              ]
+            }).flat()
+          }
+
+          amountOuts.push({
+            routes: [{
+              from: addy0,
+              to: addy1,
+              stable: true
+            }],
+            routeAsset: null
+          })
+
+          amountOuts.push({
+            routes: [{
+              from: addy0,
+              to: addy1,
+              stable: false
+            }],
+            routeAsset: null
+          })
+
+          const multicall = await stores.accountStore.getMulticall()
+          const receiveAmounts = await multicall.aggregate(amountOuts.map((route) => {
+            return routerContract.methods.getAmountsOut(sendFromAmount, route.routes)
+          }))
+
+          for(let j = 0; j < receiveAmounts.length; j++) {
+            amountOuts[j].receiveAmounts = receiveAmounts[j]
+            amountOuts[j].finalValue = BigNumber(receiveAmounts[j][receiveAmounts[j].length-1]).div(10**toAsset.decimals).toFixed(toAsset.decimals)
+          }
+
+          const bestAmountOut = amountOuts.filter((ret) => {
+            return ret != null
+          }).reduce((best, current) => {
+            if(!best) {
+              return current
+            }
+            return (BigNumber(best.finalValue).gt(current.finalValue) ? best : current)
+          }, 0)
+
+          if(!bestAmountOut) {
+            this.emitter.emit(ACTIONS.ERROR, 'No valid route found to estimate value')
+            return null
+          }
+          const price = bestAmountOut.finalValue * 1000
+          returnValue.tokens.push({ finalValue: price, lpReserves: lpReserves[i], gaugeReserves: gaugeReserves[i] })
+          i++
+        }
+      }
+      const lpTokenPrice = returnValue.tokens[0].finalValue * returnValue.tokens[0].reserves + returnValue.tokens[1].finalValue * returnValue.tokens[1].reserves
+      returnValue.lpPrice = lpTokenPrice;
+      this.emitter.emit(ACTIONS.LP_TOKENS_PRICES_RETURNED, returnValue)
+    
+
+    } catch(ex) {
+      console.error(ex)
+      this.emitter.emit(ACTIONS.LP_TOKENS_PRICES_RETURNED, null)
+      this.emitter.emit(ACTIONS.ERROR, ex)
+    }
+  }
+
   quoteSwap = async (payload) => {
     try {
       const web3 = await stores.accountStore.getWeb3Provider()
@@ -2844,6 +3031,7 @@ class Store {
       const sendFromAmount = BigNumber(fromAmount).times(10**fromAsset.decimals).toFixed()
 
       if (!fromAsset || !toAsset || !fromAmount || !fromAsset.address || !toAsset.address || fromAmount === '') {
+
         return null
       }
       let addy0 = fromAsset.address
@@ -2858,7 +3046,6 @@ class Store {
       const includesRouteAddress = routeAssets.filter((asset) => {
         return (asset.address.toLowerCase() == addy0.toLowerCase() || asset.address.toLowerCase() == addy1.toLowerCase())
       })
-
       let amountOuts = []
       if(includesRouteAddress.length === 0) {
         amountOuts = routeAssets.map((routeAsset) => {
@@ -2943,7 +3130,6 @@ class Store {
         amountOuts[i].receiveAmounts = receiveAmounts[i]
         amountOuts[i].finalValue = BigNumber(receiveAmounts[i][receiveAmounts[i].length-1]).div(10**toAsset.decimals).toFixed(toAsset.decimals)
       }
-
       const bestAmountOut = amountOuts.filter((ret) => {
         return ret != null
       }).reduce((best, current) => {
@@ -2958,7 +3144,6 @@ class Store {
         return null
       }
       let totalRatio = 1
-
       for(let i = 0; i < bestAmountOut.routes.length; i++) {
         let amountIn = bestAmountOut.receiveAmounts[i]
         let amountOut = bestAmountOut.receiveAmounts[i+1]
@@ -2968,7 +3153,6 @@ class Store {
       }
 
       const priceImpact = BigNumber(1).minus(totalRatio).times(100).toFixed(18)
-      console.log("price impaxt " + priceImpact)
 
       const returnValue = {
         inputs: {
@@ -2979,7 +3163,6 @@ class Store {
         output: bestAmountOut,
         priceImpact: priceImpact
       }
-
       this.emitter.emit(ACTIONS.QUOTE_SWAP_RETURNED, returnValue)
 
     } catch(ex) {
@@ -3640,6 +3823,32 @@ class Store {
     }
   }
 
+  getTotalVotingPower = async (payload) => {
+    try {
+      const account = stores.accountStore.getStore("account")
+      if (!account) {
+        console.warn('account not found')
+        return null
+      }
+
+      const web3 = await stores.accountStore.getWeb3Provider()
+      if (!web3) {
+        console.warn('web3 not found')
+        return null
+      }
+
+      const veToken = this.getStore('veToken')
+
+      const vestingContract = new web3.eth.Contract(CONTRACTS.VE_TOKEN_ABI, CONTRACTS.VE_TOKEN_ADDRESS)
+      const totalSupply = BigNumber(await vestingContract.methods.totalSupply().call()).div(10**veToken.decimals).toFixed(veToken.decimals)
+
+      this.emitter.emit(ACTIONS.TOTAL_VOTING_POWER_RETURNED, totalSupply)
+    } catch(ex) {
+      console.error(ex)
+      this.emitter.emit(ACTIONS.ERROR, ex)
+    }
+  }
+
   createBribe = async (payload) => {
     try {
       const account = stores.accountStore.getStore("account")
@@ -3804,7 +4013,7 @@ class Store {
     }
   }
 
-  getRewardBalances = async (payload) => {
+  getGaugeInfo = async (payload) => {
     try {
       const account = stores.accountStore.getStore("account")
       if (!account) {
@@ -3817,6 +4026,39 @@ class Store {
         console.warn('web3 not found')
         return null
       }
+    const gaugeContract = new web3.eth.Contract(CONTRACTS.GAUGE_ABI, payload.content.gauge.address)
+    const [ derivedSupply, gaugeTotal ] = await Promise.all([
+      gaugeContract.methods.derivedSupply().call(),
+      gaugeContract.methods.totalSupply().call()
+    ])
+
+    let gauge = {}
+    gauge.derivedSupply = derivedSupply
+    gauge.gaugeTotal = gaugeTotal
+    console.log("DERIVED " + gauge.derivedSupply + " VS TOTAL " + gauge.gaugeTotal + " RATIO " + derivedSupply/gaugeTotal)
+
+    this.emitter.emit(ACTIONS.GET_GAUGE_INFO_RETURNED, gauge)
+    } catch(ex) {
+      console.error(ex)
+      this.emitter.emit(ACTIONS.ERROR, ex)
+    }
+  }
+
+  getRewardBalances = async (payload) => {
+
+    try {
+      const account = stores.accountStore.getStore("account")
+      if (!account) {
+        console.warn('account not found')
+        return null
+      }
+
+      const web3 = await stores.accountStore.getWeb3Provider()
+      if (!web3) {
+        console.warn('web3 not found')
+        return null
+      }
+
 
       const { tokenID } = payload.content
 
@@ -3909,12 +4151,66 @@ class Store {
         filteredPairs2.map(async (pair) => {
 
           const gaugeContract = new web3.eth.Contract(CONTRACTS.GAUGE_ABI, pair.gauge.address)
+          const vestingContract = new web3.eth.Contract(CONTRACTS.VE_TOKEN_ABI, CONTRACTS.VE_TOKEN_ADDRESS)
 
-          const [ earned ] = await Promise.all([
+          const [ earned, balance ] = await Promise.all([
             gaugeContract.methods.earned(CONTRACTS.GOV_TOKEN_ADDRESS, account.address).call(),
+            gaugeContract.methods.balanceOf(account.address).call()
           ])
 
+          let boost
+          let possibleAddedStake;
+          let needVeForMaxBoost;
+          
+            const [ attachedTokenId, derivedBalance, gaugeTotal ] = await Promise.all([
+              gaugeContract.methods.tokenIds(account.address).call(),
+              gaugeContract.methods.derivedBalance(account.address).call(),
+              gaugeContract.methods.totalSupply().call()
+            ])
+
+            const [ nftLockValue, veTotalSupply ] = await Promise.all([
+              vestingContract.methods.balanceOfNFT(attachedTokenId).call(),
+              vestingContract.methods.totalSupply().call()
+            ])
+            boost = derivedBalance / balance / 0.4
+
+
+
+      const [ workingSupply ] = await Promise.all([
+        gaugeContract.methods.derivedSupply().call()
+      ])
+
+      console.log("DERIVED " + workingSupply + " VS TOTAL " + gaugeTotal + " OR " + workingSupply/gaugeTotal)
+
+            function userRemainingStake(balance, gaugeTotal, nftLockValue, veTotalSupply, boost) {
+              let maxStake = (gaugeTotal * nftLockValue) / veTotalSupply;
+            
+              if (balance > maxStake) {
+                return 0;
+              }
+            
+              if ((isNaN(boost) || boost === 0) && balance === 0) {
+                return maxStake;
+              }
+              return maxStake / (boost * 0.4) - balance
+            }
+
+            if(boost >= 2.5) {
+              const remainingStake = userRemainingStake(balance, gaugeTotal, nftLockValue, veTotalSupply, boost)
+              console.log("remaining in " + pair.gauge.address + " is " + remainingStake + " vs balance " + balance + " or " + remainingStake / balance + "%")
+              possibleAddedStake = (remainingStake / balance) + (remainingStake / gaugeTotal)
+            }
+            else {
+              needVeForMaxBoost = balance / (gaugeTotal - balance) * (veTotalSupply - nftLockValue) - nftLockValue
+            }
+            console.log("For " + pair.gauge.address + " reward is " + earned + " , boost is " + boost + " and " + needVeForMaxBoost + "locking needed for max boost and " + possibleAddedStake + " more can be staked")
+          
+          pair.gauge.attachedToken = attachedTokenId
+          pair.gauge.boost = boost
+          pair.gauge.possibleAddedStake = possibleAddedStake * 100 // %
+          pair.gauge.neededForMaxBoost = BigNumber(needVeForMaxBoost).div(10**18).toFixed(18)
           pair.gauge.rewardsEarned = BigNumber(earned).div(10**18).toFixed(18)
+          
           return pair
         })
       )
@@ -3937,7 +4233,7 @@ class Store {
         bribes: filteredBribes,
         fees: filteredFees,
         rewards: filteredRewards,
-        veDist: veDistReward
+        veDist: veDistReward,
       }
 
       this.setStore({
@@ -4037,7 +4333,7 @@ class Store {
       let rewardPairs = pairs.filter((pair) => {
         return pair.rewardType === 'Reward'
       })
-
+      
       let distribution = pairs.filter((pair) => {
         return pair.rewardType === 'Distribution'
       })

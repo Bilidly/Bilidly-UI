@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import Skeleton from '@material-ui/lab/Skeleton';
+import InfoIcon from '@material-ui/icons/InfoOutlined';
 import {
   Paper,
   Button,
@@ -14,6 +15,7 @@ import {
   TableSortLabel,
   TablePagination,
   Typography,
+  Popover,
   Tooltip,
   Toolbar,
   IconButton,
@@ -44,6 +46,22 @@ function descendingComparator(a, b, orderBy) {
 
   switch (orderBy) {
     case 'reward':
+
+      if (b.rewardType < a.rewardType) {
+        return -1;
+      }
+      if (b.rewardType > a.rewardType) {
+        return 1;
+      }
+      if (b.symbol < a.symbol) {
+        return -1;
+      }
+      if (b.symbol > a.symbol) {
+        return 1;
+      }
+      return 0;
+
+    case 'boost':
 
       if (b.rewardType < a.rewardType) {
         return -1;
@@ -128,13 +146,19 @@ const headCells = [
     id: 'balance',
     numeric: true,
     disablePadding: false,
-    label: 'Your Position',
+    label: 'Position',
+  },
+  {
+    id: 'boost',
+    numeric: true,
+    disablePadding: false,
+    label: 'Boost',
   },
   {
     id: 'earned',
     numeric: true,
     disablePadding: false,
-    label: 'You Earned',
+    label: 'Earned',
   },
   {
     id: 'bruh',
@@ -276,7 +300,7 @@ const useStyles = makeStyles((theme) => ({
     padding: '24px',
     width: '100%',
     flexWrap: 'wrap',
-    borderBottom: '1px rgba(104, 108, 122, 0.25)',
+    borderBottom: '1px rgba(173, 165, 151, 0.25)',
     background: '#dc3545',
   },
   infoField: {
@@ -301,14 +325,14 @@ const useStyles = makeStyles((theme) => ({
     color: 'green',
   },
   imgLogo: {
-    border: '3px solid rgb(25, 33, 56)',
+    border: '3px solid rgb(41, 26, 19)',
     borderRadius: '30px',
   },
   img1Logo: {
     position: 'absolute',
     left: '0px',
     top: '0px',
-    border: '3px solid rgb(25, 33, 56)',
+    border: '3px solid rgb(41, 26, 19)',
     borderRadius: '30px',
   },
   img2Logo: {
@@ -316,11 +340,11 @@ const useStyles = makeStyles((theme) => ({
     left: '23px',
     zIndex: '1',
     top: '0px',
-    border: '3px solid rgb(25, 33, 56)',
+    border: '3px solid rgb(41, 26, 19)',
     borderRadius: '30px',
   },
   overrideTableHead: {
-    borderBottom: '1px solid rgba(126,153,176,0.15) !important',
+    borderBottom: '1px solid rgba(173, 165, 151,0.15) !important',
   },
   doubleImages: {
     display: 'flex',
@@ -346,15 +370,15 @@ const useStyles = makeStyles((theme) => ({
     padding: '0px',
   },
   tableContainer: {
-    border: '1px solid rgba(126,153,176,0.2)',
+    border: '1px solid rgba(173, 165, 151,0.2)',
     width: '100%',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'flex-end'
   },
   filterButton: {
-    background: '#111729',
-    border: '1px solid rgba(126,153,176,0.3)',
+    background: '#291a13',
+    border: '1px solid rgba(173, 165, 151,0.3)',
     color: '#06D3D7',
     marginRight: '30px',
   },
@@ -363,13 +387,13 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: '700',
   },
   filterContainer: {
-    background: '#212b48',
+    background: '#291a13',
     minWidth: '300px',
     marginTop: '15px',
     borderRadius: '10px',
     padding: '20px',
     boxShadow: '0 10px 20px 0 rgba(0,0,0,0.2)',
-    border: '1px solid rgba(126,153,176,0.2)',
+    border: '1px solid rgba(173, 165, 151,0.2)',
   },
   alignContentRight: {
     textAlign: 'right',
@@ -384,12 +408,13 @@ const useStyles = makeStyles((theme) => ({
   filterListTitle: {
     marginBottom: '10px',
     paddingBottom: '20px',
-    borderBottom: '1px solid rgba(126,153,176,0.2)',
+    borderBottom: '1px solid rgba(173, 165, 151,0.2)',
   },
   infoIcon: {
-    color: '#06D3D7',
-    fontSize: '16px',
-    marginLeft: '10px',
+    zIndex: '0',
+    color: '#fff',
+    fontSize: '20px',
+    marginLeft: '6px',
   },
   symbol: {
     minWidth: '40px'
@@ -404,6 +429,7 @@ export default function EnhancedTable({ rewards, vestNFTs, tokenID }) {
   const [orderBy, setOrderBy] = React.useState('balance');
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [page, setPage] = useState(0);
+
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -461,6 +487,7 @@ export default function EnhancedTable({ rewards, vestNFTs, tokenID }) {
                 if (!row) {
                   return null;
                 }
+                console.log("THE BOOST2 IS " + row.gauge.boost)
 
                 return (
                   <TableRow
@@ -468,7 +495,7 @@ export default function EnhancedTable({ rewards, vestNFTs, tokenID }) {
                     className={classes.assetTableRow}
                   >
                     <TableCell className={classes.cell}>
-                      { ['Bribe', 'Fees', 'Reward'].includes(row.rewardType) &&
+                      { ['Bribe', 'Fees', 'Reward', 'Boost'].includes(row.rewardType) &&
                         <div className={classes.inline}>
                           <div className={ classes.doubleImages}>
                             <img
@@ -601,6 +628,26 @@ export default function EnhancedTable({ rewards, vestNFTs, tokenID }) {
                               <Typography variant='h5' className={`${classes.textSpaced} ${classes.symbol}`} color='textSecondary'>
                                 {row.lockToken.symbol}
                               </Typography>
+                            </div>
+                          </>
+                        }
+                      </div>
+                    </TableCell>
+                    <TableCell className={classes.cell} align='right' title='Text to be displayed in the Tool Tip'>
+                        <div>
+                        { (row && row.rewardType === 'Reward') &&
+                          <>
+                            <div className={ classes.inlineEnd }>
+                              <Typography variant='h2' className={classes.textSpaced}>
+                                {formatCurrency(row.gauge.boost)}x
+                              </Typography>
+                              <div title=''>
+                              <Tooltip title={row?.gauge.boost == 2.5? `${Math.round(row.gauge.possibleAddedStake)}% more LPs can be staked at max boost` : `${formatCurrency(row.gauge.neededForMaxBoost)} more veBI in token #${row.gauge.attachedToken} needed to get max boost`} placement="right-end">
+                                <IconButton>
+                                  <InfoIcon className={ classes.infoIcon }/>
+                                </IconButton>
+                              </Tooltip>
+                              </div>
                             </div>
                           </>
                         }

@@ -316,8 +316,10 @@ export default function SSLiquidityCreate() {
               value={ amountValue }
               onChange={ amountChanged }
               disabled={ createLoading }
+              onWheel={event => event.target.blur()}
               InputProps={{
-                className: classes.largeInput
+                type: "number",
+                className: classes.largeInput,
               }}
             />
             <Typography color='textSecondary' className={ classes.smallerText }>{ assetValue?.symbol }</Typography>

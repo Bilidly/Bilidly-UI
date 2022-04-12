@@ -28,6 +28,13 @@ export const FTM_SYMBOL = 'BNB'
 export const FTM_DECIMALS = 18
 export const FTM_LOGO = 'https://assets.coingecko.com/coins/images/4001/large/Fantom.png'
 
+export const BUSD_ADDRESS = '0xeD24FC36d5Ee211Ea25A80239Fb8C4Cfd80f12Ee'
+export const BUSD_NAME = 'Binance USD' // test-BSC 
+export const BUSD_SYMBOL = 'BUSD'
+export const BUSD_DECIMALS = 18
+export const BUSD_LOGO = 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/binance/assets/BUSD-BD1/logo.png'
+export const BUSD_ABI = abis.erc20ABI // change to BUSD abi // unused, unnecessary
+
 export const FACTORY_ADDRESS = '0x3fAaB499b519fdC5819e3D7ed0C26111904cbc28'
 export const FACTORY_ABI = abis.factoryABI
 
