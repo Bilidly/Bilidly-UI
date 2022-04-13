@@ -96,6 +96,16 @@ function descendingComparator(a, b, orderBy) {
       }
       return 0;
 
+    case 'apr':
+
+      if (BigNumber(b?.gauge?.bribes.length).lt(a?.gauge?.bribes.length)) {
+        return -1;
+      }
+      if (BigNumber(b?.gauge?.bribes.length).gt(a?.gauge?.bribes.length)) {
+        return 1;
+      }
+      return 0;
+
     default:
       return 0
   }
@@ -131,6 +141,12 @@ const headCells = [
     label: 'Total Liquidity',
   },
   {
+    id: 'apr',
+    numeric: true,
+    disablePadding: false,
+    label: 'APR',
+  },
+  {
     id: 'totalVotes',
     numeric: true,
     disablePadding: false,
@@ -153,7 +169,7 @@ const headCells = [
     numeric: true,
     disablePadding: false,
     label: 'My Vote %',
-  }
+  },
 ];
 
 function EnhancedTableHead(props) {
@@ -452,6 +468,8 @@ export default function EnhancedTable({ gauges, setParentSliderValues, defaultVo
               if (!row) {
                 return null;
               }
+
+console.log("THE ROW lp " + row.lpValue)
               let sliderValue = sliderValues.find((el) => el.address === row?.address)?.value
               if(sliderValue) {
                 sliderValue = BigNumber(sliderValue).toNumber(0)
@@ -532,6 +550,11 @@ export default function EnhancedTable({ gauges, setParentSliderValues, defaultVo
                         {row?.token1?.symbol}
                       </Typography>
                     </div>
+                  </TableCell>
+                  <TableCell className={classes.cell} align="right">
+                    <Typography variant="h2" className={classes.textSpaced}>
+                      { formatCurrency(row?.lpValue) } %
+                    </Typography>
                   </TableCell>
                   <TableCell className={classes.cell} align="right">
                     <Typography variant="h2" className={classes.textSpaced}>

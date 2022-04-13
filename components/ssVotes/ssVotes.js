@@ -4,6 +4,7 @@ import BigNumber from 'bignumber.js';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import SearchIcon from '@material-ui/icons/Search';
 import { useRouter } from "next/router";
+import { CONTRACTS } from '../../stores/constants';
 
 import classes from './ssVotes.module.css';
 import { formatCurrency } from '../../utils';
@@ -25,20 +26,32 @@ export default function ssVotes() {
   const [ veToken, setVeToken ] = useState(null)
   const [ token, setToken ] = useState(null)
   const [ vestNFTs, setVestNFTs ] = useState([])
-  const [ search, setSearch ] = useState('');
+  const [ search, setSearch ] = useState('')
+  const [GovTokenPrice, setGovTokenPrice] = useState(0)
 
 
-  const ssUpdated = () => {
+  const ssUpdated = async () => {
     setVeToken(stores.stableSwapStore.getStore('veToken'))
     const as = stores.stableSwapStore.getStore('pairs');
 
     const filteredAssets = as.filter((asset) => {
       return asset.gauge && asset.gauge.address
     })
-    setGauges(filteredAssets)
     // price included
     //console.log("ALL GAUGES " + JSON.stringify(filteredAssets))
+    
+    const govTokenInfo = await stores.stableSwapStore.getBaseAsset(CONTRACTS.GOV_TOKEN_ADDRESS)
 
+    setGovTokenPrice(govTokenInfo.priceUSD)
+
+    let lpValue;
+    for(let pair of filteredAssets) {
+      lpValue = (pair.token0.priceUSD * pair.reserve0 + pair.token1.priceUSD * pair.reserve1) / pair.totalSupply
+      pair.lpValue = lpValue
+      console.log("new pair! " + JSON.stringify(pair))
+    }
+
+    setGauges(filteredAssets)
 
     const nfts = stores.stableSwapStore.getStore('vestNFTs');
     setVestNFTs(nfts)
