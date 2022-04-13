@@ -1,11 +1,11 @@
-import React, { Component } from "react";
+import React, { Component, forwardRef } from "react";
 import { DialogContent, Dialog, Slide } from "@material-ui/core";
 
 import Unlock from "./unlock.js";
 
-function Transition(props) {
-  return <Slide direction="up" {...props} />;
-}
+const Transition = forwardRef((props, ref) => (
+  <Slide direction="up" ref={ref} {...props} />
+));
 
 class UnlockModal extends Component {
   render() {
