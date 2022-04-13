@@ -78,7 +78,6 @@ export const GET_GAUGE_INFO = "GET_GAUGE_INFO"
 export const GET_GAUGE_INFO_RETURNED = "GET_GAUGE_INFO_RETURNED"
 
 //SWAPS
-
 export const SWAP = 'SWAP'
 export const SWAP_RETURNED = 'SWAP_RETURNED'
 

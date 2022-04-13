@@ -14,6 +14,7 @@ import BigNumber from "bignumber.js";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import SearchIcon from "@material-ui/icons/Search";
 import { useRouter } from "next/router";
+import { CONTRACTS } from '../../stores/constants';
 
 import classes from "./ssVotes.module.css";
 import { formatCurrency } from "../../utils";
