@@ -32,12 +32,29 @@ export default function ssVotes() {
   const [token, setToken] = useState({ id: "" });
   const [vestNFTs, setVestNFTs] = useState([]);
   const [search, setSearch] = useState("");
+  const [GovTokenPrice, setGovTokenPrice] = useState(0)
 
   const ssUpdated = () => {
     setVeToken(stores.stableSwapStore.getStore("veToken"));
     const as = stores.stableSwapStore.getStore("pairs");
     const filteredAssets = as.filter((asset) => asset.gauge?.address);
-    setGauges(filteredAssets);
+    
+    // price included
+    //console.log("ALL GAUGES " + JSON.stringify(filteredAssets))
+    
+    const govTokenInfo = await stores.stableSwapStore.getBaseAsset(CONTRACTS.GOV_TOKEN_ADDRESS)
+
+    setGovTokenPrice(govTokenInfo.priceUSD)
+
+    let lpValue;
+    for(let pair of filteredAssets) {
+      lpValue = (pair.token0.priceUSD * pair.reserve0 + pair.token1.priceUSD * pair.reserve1) / pair.totalSupply
+      pair.lpValue = lpValue
+      console.log("new pair! " + JSON.stringify(pair))
+    }
+
+    setGauges(filteredAssets)
+
     const nfts = stores.stableSwapStore.getStore("vestNFTs");
     setVestNFTs(nfts);
 

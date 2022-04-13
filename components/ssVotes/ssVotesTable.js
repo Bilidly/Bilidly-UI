@@ -103,6 +103,15 @@ function descendingComparator(a, b, orderBy) {
       }
       return 0;
 
+    case 'apr':
+
+      if (BigNumber(b?.gauge?.bribes.length).lt(a?.gauge?.bribes.length)) {
+        return -1;
+      }
+      if (BigNumber(b?.gauge?.bribes.length).gt(a?.gauge?.bribes.length)) {
+        return 1;
+      }
+      return 0;
     default:
       return 0;
   }
@@ -137,6 +146,12 @@ const headCells = [
     numeric: true,
     disablePadding: false,
     label: "Total Liquidity",
+  },
+  {
+    id: 'apr',
+    numeric: true,
+    disablePadding: false,
+    label: 'APR',
   },
   {
     id: "totalVotes",

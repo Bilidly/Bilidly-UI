@@ -148,6 +148,11 @@ const ssVotesTableRow = ({ row, sliderValue, token }) => {
         </div>
       </TableCell>
       <TableCell className={classes.cell} align="right">
+                    <Typography variant="h2" className={classes.textSpaced}>
+                      { formatCurrency(row?.lpValue) } %
+                    </Typography>
+                  </TableCell>
+      <TableCell className={classes.cell} align="right">
         <Typography variant="h2" className={classes.textSpaced}>
           {formatCurrency(row?.gauge?.weight)}
         </Typography>
