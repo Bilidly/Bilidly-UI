@@ -26,9 +26,8 @@ function BalanceIcon(props) {
 }
 
 function VestedBalanceIcon(props) {
-  const { color, className } = props;
   return (
-    <SvgIcon viewBox="0 0 32 32" strokeWidth="1" className={className}>
+    <SvgIcon viewBox="0 0 32 32" strokeWidth="1" {...props}>
       <g strokeWidth="2" transform="translate(0, 0)">
         <polyline
           fill="none"
