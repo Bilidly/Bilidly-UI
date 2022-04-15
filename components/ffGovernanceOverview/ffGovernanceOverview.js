@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react'
 import {
   Paper,
   Grid,
@@ -8,21 +8,21 @@ import {
   TextField,
   InputAdornment,
   CircularProgress,
-} from "@material-ui/core";
-import Autocomplete from "@material-ui/lab/Autocomplete";
-import Skeleton from "@material-ui/lab/Skeleton";
-import BigNumber from "bignumber.js";
+} from '@material-ui/core'
+import Autocomplete from '@material-ui/lab/Autocomplete'
+import Skeleton from '@material-ui/lab/Skeleton'
+import BigNumber from 'bignumber.js'
 
-import { formatCurrency } from "../../utils";
-import classes from "./ffGovernanceOverview.module.css";
-import AccountBalanceWalletIcon from "@material-ui/icons/AccountBalanceWalletOutlined";
+import { formatCurrency } from '../../utils'
+import classes from './ffGovernanceOverview.module.css'
+import AccountBalanceWalletIcon from '@material-ui/icons/AccountBalanceWalletOutlined'
 
-import stores from "../../stores";
-import { ACTIONS } from "../../stores/constants";
+import stores from '../../stores'
+import { ACTIONS } from '../../stores/constants'
 
 function BalanceIcon(props) {
-  const { color, className } = props;
-  return <AccountBalanceWalletIcon color="primary" fontSize="large" />;
+  const { color, className } = props
+  return <AccountBalanceWalletIcon color="primary" fontSize="large" />
 }
 
 function VestedBalanceIcon(props) {
@@ -37,7 +37,7 @@ function VestedBalanceIcon(props) {
           strokeMiterlimit="10"
           points="14,8 14,14 8,14 "
           strokeLinejoin="miter"
-        ></polyline>{" "}
+        ></polyline>{' '}
         <path
           data-cap="butt"
           data-color="color-2"
@@ -48,7 +48,7 @@ function VestedBalanceIcon(props) {
           d="M19,20v4c0,1.657,2.686,3,6,3 s6-1.343,6-3v-4"
           strokeLinejoin="miter"
           strokeLinecap="butt"
-        ></path>{" "}
+        ></path>{' '}
         <path
           data-cap="butt"
           data-color="color-2"
@@ -59,7 +59,7 @@ function VestedBalanceIcon(props) {
           d="M19,24v4c0,1.657,2.686,3,6,3 s6-1.343,6-3v-4"
           strokeLinejoin="miter"
           strokeLinecap="butt"
-        ></path>{" "}
+        ></path>{' '}
         <ellipse
           data-color="color-2"
           fill="none"
@@ -72,7 +72,7 @@ function VestedBalanceIcon(props) {
           rx="6"
           ry="3"
           strokeLinejoin="miter"
-        ></ellipse>{" "}
+        ></ellipse>{' '}
         <path
           fill="none"
           stroke="#ffb405"
@@ -84,11 +84,11 @@ function VestedBalanceIcon(props) {
         ></path>
       </g>
     </SvgIcon>
-  );
+  )
 }
 
 function IbBalanceIcon(props) {
-  const { color, className } = props;
+  const { color, className } = props
   return (
     <SvgIcon viewBox="0 0 32 32" strokeWidth="1" className={className}>
       <g strokeWidth="2" transform="translate(0, 0)">
@@ -101,7 +101,7 @@ function IbBalanceIcon(props) {
           d="M1,5v4c0,1.657,2.686,3,6,3 s6-1.343,6-3V5"
           strokeLinejoin="miter"
           strokeLinecap="butt"
-        ></path>{" "}
+        ></path>{' '}
         <path
           data-cap="butt"
           fill="none"
@@ -111,7 +111,7 @@ function IbBalanceIcon(props) {
           d="M1,9v4c0,1.657,2.686,3,6,3 s6-1.343,6-3V9"
           strokeLinejoin="miter"
           strokeLinecap="butt"
-        ></path>{" "}
+        ></path>{' '}
         <line
           data-cap="butt"
           fill="none"
@@ -124,7 +124,7 @@ function IbBalanceIcon(props) {
           y2="13"
           strokeLinejoin="miter"
           strokeLinecap="butt"
-        ></line>{" "}
+        ></line>{' '}
         <path
           data-cap="butt"
           fill="none"
@@ -134,7 +134,7 @@ function IbBalanceIcon(props) {
           d="M1,13v4c0,1.657,2.686,3,6,3 c1.093,0,2.117-0.147,3-0.402"
           strokeLinejoin="miter"
           strokeLinecap="butt"
-        ></path>{" "}
+        ></path>{' '}
         <path
           data-cap="butt"
           fill="none"
@@ -144,7 +144,7 @@ function IbBalanceIcon(props) {
           d="M1,17v4c0,1.657,2.686,3,6,3 c1.093,0,2.118-0.147,3-0.402"
           strokeLinejoin="miter"
           strokeLinecap="butt"
-        ></path>{" "}
+        ></path>{' '}
         <ellipse
           fill="none"
           stroke="#ffb405"
@@ -156,7 +156,7 @@ function IbBalanceIcon(props) {
           rx="6"
           ry="3"
           strokeLinejoin="miter"
-        ></ellipse>{" "}
+        ></ellipse>{' '}
         <path
           data-cap="butt"
           fill="none"
@@ -166,7 +166,7 @@ function IbBalanceIcon(props) {
           d="M19,9v4c0,1.657,2.686,3,6,3 s6-1.343,6-3V9"
           strokeLinejoin="miter"
           strokeLinecap="butt"
-        ></path>{" "}
+        ></path>{' '}
         <path
           data-cap="butt"
           fill="none"
@@ -176,7 +176,7 @@ function IbBalanceIcon(props) {
           d="M22,19.594 C22.883,19.85,23.906,20,25,20c3.314,0,6-1.343,6-3v-4"
           strokeLinejoin="miter"
           strokeLinecap="butt"
-        ></path>{" "}
+        ></path>{' '}
         <line
           data-cap="butt"
           fill="none"
@@ -189,7 +189,7 @@ function IbBalanceIcon(props) {
           y2="16.401"
           strokeLinejoin="miter"
           strokeLinecap="butt"
-        ></line>{" "}
+        ></line>{' '}
         <path
           data-cap="butt"
           fill="none"
@@ -199,7 +199,7 @@ function IbBalanceIcon(props) {
           d="M22,23.596 C22.883,23.851,23.907,24,25,24c3.314,0,6-1.343,6-3v-4"
           strokeLinejoin="miter"
           strokeLinecap="butt"
-        ></path>{" "}
+        ></path>{' '}
         <ellipse
           fill="none"
           stroke="#ffb405"
@@ -211,7 +211,7 @@ function IbBalanceIcon(props) {
           rx="6"
           ry="3"
           strokeLinejoin="miter"
-        ></ellipse>{" "}
+        ></ellipse>{' '}
         <path
           data-cap="butt"
           data-color="color-2"
@@ -222,7 +222,7 @@ function IbBalanceIcon(props) {
           d="M10,19v4c0,1.657,2.686,3,6,3 s6-1.343,6-3v-4"
           strokeLinejoin="miter"
           strokeLinecap="butt"
-        ></path>{" "}
+        ></path>{' '}
         <path
           data-cap="butt"
           data-color="color-2"
@@ -233,7 +233,7 @@ function IbBalanceIcon(props) {
           d="M10,23v4c0,1.657,2.686,3,6,3 s6-1.343,6-3v-4"
           strokeLinejoin="miter"
           strokeLinecap="butt"
-        ></path>{" "}
+        ></path>{' '}
         <ellipse
           data-color="color-2"
           fill="none"
@@ -249,75 +249,75 @@ function IbBalanceIcon(props) {
         ></ellipse>
       </g>
     </SvgIcon>
-  );
+  )
 }
 
 export default function ffOverview() {
-  const formatBigNumber = (n) => BigNumber(n).times(asset.gauge.virtualPrice);
+  const formatBigNumber = (n) => BigNumber(n).times(asset.gauge.virtualPrice)
 
-  const [vestNFTs, setVestNFTs] = useState([]);
-  const [govToken, setGovToken] = useState(null);
-  const [veToken, setVeToken] = useState(null);
-  const [vestedBalance, setVestedBalance] = useState(null);
-  const [rewards, setRewards] = useState(null);
-  const [assets, setAssets] = useState(null);
-  const [totalBalance, setTotalBalance] = useState(0);
+  const [vestNFTs, setVestNFTs] = useState([])
+  const [govToken, setGovToken] = useState(null)
+  const [veToken, setVeToken] = useState(null)
+  const [vestedBalance, setVestedBalance] = useState(null)
+  const [rewards, setRewards] = useState(null)
+  const [assets, setAssets] = useState(null)
+  const [totalBalance, setTotalBalance] = useState(0)
 
   const ssUpdated = () => {
-    const as = stores.stableSwapStore.getStore("assets");
-    setAssets(as);
+    const as = stores.stableSwapStore.getStore('assets')
+    setAssets(as)
 
-    const nfts = stores.stableSwapStore.getStore("vestNFTs");
-    let govTokenBalance = stores.stableSwapStore.getStore("govToken");
+    const nfts = stores.stableSwapStore.getStore('vestNFTs')
+    let govTokenBalance = stores.stableSwapStore.getStore('govToken')
     const [vestedBalance, rewards] = nfts.reduce(
       (acc, curr) => {
-        acc[0] += Number(curr.lockAmount) || 0;
+        acc[0] += Number(curr.lockAmount) || 0
         acc[1] +=
-          Number(stores.stableSwapStore.getStore("rewards").rewards[i]) || 0;
-        return acc;
+          Number(stores.stableSwapStore.getStore('rewards').rewards[i]) || 0
+        return acc
       },
       [0, 0]
-    );
+    )
 
-    setGovToken(govTokenBalance);
-    setVestedBalance(vestedBalance);
-    setRewards(rewards);
+    setGovToken(govTokenBalance)
+    setVestedBalance(vestedBalance)
+    setRewards(rewards)
 
-    calculateTotalBalance(as);
-  };
+    calculateTotalBalance(as)
+  }
 
   useEffect(() => {
     const stableSwapUpdated = () => {
-      ssUpdated();
-    };
+      ssUpdated()
+    }
 
-    ssUpdated();
+    ssUpdated()
 
-    stores.emitter.on(ACTIONS.GET_VEST_NFTS, stableSwapUpdated);
+    stores.emitter.on(ACTIONS.GET_VEST_NFTS, stableSwapUpdated)
     return () => {
-      stores.emitter.removeListener(ACTIONS.GET_VEST_NFTS, stableSwapUpdated);
-    };
-  }, []);
+      stores.emitter.removeListener(ACTIONS.GET_VEST_NFTS, stableSwapUpdated)
+    }
+  }, [])
 
   const calculateTotalBalance = (ass) => {
-    if (!ass) return;
+    if (!ass) return
     const balance = ass.reduce((acc, curr) => {
       if (curr?.gauge) {
-        let pooledBalance = formatBigNumber(curr.gauge.userPoolBalance);
-        let stakedBalance = formatBigNumber(curr.gauge.userGaugeBalance);
-        let convexBalance = formatBigNumber(curr.convex.balance);
+        let pooledBalance = formatBigNumber(curr.gauge.userPoolBalance)
+        let stakedBalance = formatBigNumber(curr.gauge.userGaugeBalance)
+        let convexBalance = formatBigNumber(curr.convex.balance)
         let tot = BigNumber(curr.balance)
           .plus(pooledBalance)
           .plus(stakedBalance)
           .plus(convexBalance)
-          .times(curr.price);
-        return acc.plus(tot);
+          .times(curr.price)
+        return acc.plus(tot)
       }
-      return acc;
-    }, BigNumber(0));
+      return acc
+    }, BigNumber(0))
 
-    setTotalBalance(balance);
-  };
+    setTotalBalance(balance)
+  }
 
   return (
     <div className={classes.container}>
@@ -351,7 +351,7 @@ export default function ffOverview() {
                     {formatCurrency(govToken?.balance || 0)}
                   </Typography>
                   <Typography className={classes.valueSymbol}>
-                    {govToken?.symbol || ""}
+                    {govToken?.symbol || ''}
                   </Typography>
                 </div>
               </Grid>
@@ -388,7 +388,7 @@ export default function ffOverview() {
                     {formatCurrency(veToken?.vestingInfo?.lockValue || 0)}
                   </Typography>
                   <Typography className={classes.valueSymbol}>
-                    {veToken?.symbol || ""}
+                    {veToken?.symbol || ''}
                   </Typography>
                 </div>
               </Grid>
@@ -397,5 +397,5 @@ export default function ffOverview() {
         </Grid>
       </Grid>
     </div>
-  );
+  )
 }

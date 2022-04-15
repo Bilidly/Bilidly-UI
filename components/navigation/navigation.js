@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from "react";
-import { useRouter } from "next/router";
+import React, { useState, useEffect } from 'react'
+import { useRouter } from 'next/router'
 
-import { Typography, Switch, SvgIcon } from "@material-ui/core";
-import { ToggleButton, ToggleButtonGroup } from "@material-ui/lab";
-import { withTheme, withStyles } from "@material-ui/core/styles";
+import { Typography, Switch, SvgIcon } from '@material-ui/core'
+import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab'
+import { withTheme, withStyles } from '@material-ui/core/styles'
 
-import SSWarning from "../ssWarning";
-import classes from "./navigation.module.css";
+import SSWarning from '../ssWarning'
+import classes from './navigation.module.css'
 
 function SiteLogo(props) {
-  const { color, className } = props;
+  const { color, className } = props
   return (
     <SvgIcon viewBox="0 0 812 375" className={className}>
       <g fill="#ffc800" opacity="1" stroke="none">
@@ -52,7 +52,7 @@ function SiteLogo(props) {
         />
       </g>
     </SvgIcon>
-  );
+  )
 }
 
 const StyledSwitch = withStyles((theme) => ({
@@ -64,17 +64,17 @@ const StyledSwitch = withStyles((theme) => ({
   },
   switchBase: {
     padding: 1,
-    "&$checked": {
-      transform: "translateX(28px)",
-      color: "#212529",
-      "& + $track": {
-        backgroundColor: "#ffffff",
+    '&$checked': {
+      transform: 'translateX(28px)',
+      color: '#212529',
+      '& + $track': {
+        backgroundColor: '#ffffff',
         opacity: 1,
       },
     },
-    "&$focusVisible $thumb": {
-      color: "#ffffff",
-      border: "6px solid #fff",
+    '&$focusVisible $thumb': {
+      color: '#ffffff',
+      border: '6px solid #fff',
     },
   },
   thumb: {
@@ -84,9 +84,9 @@ const StyledSwitch = withStyles((theme) => ({
   track: {
     borderRadius: 32 / 2,
     border: `1px solid #212529`,
-    backgroundColor: "#212529",
+    backgroundColor: '#212529',
     opacity: 1,
-    transition: theme.transitions.create(["background-color", "border"]),
+    transition: theme.transitions.create(['background-color', 'border']),
   },
   checked: {},
   focusVisible: {},
@@ -104,8 +104,8 @@ const StyledSwitch = withStyles((theme) => ({
       }}
       {...props}
     />
-  );
-});
+  )
+})
 // Exported functions outside as these functions are not needed to update on state changes
 const renderSectionHeader = (title) => {
   return (
@@ -115,10 +115,10 @@ const renderSectionHeader = (title) => {
         {title}
       </Typography>
     </div>
-  );
-};
+  )
+}
 
-const renderSubNav = (title = "") => {
+const renderSubNav = (title = '') => {
   return (
     <ToggleButton
       value={title.toLowerCase()}
@@ -130,70 +130,70 @@ const renderSubNav = (title = "") => {
         {title}
       </Typography>
     </ToggleButton>
-  );
-};
+  )
+}
 
 const paths = [
-  "Swap",
-  "Liquidity",
-  "Vest",
-  "Vote",
-  "Bribe",
-  "Rewards",
-  "Governance",
-  "Whitelist",
-];
+  'Swap',
+  'Liquidity',
+  'Vest',
+  'Vote',
+  'Bribe',
+  'Rewards',
+  'Governance',
+  'Whitelist',
+]
 
-const mainPaths = ["Swap", "Liquidity", "Governance", "Rewards"];
+const mainPaths = ['Swap', 'Liquidity', 'Governance', 'Rewards']
 
 function Navigation(props) {
-  const router = useRouter();
+  const router = useRouter()
 
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [active, setActive] = useState("");
+  const [menuOpen, setMenuOpen] = useState(false)
+  const [active, setActive] = useState('')
 
   function handleNavigate(route) {
-    router.push(route);
+    router.push(route)
   }
 
-  const [warningOpen, setWarningOpen] = useState(false);
+  const [warningOpen, setWarningOpen] = useState(false)
 
   useEffect(function () {
     const localStorageWarningAccepted = window.localStorage.getItem(
-      "fixed.forex-warning-accepted"
-    );
+      'fixed.forex-warning-accepted'
+    )
     setWarningOpen(
       localStorageWarningAccepted
-        ? localStorageWarningAccepted !== "accepted"
+        ? localStorageWarningAccepted !== 'accepted'
         : true
-    );
-  }, []);
+    )
+  }, [])
 
   const closeWarning = () => {
-    window.localStorage.setItem("fixed.forex-warning-accepted", "accepted");
-    setWarningOpen(false);
-  };
+    window.localStorage.setItem('fixed.forex-warning-accepted', 'accepted')
+    setWarningOpen(false)
+  }
 
   const onActiveClick = (event, val) => {
     if (val) {
       // setActive(val);
-      handleNavigate("/" + val);
+      handleNavigate('/' + val)
     } else {
-      console.log("path " + router.pathname.split("/")[1]);
-      let routeTo = router.pathname.split("/")[1];
-      setActive(routeTo);
-      handleNavigate("/" + routeTo);
+      console.log('path ' + router.pathname.split('/')[1])
+      let routeTo = router.pathname.split('/')[1]
+      setActive(routeTo)
+      handleNavigate('/' + routeTo)
     }
-  };
+  }
   // Collapsed the logic into shorter functions
   useEffect(() => {
-    const activePath = router.asPath;
+    const activePath = router.asPath
     paths.forEach((path) => {
       if (activePath.includes(path.toLowerCase())) {
-        setActive(path.toLowerCase());
+        setActive(path.toLowerCase())
       }
-    });
-  }, [router.asPath]);
+    })
+  }, [router.asPath])
 
   const renderNavs = () => {
     return (
@@ -205,12 +205,12 @@ function Navigation(props) {
       >
         {mainPaths.map(renderSubNav)}
       </ToggleButtonGroup>
-    );
-  };
+    )
+  }
   return (
     <div className={classes.navigationContainer}>
       <div className={classes.navigationHeading}>
-        <a onClick={() => router.push("/home")} className={classes.linkz}>
+        <a onClick={() => router.push('/home')} className={classes.linkz}>
           <SiteLogo className={classes.appLogo} />
         </a>
       </div>
@@ -218,7 +218,7 @@ function Navigation(props) {
       <div className={classes.navigationContent}>{renderNavs()}</div>
       <SSWarning open={warningOpen} close={closeWarning} />
     </div>
-  );
+  )
 }
 
-export default withTheme(Navigation);
+export default withTheme(Navigation)
