@@ -412,9 +412,10 @@ class Store {
       if(gaugeAddress !== ZERO_ADDRESS) {
         const gaugeContract = new web3.eth.Contract(CONTRACTS.GAUGE_ABI, gaugeAddress)
 
-        const [ totalSupply, gaugeBalance, bribeAddress ] = await Promise.all([
+        const [ totalSupply, gaugeBalance, govTokenRewardRate, bribeAddress ] = await Promise.all([
           gaugeContract.methods.totalSupply().call(),
           gaugeContract.methods.balanceOf(account.address).call(),
+          gaugeContract.methods.rewardRate(CONTRACTS.GOV_TOKEN_ADDRESS).call(),
           gaugesContract.methods.bribes(gaugeAddress).call()
         ])
 
@@ -450,6 +451,7 @@ class Store {
           totalSupply: BigNumber(totalSupply).div(10**18).toFixed(18),
           weight: BigNumber(gaugeWeight).div(10**18).toFixed(18),
           weightPercent: BigNumber(gaugeWeight).times(100).div(totalWeight).toFixed(2),
+          govTokenRewardRate: BigNumber(govTokenRewardRate).div(10**CONTRACTS.GOV_TOKEN_DECIMALS).toFixed(CONTRACTS.GOV_TOKEN_DECIMALS),
           bribes: bribes,
         }
       }
@@ -576,10 +578,11 @@ class Store {
         if(gaugeAddress !== ZERO_ADDRESS) {
           const gaugeContract = new web3.eth.Contract(CONTRACTS.GAUGE_ABI, gaugeAddress)
 
-          const [ totalSupply, gaugeBalance, bribeAddress ] = await Promise.all([
+          const [ totalSupply, gaugeBalance, govTokenRewardRate, bribeAddress ] = await Promise.all([
             gaugeContract.methods.totalSupply().call(),
             gaugeContract.methods.balanceOf(account.address).call(),
-            gaugesContract.methods.bribes(gaugeAddress).call()
+            gaugeContract.methods.rewardRate(CONTRACTS.GOV_TOKEN_ADDRESS).call(),
+            gaugesContract.methods.bribes(gaugeAddress).call(),
           ])
 
           const bribeContract = new web3.eth.Contract(CONTRACTS.BRIBE_ABI, bribeAddress)
@@ -613,6 +616,7 @@ class Store {
             totalSupply: BigNumber(totalSupply).div(10**18).toFixed(18),
             weight: BigNumber(gaugeWeight).div(10**18).toFixed(18),
             weightPercent: BigNumber(gaugeWeight).times(100).div(totalWeight).toFixed(2),
+            govTokenRewardRate: BigNumber(govTokenRewardRate).div(10**CONTRACTS.GOV_TOKEN_DECIMALS).toFixed(CONTRACTS.GOV_TOKEN_DECIMALS),
             bribes: bribes,
           }
         }
@@ -975,7 +979,7 @@ class Store {
       const gaugesContract = new web3.eth.Contract(CONTRACTS.VOTER_ABI, CONTRACTS.VOTER_ADDRESS)
 
       const [ totalWeight ] = await Promise.all([
-        gaugesContract.methods.totalWeight().call()
+        gaugesContract.methods.totalWeight().call(),
       ])
 
       const ps = await Promise.all(
@@ -1014,8 +1018,8 @@ class Store {
         ps.map(async (pair) => {
           try {
             if(pair.gauge && pair.gauge.address !== ZERO_ADDRESS) {
-              const [ totalSupply, gaugeBalance, gaugeWeight ] = await this._tryGetGaugeBalances(web3, pair, account, gaugesContract)
-
+              const [ totalSupply, gaugeBalance, govTokenRewardRate, gaugeWeight ] = await this._tryGetGaugeBalances(web3, pair, account, gaugesContract)
+                console.log("THE GOV REWARD RATE " + govTokenRewardRate)
               const bribeContract = new web3.eth.Contract(CONTRACTS.BRIBE_ABI, pair.gauge.bribeAddress)
 
               const bribes = await Promise.all(
@@ -1036,6 +1040,7 @@ class Store {
               pair.gauge.reserve1 = pair.totalSupply > 0 ? BigNumber(pair.reserve1).times(pair.gauge.totalSupply).div(pair.totalSupply).toFixed(pair.token1.decimals) : '0'
               pair.gauge.weight = BigNumber(gaugeWeight).div(10**18).toFixed(18)
               pair.gauge.weightPercent = BigNumber(gaugeWeight).times(100).div(totalWeight).toFixed(2)
+              pair.gauge.govTokenRewardRate = BigNumber(govTokenRewardRate).div(10**CONTRACTS.GOV_TOKEN_DECIMALS).toFixed(CONTRACTS.GOV_TOKEN_DECIMALS)
               pair.gaugebribes = bribes
             }
 
@@ -1114,11 +1119,11 @@ class Store {
   _getGaugeBalances = async (web3, multicall, pair, account, gaugesContract) => {
     try {
       const gaugeContract = new web3.eth.Contract(CONTRACTS.GAUGE_ABI, pair.gauge.address)
-
       return multicall.aggregate([
         gaugeContract.methods.totalSupply(),
         gaugeContract.methods.balanceOf(account.address),
-        gaugesContract.methods.weights(pair.address)
+        gaugeContract.methods.rewardRate(CONTRACTS.GOV_TOKEN_ADDRESS),
+        gaugesContract.methods.weights(pair.address), // Careful
       ])
     } catch(ex) {
       console.log(ex)
@@ -4157,27 +4162,37 @@ class Store {
             gaugeContract.methods.balanceOf(account.address).call()
           ])
 
-          let boost
-          let possibleAddedStake;
-          let needVeForMaxBoost;
           
-          const [ attachedTokenId, derivedBalance, gaugeTotal ] = await Promise.all([
+          const [ attachedTokenId, derivedBalance, derivedSupply, gaugeTotal, govTokenRewardRate, rewardPerToken ] = await Promise.all([
             gaugeContract.methods.tokenIds(account.address).call(),
             gaugeContract.methods.derivedBalance(account.address).call(),
-            gaugeContract.methods.totalSupply().call()
+            gaugeContract.methods.derivedSupply().call(),
+            gaugeContract.methods.totalSupply().call(),
+            gaugeContract.methods.rewardRate(CONTRACTS.GOV_TOKEN_ADDRESS).call(),
+            gaugeContract.methods.rewardPerToken(CONTRACTS.GOV_TOKEN_ADDRESS)
           ])
 
           const [ nftLockValue, veTotalSupply ] = await Promise.all([
             vestingContract.methods.balanceOfNFT(attachedTokenId).call(),
             vestingContract.methods.totalSupply().call()
           ])
-          boost = derivedBalance / balance / 0.4
+          
+          const boost = (derivedBalance / (0.4 * balance)).toFixed(2)
+          console.log("BOOST _____ " + pair.gauge.address + " is " + boost)
 
-          const [ workingSupply ] = await Promise.all([
-            gaugeContract.methods.derivedSupply().call()
-          ])
+          const govToken = await this.getBaseAsset(CONTRACTS.GOV_TOKEN_ADDRESS)
+          const govTokenPrice = govToken.priceUSD
+          const lpValue = (pair.token0.priceUSD * pair.reserve0 + pair.token1.priceUSD * pair.reserve1) / pair.totalSupply
+          
+          BigNumber(govTokenRewardRate).div(10**18).toFixed(18)
+          const rewardPerSecond = govTokenPrice * govTokenRewardRate
+          const gaugeValue = lpValue * gaugeTotal
+          const apr = ((rewardPerSecond * (derivedBalance / derivedSupply)) / (balance * lpValue)) * (86400 * 365) * 100
 
-          function userRemainingStake(balance, gaugeTotal, nftLockValue, veTotalSupply, boost) {
+          console.log("PARO " + JSON.stringify(pair))
+          console.log(govTokenRewardRate, derivedBalance, derivedSupply, govTokenPrice, lpValue, gaugeTotal, balance)
+
+          const userRemainingStake = (balance, gaugeTotal, nftLockValue, veTotalSupply, boost) => {
             let maxStake = (gaugeTotal * nftLockValue) / veTotalSupply;
           
             if (balance > maxStake) {
@@ -4190,6 +4205,9 @@ class Store {
             return maxStake / (boost * 0.4) - balance
           }
 
+          let possibleAddedStake;
+          let needVeForMaxBoost;
+
           if(boost >= 2.5) {
             const remainingStake = userRemainingStake(balance, gaugeTotal, nftLockValue, veTotalSupply, boost)
             console.log("remaining in " + pair.gauge.address + " is " + remainingStake + " vs balance " + balance + " or " + remainingStake / balance + "%")
@@ -4201,10 +4219,12 @@ class Store {
           console.log("For " + pair.gauge.address + " reward is " + earned + " , boost is " + boost + " and " + needVeForMaxBoost + "locking needed for max boost and " + possibleAddedStake + " more can be staked")
               
           pair.gauge.attachedToken = attachedTokenId
+          pair.gauge.apr = apr
           pair.gauge.boost = boost
           pair.gauge.possibleAddedStake = possibleAddedStake * 100 // %
           pair.gauge.neededForMaxBoost = BigNumber(needVeForMaxBoost).div(10**18).toFixed(18)
           pair.gauge.rewardsEarned = BigNumber(earned).div(10**18).toFixed(18)
+          pair.gauge.govTokenRewardRate = BigNumber(govTokenRewardRate).div(10**CONTRACTS.GOV_TOKEN_DECIMALS).toFixed(CONTRACTS.GOV_TOKEN_DECIMALS)
           
           return pair
         })
@@ -4651,6 +4671,8 @@ class Store {
         voterContract.methods.isWhitelisted(search).call(),
         voterContract.methods.listing_fee().call()
       ])
+
+      console.log("IS WHITELISTED " + isWhitelisted, listingFee)
 
       const token = await this.getBaseAsset(search)
       token.isWhitelisted = isWhitelisted

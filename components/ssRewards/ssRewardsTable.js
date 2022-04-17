@@ -32,7 +32,7 @@ import { useRouter } from "next/router";
 import BigNumber from 'bignumber.js';
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 
-import { formatCurrency } from '../../utils';
+import { formatCurrency, formatPercent } from '../../utils';
 import stores from '../../stores'
 import { ACTIONS } from '../../stores/constants';
 
@@ -62,6 +62,22 @@ function descendingComparator(a, b, orderBy) {
       return 0;
 
     case 'boost':
+
+      if (b.rewardType < a.rewardType) {
+        return -1;
+      }
+      if (b.rewardType > a.rewardType) {
+        return 1;
+      }
+      if (b.symbol < a.symbol) {
+        return -1;
+      }
+      if (b.symbol > a.symbol) {
+        return 1;
+      }
+      return 0;
+
+    case 'apr':
 
       if (b.rewardType < a.rewardType) {
         return -1;
@@ -153,6 +169,12 @@ const headCells = [
     numeric: true,
     disablePadding: false,
     label: 'Boost',
+  },
+  {
+    id: 'apr',
+    numeric: true,
+    disablePadding: false,
+    label: 'APR',
   },
   {
     id: 'earned',
@@ -493,7 +515,7 @@ export default function EnhancedTable({ rewards, vestNFTs, tokenID }) {
                     className={classes.assetTableRow}
                   >
                     <TableCell className={classes.cell}>
-                      { ['Bribe', 'Fees', 'Reward', 'Boost'].includes(row.rewardType) &&
+                      { ['Bribe', 'Fees', 'Reward', 'Boost', 'APR'].includes(row.rewardType) &&
                         <div className={classes.inline}>
                           <div className={ classes.doubleImages}>
                             <img
@@ -646,6 +668,19 @@ export default function EnhancedTable({ rewards, vestNFTs, tokenID }) {
                                 </IconButton>
                               </Tooltip>
                               </div>
+                            </div>
+                          </>
+                        }
+                      </div>
+                    </TableCell>
+                    <TableCell className={classes.cell} align='right' title='Text to be displayed in the Tool Tip'>
+                        <div>
+                        { (row && row.rewardType === 'Reward') &&
+                          <>
+                            <div className={ classes.inlineEnd }>
+                              <Typography variant='h2' className={classes.textSpaced}>
+                                {formatPercent(row.gauge.apr)}%
+                              </Typography>
                             </div>
                           </>
                         }

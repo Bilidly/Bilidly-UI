@@ -6,7 +6,7 @@ import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Table
 import BigNumber from 'bignumber.js';
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 
-import { formatCurrency } from '../../utils';
+import { formatCurrency, formatPercent } from '../../utils';
 
 const PrettoSlider = withStyles({
   root: {
@@ -468,8 +468,6 @@ export default function EnhancedTable({ gauges, setParentSliderValues, defaultVo
               if (!row) {
                 return null;
               }
-
-console.log("THE ROW lp " + row.lpValue)
               let sliderValue = sliderValues.find((el) => el.address === row?.address)?.value
               if(sliderValue) {
                 sliderValue = BigNumber(sliderValue).toNumber(0)
@@ -553,7 +551,10 @@ console.log("THE ROW lp " + row.lpValue)
                   </TableCell>
                   <TableCell className={classes.cell} align="right">
                     <Typography variant="h2" className={classes.textSpaced}>
-                      { formatCurrency(row?.lpValue) } %
+                      Min. { formatPercent(row?.minApr) } %
+                    </Typography>
+                    <Typography variant="h2" className={classes.textSpaced}>
+                      Max. { formatPercent(row?.maxApr) } %
                     </Typography>
                   </TableCell>
                   <TableCell className={classes.cell} align="right">

@@ -43,11 +43,22 @@ export default function ssVotes() {
     const govTokenInfo = await stores.stableSwapStore.getBaseAsset(CONTRACTS.GOV_TOKEN_ADDRESS)
 
     setGovTokenPrice(govTokenInfo.priceUSD)
+    console.log("GOV TOKEN PRICE " + govTokenInfo.priceUSD)
 
     let lpValue;
+    let govRewardsValue;
+    let balanceValue;
+    let minApr;
+    let maxApr;
     for(let pair of filteredAssets) {
       lpValue = (pair.token0.priceUSD * pair.reserve0 + pair.token1.priceUSD * pair.reserve1) / pair.totalSupply
-      pair.lpValue = lpValue
+      govRewardsValue = pair.gauge.govTokenRewardRate * govTokenInfo.priceUSD
+      balanceValue = pair.gauge.totalSupply * lpValue
+      minApr = (0.4 * govRewardsValue * 86400 * 365 * 100) / balanceValue || 0
+      maxApr = minApr * 2.5
+      pair.minApr = minApr
+      pair.maxApr = maxApr
+      console.log(pair.gauge.govTokenRewardRate, govTokenInfo.priceUSD, pair.gauge.totalSupply, lpValue)
       console.log("new pair! " + JSON.stringify(pair))
     }
 
