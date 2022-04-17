@@ -221,10 +221,10 @@
   background-image: url('/connectors/trustWallet.png');
 }
 
-/* .themeSelectContainer {
-  position: absolute;
-  left: 150px;
-} */
+.themeSelectContainer {
+  /* position: absolute;
+  left: 150px; */
+}
 
 .switchIcon {
   font-size: 1rem !important;
@@ -263,8 +263,8 @@
   z-index: 5 !important;
 }
 
-/* .ErrorContent {
-} */
+.ErrorContent {
+}
 
 .ErrorTxt {
   color: #FFF;
@@ -315,8 +315,8 @@
   cursor: pointer;
 }
 
-/* .testnetDisclaimer {
-} */
+.testnetDisclaimer {
+}
 
 .testnetDisclaimerText {
   font-size: 13px !important;
@@ -327,12 +327,8 @@
   padding: 16px !important;
 }
 
-.scrollHeader{
-  background-color: #291c11 !important;
-  transition: all 0.3s;
-}
-
 @media screen and (max-width: 1200px) {
+
   .accountButton {
     display: flex;
     align-items: center;

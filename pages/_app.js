@@ -1,21 +1,21 @@
-import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
-import Head from "next/head";
-import Layout from "../components/layout/layout.js";
-import { ThemeProvider } from "@material-ui/core/styles";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import { useRouter } from "next/router";
-import GovMenu from "../components/govMenu";
+import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
+import Head from 'next/head';
+import Layout from '../components/layout/layout.js';
+import { ThemeProvider } from '@material-ui/core/styles';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import { useRouter } from 'next/router';
+import GovMenu from '../components/govMenu';
 
-import lightTheme from "../theme/light";
-import darkTheme from "../theme/dark";
+import lightTheme from '../theme/light';
+import darkTheme from '../theme/dark';
 
-import Configure from "./configure";
+import Configure from './configure';
 
-import stores from "../stores/index.js";
+import stores from '../stores/index.js';
 
-import { ACTIONS } from "../stores/constants";
-import "../styles/global.css";
+import { ACTIONS } from '../stores/constants';
+import '../styles/global.css'
 
 export default function MyApp({ Component, pageProps }) {
   const router = useRouter();
@@ -26,7 +26,7 @@ export default function MyApp({ Component, pageProps }) {
 
   useEffect(() => {
     // Remove the server-side injected CSS.
-    const jssStyles = document.querySelector("#jss-server-side");
+    const jssStyles = document.querySelector('#jss-server-side');
     if (jssStyles) {
       jssStyles.parentElement.removeChild(jssStyles);
     }
@@ -46,10 +46,8 @@ export default function MyApp({ Component, pageProps }) {
   };
 
   useEffect(function () {
-    const localStorageDarkMode = window.localStorage.getItem(
-      "yearn.finance-dark-mode"
-    );
-    changeTheme(localStorageDarkMode ? localStorageDarkMode === "dark" : false);
+    const localStorageDarkMode = window.localStorage.getItem('yearn.finance-dark-mode');
+    changeTheme(localStorageDarkMode ? localStorageDarkMode === 'dark' : false);
   }, []);
 
   useEffect(function () {
@@ -59,51 +57,47 @@ export default function MyApp({ Component, pageProps }) {
     stores.dispatcher.dispatch({ type: ACTIONS.CONFIGURE });
 
     return () => {
-      stores.emitter.removeListener(
-        ACTIONS.CONFIGURED_SS,
-        stableSwapConfigureReturned
-      );
-      stores.emitter.removeListener(
-        ACTIONS.ACCOUNT_CONFIGURED,
-        accountConfigureReturned
-      );
+      stores.emitter.removeListener(ACTIONS.CONFIGURED_SS, stableSwapConfigureReturned);
+      stores.emitter.removeListener(ACTIONS.ACCOUNT_CONFIGURED, accountConfigureReturned);
     };
   }, []);
-  console.log("Rerendered");
+
+  const validateConfigured = () => {
+    switch (router.pathname) {
+      case '/':
+        return accountConfigured;
+      default:
+        return accountConfigured;
+    }
+  };
+
   return (
     <React.Fragment>
       <Head>
         <title>Bilidly</title>
-        <meta
-          name="viewport"
-          content="minimum-scale=1, initial-scale=1, width=device-width"
-        />
+        <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
       </Head>
       <ThemeProvider theme={themeConfig}>
         {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
         <CssBaseline />
-        {accountConfigured &&
-          (router.pathname.includes("governance") ? (
-            <Layout changeTheme={changeTheme}>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  marginTop: "100px",
-                  marginBottom: "-80px",
-                }}
-              >
-                <GovMenu />
-              </div>
-              <Component {...pageProps} changeTheme={changeTheme} />
-            </Layout>
-          ) : (
-            <Layout changeTheme={changeTheme}>
-              <Component {...pageProps} changeTheme={changeTheme} />
-            </Layout>
-          ))}
-        {!accountConfigured && <Configure {...pageProps} />}
+        { router.pathname.startsWith('/governance') ? validateConfigured() && (
+          <Layout changeTheme={changeTheme}>
+            <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginTop: "100px",
+            marginBottom: "-80px"
+        }}><GovMenu /></div>
+          <Component {...pageProps} changeTheme={changeTheme} />
+          </Layout>
+        ) : validateConfigured() && (
+          <Layout changeTheme={changeTheme}>
+            <Component {...pageProps} changeTheme={changeTheme} />
+          </Layout>
+        )
+      }
+        {!validateConfigured() && <Configure {...pageProps} />}
       </ThemeProvider>
     </React.Fragment>
   );
