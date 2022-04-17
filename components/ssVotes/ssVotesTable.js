@@ -562,7 +562,7 @@ export default function EnhancedTable({ gauges, setParentSliderValues, defaultVo
                       { formatCurrency(row?.gauge?.weight) }
                     </Typography>
                     <Typography variant="h5" className={classes.textSpaced} color='textSecondary'>
-                      { formatCurrency(row?.gauge?.weightPercent) } %
+                      { formatPercent(row?.gauge?.weightPercent) } %
                     </Typography>
                   </TableCell>
                   <TableCell className={classes.cell} align="right">
@@ -582,7 +582,7 @@ export default function EnhancedTable({ gauges, setParentSliderValues, defaultVo
                       { formatCurrency(BigNumber(sliderValue).div(100).times(token?.lockValue)) }
                     </Typography>
                     <Typography variant="h5" className={classes.textSpaced} color='textSecondary'>
-                      { formatCurrency(sliderValue) } %
+                      { formatPercent(sliderValue) } %
                     </Typography>
                   </TableCell>
                   <TableCell className={classes.cell} align="right">

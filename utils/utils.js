@@ -27,6 +27,33 @@ export function formatCurrency(amount, decimals = 2) {
   }
 }
 
+export function formatPercent(amount, decimals) {
+  if (!isNaN(amount)) {
+
+    if(BigNumber(amount).gt(0) && BigNumber(amount).lt(0.01)) {
+      return '< 0.01'
+    }
+    else if(BigNumber(amount).lt(10)) {
+      decimals = 2
+    }
+    else if(BigNumber(amount).lt(100)) {
+      decimals = 1
+    }
+    else {
+      decimals = 0
+    }
+
+    const formatter = new Intl.NumberFormat(undefined, {
+      minimumFractionDigits: decimals,
+      maximumFractionDigits: decimals
+    });
+
+    return formatter.format(amount);
+  } else {
+    return 0;
+  }
+}
+
 export function formatAddress(address, length = "short") {
   if (address && length === "short") {
     address =
