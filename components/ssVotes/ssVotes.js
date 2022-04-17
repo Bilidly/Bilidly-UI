@@ -27,7 +27,7 @@ export default function ssVotes() {
   const [ token, setToken ] = useState(null)
   const [ vestNFTs, setVestNFTs ] = useState([])
   const [ search, setSearch ] = useState('')
-  const [GovTokenPrice, setGovTokenPrice] = useState(0)
+  const [ govTokenPrice, setGovTokenPrice] = useState(0)
 
 
   const ssUpdated = async () => {
@@ -37,29 +37,23 @@ export default function ssVotes() {
     const filteredAssets = as.filter((asset) => {
       return asset.gauge && asset.gauge.address
     })
-    // price included
-    //console.log("ALL GAUGES " + JSON.stringify(filteredAssets))
     
     const govTokenInfo = await stores.stableSwapStore.getBaseAsset(CONTRACTS.GOV_TOKEN_ADDRESS)
-
     setGovTokenPrice(govTokenInfo.priceUSD)
-    console.log("GOV TOKEN PRICE " + govTokenInfo.priceUSD)
 
-    let lpValue;
-    let govRewardsValue;
-    let balanceValue;
-    let minApr;
-    let maxApr;
     for(let pair of filteredAssets) {
-      lpValue = (pair.token0.priceUSD * pair.reserve0 + pair.token1.priceUSD * pair.reserve1) / pair.totalSupply
-      govRewardsValue = pair.gauge.govTokenRewardRate * govTokenInfo.priceUSD
-      balanceValue = pair.gauge.totalSupply * lpValue
-      minApr = (0.4 * govRewardsValue * 86400 * 365 * 100) / balanceValue || 0
-      maxApr = minApr * 2.5
+
+      const gaugeLpValue = (pair.token0.priceUSD * pair.reserve0 + pair.token1.priceUSD * pair.reserve1) / pair.totalSupply
+      const referenceBalance = 1
+      const derivedBalanceNoVest = (0.4 * referenceBalance) + (0.00001 * pair.gauge.totalSupply * 0.6)
+      const govRewardsValue = pair.gauge.govTokenRewardRate * govTokenInfo.priceUSD
+      
+      const minApr = ((govRewardsValue * (derivedBalanceNoVest / pair.gauge.derivedSupply)) / (referenceBalance * gaugeLpValue)) * (86400 * 365) * 100
+      const maxApr = minApr * 2.5
+
       pair.minApr = minApr
       pair.maxApr = maxApr
-      console.log(pair.gauge.govTokenRewardRate, govTokenInfo.priceUSD, pair.gauge.totalSupply, lpValue)
-      console.log("new pair! " + JSON.stringify(pair))
+      console.log(pair.gauge.govTokenRewardRate, govTokenInfo.priceUSD, pair.gauge.totalSupply, gaugeLpValue)
     }
 
     setGauges(filteredAssets)

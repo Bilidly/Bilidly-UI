@@ -59,7 +59,6 @@ export default function ffVoteOverview() {
       setVeToken(stores.stableSwapStore.getStore('veToken'))
     }
     const veTotalSupplyReturned = (val) => {
-      console.log("total voting power " + val) 
       setTotalVotingPower(val)
     }
     ssUpdated()

@@ -2,21 +2,13 @@ import React, { useState, useEffect, useCallback } from 'react';
 import {
   Button,
   Typography,
-  Tooltip,
-  IconButton,
-  TextField,
-  InputAdornment,
-  Popper,
-  Fade,
   Grid,
-  Switch,
   Select,
   MenuItem
 } from '@material-ui/core';
 import classes from './ssRewards.module.css';
+import { CONTRACTS } from '../../stores/constants';
 
-import FilterListIcon from '@material-ui/icons/FilterList';
-import SearchIcon from '@material-ui/icons/Search';
 import RewardsTable from './ssRewardsTable.js'
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 
@@ -39,6 +31,7 @@ export default function ssRewards() {
 
   const stableSwapUpdated = (rew) => {
     const nfts = stores.stableSwapStore.getStore('vestNFTs')
+
     setVestNFTs(nfts)
     setVeToken(stores.stableSwapStore.getStore('veToken'))
 
@@ -62,20 +55,71 @@ export default function ssRewards() {
     forceUpdate()
   }
 
-  const rewardBalancesReturned = (rew) => {
+  const rewardBalancesReturned = async (rew) => {
+
     if(rew) {
-      if(rew && rew.bribes && rew.fees && rew.rewards && rew.veDist && rew.bribes.length >= 0 && rew.fees.length >= 0 && rew.rewards.length >= 0) {
+      if(rew && rew.bribes && rew.fees && rew.rewards && rew.rewards[0] && rew.rewards[0].gauge && rew.veDist && rew.bribes.length >= 0 && rew.fees.length >= 0 && rew.rewards.length >= 0) {
+        
+        for(let pair of rew.rewards) {
+          const govTokenInfo = await stores.stableSwapStore.getBaseAsset(CONTRACTS.GOV_TOKEN_ADDRESS)
+          const govTokenPrice = govTokenInfo.priceUSD
+          const gauge = pair.gauge
+          const totalSupply = gauge.totalSupply
+          const derivedBalance = gauge.derivedBalance
+          const derivedSupply = gauge.derivedSupply
+          const govTokenRewardRate = gauge.govTokenRewardRate
+          const balance = gauge.userBalance
+          const boost = (derivedBalance / (0.4 * balance)).toFixed(2)
+          const veTotalSupply = gauge.veTotalSupply
+          const nftLockValue = gauge.attachedVeLockValue
+
+          const lpValue = (pair.token0.priceUSD * pair.reserve0 + pair.token1.priceUSD * pair.reserve1) / pair.totalSupply
+          const rewardPerSecond = govTokenPrice * govTokenRewardRate
+          const apr = ((rewardPerSecond * (derivedBalance / derivedSupply)) / (balance * lpValue)) * (86400 * 365) * 100
+          let possibleAddedStake;
+          let needVeForMaxBoost;
+          
+          const userRemainingStake = (balance, totalSupply, nftLockValue, veTotalSupply, boost) => {
+            let maxStake = (totalSupply * nftLockValue) / veTotalSupply;
+          
+            if (balance > maxStake) {
+              return 0;
+            }
+          
+            if ((isNaN(boost) || boost === 0) && balance === 0) {
+              return maxStake;
+            }
+            return maxStake / (boost * 0.4) - balance
+          }
+
+          if(boost >= 2.5) {
+            const remainingStake = userRemainingStake(balance, totalSupply, nftLockValue, veTotalSupply, boost)
+            possibleAddedStake = (remainingStake / balance) + (remainingStake / totalSupply)
+          }
+          else {
+            needVeForMaxBoost = balance / (totalSupply - balance) * (veTotalSupply - nftLockValue) - nftLockValue
+          }
+
+          pair.gauge.boost = boost
+          pair.gauge.possibleAddedStake = possibleAddedStake
+          pair.gauge.neededForMaxBoost = needVeForMaxBoost
+          pair.gauge.apr = apr
+
+        }
+        
         setRewards([...rew.bribes, ...rew.fees, ...rew.rewards, ...rew.veDist])
       }
     } else {
-      let re = stores.stableSwapStore.getStore('rewards')
-      if(re && re.bribes && re.fees && re.rewards && re.veDist && re.bribes.length >= 0 && re.fees.length >= 0 && re.rewards.length >= 0) {
+        let re = stores.stableSwapStore.getStore('rewards')
+        if(re && re.bribes && re.fees && re.rewards && re.veDist && re.bribes.length >= 0 && re.fees.length >= 0 && re.rewards.length >= 0) {
         setRewards([...re.bribes, ...re.fees, ...re.rewards, ...re.veDist])
       }
     }
+
   }
 
   useEffect(() => {
+
     rewardBalancesReturned()
     stableSwapUpdated()
 

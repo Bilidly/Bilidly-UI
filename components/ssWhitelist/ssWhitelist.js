@@ -26,10 +26,8 @@ export default function ssWhitelist() {
   const forceUpdate = useCallback(() => updateState({}), []);
 
   const onSearchChanged = (event) => {
-    console.log("onSearchChanged")
     setSearch(event.target.value)
     if(web3 && web3.utils.isAddress(event.target.value)) {
-      console.log("dispatch")
       setLoading(true)
       stores.dispatcher.dispatch({ type: ACTIONS.SEARCH_WHITELIST, content: { search: event.target.value } })
     }
@@ -58,7 +56,6 @@ export default function ssWhitelist() {
     }
 
     const whitelistReturned = async (res) => {
-      console.log("withelist RES " + JSON.stringify(res))
       setWhitelistLoading(false)
     }
 
@@ -80,7 +77,6 @@ export default function ssWhitelist() {
     }
 
     const errorReturned = () => {
-      console.log("ERROR :(")
       setWhitelistLoading(false)
     }
 
@@ -111,7 +107,6 @@ export default function ssWhitelist() {
     // Get token index 0 because it's necessarily a one element array
     // as not whitelisted tokens are searched individually
     const tokenToWhitelist = token[0]
-    console.log("THE TOKEN TO W " + JSON.stringify(tokenToWhitelist))
     setWhitelistLoading(true)
     stores.dispatcher.dispatch({ type: ACTIONS.WHITELIST_TOKEN, content: { token : tokenToWhitelist, nft } })
   }

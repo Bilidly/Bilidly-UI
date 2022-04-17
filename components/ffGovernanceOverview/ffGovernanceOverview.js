@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { Paper, Grid, Typography, SvgIcon, Button, TextField, InputAdornment, CircularProgress } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import Skeleton from '@material-ui/lab/Skeleton';
@@ -38,6 +38,9 @@ function IbBalanceIcon(props) {
 
 export default function ffOverview() {
 
+  const [, updateState] = useState();
+  const forceUpdate = useCallback(() => updateState({}), []);
+
   const [ vestNFTs, setVestNFTs ] = useState([])
   const [ govToken, setGovToken] = useState(null)
   const [ veToken, setVeToken] = useState(null)
@@ -47,7 +50,7 @@ export default function ffOverview() {
   const [ totalBalance, setTotalBalance ] = useState(0)
 
 
-  const ssUpdated = () => {
+  const ssUpdated = async() => {
 
     const as = stores.stableSwapStore.getStore('assets')
     setAssets(as)
@@ -67,6 +70,8 @@ export default function ffOverview() {
 
 
     calculateTotalBalance(as)
+
+    forceUpdate()
   }
 
   useEffect(() => {
@@ -74,11 +79,11 @@ export default function ffOverview() {
       ssUpdated()
     }
 
-    ssUpdated()
-
     stores.emitter.on(ACTIONS.GET_VEST_NFTS, stableSwapUpdated);
+    stores.emitter.on(ACTIONS.UPDATED, stableSwapUpdated);
     return () => {
       stores.emitter.removeListener(ACTIONS.GET_VEST_NFTS, stableSwapUpdated);
+      stores.emitter.on(ACTIONS.UPDATED, stableSwapUpdated);
     };
   }, []);
 

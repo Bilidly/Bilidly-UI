@@ -46,14 +46,11 @@ export default function Boost () {
   }
 
   const veTotalSupplyReturned = (val) => {
-    console.log("ve total supply " + JSON.stringify(val))
     setTotalVeSupply(val)
   }
 
   const onGaugeSelectChanged = async (event, pair) => {
     setGauge(pair);
-
-    console.log("THE PAIR " + JSON.stringify(pair))
 
     const gaugeVal = pair.token0.priceUSD * pair.gauge.reserve0 + pair.token1.priceUSD * pair.gauge.reserve1
     setGaugeValue(gaugeVal)
