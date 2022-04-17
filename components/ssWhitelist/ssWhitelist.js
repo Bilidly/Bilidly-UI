@@ -11,6 +11,7 @@ import { formatAddress, formatCurrency } from '../../utils'
 
 export default function ssWhitelist() {
 
+
   const [ web3, setWeb3 ] = useState(null)
   const [ loading, setLoading ] = useState(false)
   const [ whitelistLoading, setWhitelistLoading ] = useState(false)
@@ -19,22 +20,45 @@ export default function ssWhitelist() {
   const [ nfts, setNFTS ] = useState([])
   const [ nft, setNFT ] = useState(null)
   const [ veToken, setVeToken ] = useState(null)
+  const [ whitelistedAssets, setWhitelistedAssets] = useState(null)
+
+  const [, updateState] = useState();
+  const forceUpdate = useCallback(() => updateState({}), []);
 
   const onSearchChanged = (event) => {
+    console.log("onSearchChanged")
     setSearch(event.target.value)
     if(web3 && web3.utils.isAddress(event.target.value)) {
+      console.log("dispatch")
       setLoading(true)
       stores.dispatcher.dispatch({ type: ACTIONS.SEARCH_WHITELIST, content: { search: event.target.value } })
     }
+    else {
+      noOption()
+      setToken(whitelistedAssets)
+    }
+  }
+
+  const noOption = () => {
+    const as = stores.stableSwapStore.getStore('baseAssets');
+
+    const filteredAssets = as.filter((asset) => {
+      return asset.isWhitelisted && asset.isWhitelisted == true
+    })
+    setToken(filteredAssets)
+    setWhitelistedAssets(filteredAssets)
   }
 
   useEffect(() => {
+    noOption()
+
     const searchReturned = async (res) => {
-      setToken(res)
+      setToken([res])
       setLoading(false)
     }
 
     const whitelistReturned = async (res) => {
+      console.log("withelist RES " + JSON.stringify(res))
       setWhitelistLoading(false)
     }
 
@@ -42,6 +66,8 @@ export default function ssWhitelist() {
       setVeToken(stores.stableSwapStore.getStore('veToken'))
       const nfts = stores.stableSwapStore.getStore('vestNFTs')
       setNFTS(nfts)
+
+      noOption()
 
       if(nfts && nfts.length > 0) {
         setNFT(nfts[0])
@@ -54,6 +80,7 @@ export default function ssWhitelist() {
     }
 
     const errorReturned = () => {
+      console.log("ERROR :(")
       setWhitelistLoading(false)
     }
 
@@ -81,75 +108,83 @@ export default function ssWhitelist() {
   }
 
   const onWhitelist = () => {
+    // Get token index 0 because it's necessarily a one element array
+    // as not whitelisted tokens are searched individually
+    const tokenToWhitelist = token[0]
+    console.log("THE TOKEN TO W " + JSON.stringify(tokenToWhitelist))
     setWhitelistLoading(true)
-    stores.dispatcher.dispatch({ type: ACTIONS.WHITELIST_TOKEN, content: { token, nft } })
+    stores.dispatcher.dispatch({ type: ACTIONS.WHITELIST_TOKEN, content: { token : tokenToWhitelist, nft } })
   }
 
   const handleChange = (event) => {
     setNFT(event.target.value)
   }
 
-  const renderToken = () => {
+  const renderToken = (token) => {
     return (
-      <Paper className={ classes.tokenContainer }>
-        <div className={ classes.inline }>
-          <img src={token.logoURI} alt='' width='70' height='70' className={ classes.tokenLogo } />
-          <div>
-            <Typography className={ classes.tokenName } variant='h2'>{token.name}</Typography>
-            <Tooltip title='View in explorer'>
-              <Typography className={ classes.tokenAddress } color='textSecondary' onClick={ () => { onAddressClick(token.address) } }>{formatAddress(token.address)}</Typography>
-            </Tooltip>
-          </div>
-        </div>
-        <div className={ classes.whitelistStatus }>
-          <div className={ classes.whitelistContainer }>
+        <Grid item xs={9} sm={4} md={3}>
+        <Paper className={ token.isWhitelisted ? classes.tokenContainerList : classes.tokenContainer }>
+          <div className={ classes.inline }>
             <div>
-              <Typography className={ classes.listingFee} color='textSecondary'>Whitelist Status</Typography>
-              { token.isWhitelisted &&
-                <Typography className={ classes.isWhitelist}>{ 'Whitelisted' }</Typography>
-              }
-              { !token.isWhitelisted &&
-                <Typography className={ classes.notWhitelist}>{ 'Not Whitelisted' }</Typography>
+            <img src={token.logoURI} alt='' width='70' height='70' className={ classes.tokenLogo } />
+            </div>
+            <div>
+              <Typography className={ classes.tokenName } variant='h4'>{token.name}</Typography>
+              <Tooltip title='View in explorer'>
+                <Typography className={ classes.tokenAddress } color='textSecondary' onClick={ () => { onAddressClick(token.address) } }>{formatAddress(token.address)}</Typography>
+              </Tooltip>
+            </div>
+          </div>
+          <div className={ classes.whitelistStatus }>
+            <div className={ classes.whitelistContainer }>
+              <div>
+                <Typography className={ classes.listingFee} color='textSecondary'>Status</Typography>
+                { token.isWhitelisted &&
+                  <Typography className={ classes.isWhitelist}>{ 'Whitelisted' }</Typography>
+                }
+                { !token.isWhitelisted &&
+                  <Typography className={ classes.notWhitelist}>{ 'Not Whitelisted' }</Typography>
+                }
+              </div>
+              {
+                !token.isWhitelisted &&
+                <Tooltip title='Listing fee either needs to be locked in your veToken NFT or be paid and burnt on list'>
+                  <div>
+                    <Typography className={ classes.listingFee} color='textSecondary'>Listing Fee</Typography>
+                    <Typography className={ classes.listingFee}>{formatCurrency(token.listingFee)} {veToken?.symbol}</Typography>
+                  </div>
+                </Tooltip>
               }
             </div>
-            {
-              !token.isWhitelisted &&
-              <Tooltip title='Listing fee either needs to be locked in your veToken NFT or be paid and burnt on list'>
-                <div>
-                  <Typography className={ classes.listingFee} color='textSecondary'>Listing Fee</Typography>
-                  <Typography className={ classes.listingFee}>{formatCurrency(token.listingFee)} {veToken?.symbol}</Typography>
-                </div>
-              </Tooltip>
-            }
+            <div>
+              { !token.isWhitelisted && nft && BigNumber(nft.lockValue).gt(token.listingFee) &&
+                <Button
+                  variant='contained'
+                  size='large'
+                  color='primary'
+                  onClick={ onWhitelist }
+                  className={ classes.buttonOverride }
+                  disabled={ whitelistLoading }
+                >
+                  <Typography className={ classes.actionButtonText }>{ whitelistLoading ? `Whitelisting` : `Whitelist` }</Typography>
+                  { whitelistLoading && <CircularProgress size={10} className={ classes.loadingCircle } /> }
+                </Button>
+              }
+              { !token.isWhitelisted && (!nft || BigNumber(nft.lockValue).lt(token.listingFee)) &&
+                <Button
+                  variant='contained'
+                  size='large'
+                  color='primary'
+                  className={ classes.buttonOverride }
+                  disabled={ true }
+                >
+                  <Typography className={ classes.actionButtonText }>{`Vest value < Fee`}</Typography>
+                </Button>
+              }
+            </div>
           </div>
-          <div>
-            { !token.isWhitelisted && nft && BigNumber(nft.lockValue).gt(token.listingFee) &&
-              <Button
-                variant='contained'
-                size='large'
-                color='primary'
-                onClick={ onWhitelist }
-                className={ classes.buttonOverride }
-                disabled={ whitelistLoading }
-              >
-                <Typography className={ classes.actionButtonText }>{ whitelistLoading ? `Whitelisting` : `Whitelist` }</Typography>
-                { whitelistLoading && <CircularProgress size={10} className={ classes.loadingCircle } /> }
-              </Button>
-            }
-            { !token.isWhitelisted && (!nft || BigNumber(nft.lockValue).lt(token.listingFee)) &&
-              <Button
-                variant='contained'
-                size='large'
-                color='primary'
-                className={ classes.buttonOverride }
-                disabled={ true }
-              >
-                <Typography className={ classes.actionButtonText }>{`Vest value < Fee`}</Typography>
-              </Button>
-            }
-          </div>
-        </div>
-      </Paper>
+        </Paper>
+        </Grid>
     )
   }
 
@@ -222,8 +257,13 @@ export default function ssWhitelist() {
 
       </div>
       <div className={ classes.results }>
-        { loading && <CircularProgress />}
-        { token && token.address && renderToken()}
+      <Grid container spacing={4}>
+        { 
+        token && token.map((token) => {
+          return renderToken(token)
+          })
+        }
+        </Grid>
       </div>
     </div>
   )
