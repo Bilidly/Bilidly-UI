@@ -3,7 +3,6 @@
   width: 100%;
   display: flex;
   flex-direction: column;
-  margin-top: 104px;
   position: relative;
 }
 
@@ -120,7 +119,6 @@
 @media screen and (max-width: 1200px) {
 
   .ffContainer {
-    padding-top: 80px;
   }
 
   .gridWrapper {
@@ -158,6 +156,5 @@
   }
 
   .ffContainer {
-    padding-top: 50px;
   }
 }

@@ -662,7 +662,7 @@ export default function EnhancedTable({ rewards, vestNFTs, tokenID }) {
                                 {formatCurrency(row.gauge.boost)}x
                               </Typography>
                               <div title=''>
-                              <Tooltip title={row?.gauge.boost == 2.5? `${Math.round(row.gauge.possibleAddedStake)}% more LPs can be staked at max boost` : `${formatCurrency(row.gauge.neededForMaxBoost)} more veBI in token #${row.gauge.attachedToken} needed to get max boost`} placement="right-end">
+                              <Tooltip title={row?.gauge.boost == 2.5? `${Math.round(row.gauge.possibleAddedStake)}% more LPs can be staked at max boost` : row.gauge.attachedToken? `${formatCurrency(row.gauge.neededForMaxBoost)} more veBI in token #${row.gauge.attachedToken} needed to get max boost` : `${formatCurrency(row.gauge.neededForMaxBoost)} veBI needed to get max boost`} placement="right-end">
                                 <IconButton>
                                   <InfoIcon className={ classes.infoIcon }/>
                                 </IconButton>

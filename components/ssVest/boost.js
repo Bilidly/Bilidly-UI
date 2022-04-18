@@ -20,15 +20,14 @@ export default function Boost () {
   const [lockAmount, setLockAmount] = useState(0);
   const [lockAmountError, setLockAmountError] = useState(false);
   const [gauge, setGauge] = useState(null);
+  const [pair, setPair] = useState(null);
   const [allGauges, setAllGauges] = useState([]);
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedDateError, setSelectedDateError] = useState(false);
   const [selectedValue, setSelectedValue] = useState('month');
   const [totalVeSupply, setTotalVeSupply] = useState(0)
   const [govTokenPrice, setGovTokenPrice] = useState(0)
-  const [gaugeValue, setGaugeValue] = useState(0)
-  const [gaugeDerivedSupply, setGaugeDerivedSupply] = useState(0)
-  const [gaugeTotalSupply, setgaugeTotalSupply] = useState(0)
+  const [gaugeLPValue, setGaugeLPValue] = useState(0)
 
   const veTotalSupply = () => {
     stores.dispatcher.dispatch({ type: ACTIONS.TOTAL_VOTING_POWER })
@@ -46,30 +45,20 @@ export default function Boost () {
   }
 
   const veTotalSupplyReturned = (val) => {
-    setTotalVeSupply(val)
+    setTotalVeSupply(Number(val))
   }
 
   const onGaugeSelectChanged = async (event, pair) => {
-    setGauge(pair);
+    setPair(pair);
 
-    const gaugeVal = pair.token0.priceUSD * pair.gauge.reserve0 + pair.token1.priceUSD * pair.gauge.reserve1
-    setGaugeValue(gaugeVal)
+    console.log("SELECTED " + JSON.stringify(pair))
+
+    const gaugeValue = pair.token0.priceUSD * pair.gauge.reserve0 + pair.token1.priceUSD * pair.gauge.reserve1
+    setGaugeLPValue(gaugeValue)
     
     const govTokenInfo = await stores.stableSwapStore.getBaseAsset(CONTRACTS.GOV_TOKEN_ADDRESS)
 
     setGovTokenPrice(govTokenInfo.priceUSD)
-
-    stores.dispatcher.dispatch({ type: ACTIONS.GET_GAUGE_INFO, content: pair})
-
-    const gaugeInfoReturned = (val) => {
-      setGaugeDerivedSupply(val.derivedSupply)
-      setgaugeTotalSupply(val.gaugeTotal)
-    }
-
-    stores.emitter.on(ACTIONS.GET_GAUGE_INFO_RETURNED, gaugeInfoReturned)
-    return () => {
-      stores.emitter.removeListener(ACTIONS.GET_GAUGE_INFO_RETURNED, gaugeInfoReturned);
-    }
   };
 
   const handleDateChange = (event) => {
@@ -99,44 +88,56 @@ export default function Boost () {
     setSelectedDate(normalizeDate(newDate));
   };
 
-  const calculatedBoost = (gauge, stake, lock, endLockDate) => {
-    const veUnderlyingForLock = veTokenForLock(lock, endLockDate);
 
-    return userBoost(gauge, stake, veUnderlyingForLock, +totalVeSupply);
-  };
-
-  const veTokenForLock = (lock, endLockDate) => {
+  const veTokenForLock = (lockAmount, endLockDate) => {
     const lockDuration = moment.duration(moment(endLockDate).diff(moment())).asDays();
     const maxLockDuration = moment.duration(moment().add(4, 'years').diff(moment())).asDays();
 
-    let amount = (lock * lockDuration) / maxLockDuration;
-
+    let amount = (lockAmount * lockDuration) / maxLockDuration;
     return amount ? amount : 0;
   };
 
-  const userBoost = (gauge, stake, veTokenBalance, totalVeTokenSupply) => {
-    if (!gauge) {
-      return 0;
-    }
-
-    return Math.min(userLiquidityShare(gauge, stake, veTokenBalance, totalVeTokenSupply) / userLiquidityShare(gauge, stake, 0, totalVeTokenSupply), 2.5);
-  };
-
-  const userLiquidityShare = (gauge, balance, veTokenBalance, totalVeTokenSupply) => {
-    let derivedBalance = Math.min(
-      balance * 0.4 + ((gaugeValue + balance) * 0.6 * veTokenBalance) / (totalVeTokenSupply + veTokenBalance),
+  const calculateDerivedBalance = (gauge, balance, lockAmount, endLockDate) => {
+    // We substract existing lock from new lock added to totalVeSupply
+    /*const nfts = stores.stableSwapStore.getStore('vestNFTs')
+    let existingLock = 0
+    for(let nft of nfts) {
+      existingLock += Number(nft.lockValue)
+    }*/
+    const veUnderlyingForLock = veTokenForLock(lockAmount, endLockDate);
+    return Math.min(
+      balance * 0.4 + ((Number(gauge.totalSupply) + balance) * 0.6 * veUnderlyingForLock) / (totalVeSupply + veUnderlyingForLock),
       balance,
     );
-    return (derivedBalance * 100) / ((gaugeDerivedSupply / gaugeTotalSupply) * gaugeValue + derivedBalance);
+  }
+
+  const userBoost = (pair, stakeAmount, lockAmount, endLockDate) => {
+    if (!pair) {
+      return 0;
+    }
+    const gauge = pair.gauge
+    const lpValue = (pair.token0.priceUSD * pair.reserve0 + pair.token1.priceUSD * pair.reserve1) / pair.totalSupply
+    console.log(typeof pair.totalSupply, typeof pair.gauge)
+    const balance = stakeAmount / lpValue
+    const derivedBalance = calculateDerivedBalance(gauge, balance, lockAmount, endLockDate)
+    
+    const boost = (derivedBalance / (0.4 * balance)).toFixed(2)
+    return boost
   };
 
-  const userAPR = (gauge, balance, lock, endLockDate) => {
-    const veUnderlyingForLock = veTokenForLock(lock, endLockDate);
-    console.log(veUnderlyingForLock, balance, totalVeSupply)
-    const liquidityShare = userLiquidityShare(gauge, +balance, +veUnderlyingForLock, +totalVeSupply);
+  const userAPR = (pair, stakeAmount, lockAmount, endLockDate) => {
+    if (!pair) {
+      return 0;
+    }
+    const gauge = pair.gauge
+    const lpValue = (pair.token0.priceUSD * pair.reserve0 + pair.token1.priceUSD * pair.reserve1) / pair.totalSupply
+    const balance = stakeAmount / lpValue
+    const derivedBalance = calculateDerivedBalance(gauge, balance, lockAmount, endLockDate)
 
-    return (gauge.gaugeRewards * liquidityShare) / (balance / gaugeDerivedSupply) * gaugeValue;
-    //return (gauge.gaugeRewards * liquidityShare) / (derivedBalance / gaugeDerivedSupply) * gaugeValue;
+    const govRewardsValue = gauge.govTokenRewardRate * govTokenPrice
+
+    const apr = ((govRewardsValue * (derivedBalance / (Number(gauge.derivedSupply) + derivedBalance))) / stakeAmount) * (86400 * 365) * 100
+    return apr
   };
 
   useEffect(() => {
@@ -156,6 +157,12 @@ export default function Boost () {
       stores.emitter.removeListener(ACTIONS.TOTAL_VOTING_POWER_RETURNED, veTotalSupplyReturned);
     };
   }, []);
+
+  const clearPlaceholder = () => {
+    if (stakeAmount === 0) setStakeAmount("");
+    if (lockAmount === 0) setLockAmount("");
+  };
+
 
   return (
     <Paper elevation={1} className={classes.projectCardContainer}>
@@ -201,7 +208,7 @@ export default function Boost () {
           <div className={classes.inputTitleContainer}>
             <div className={classes.inputTitle}>
               <Typography variant="h5" noWrap>
-                Staked amount {gauge ? `($${formatCurrency(gaugeValue)})` : ''}
+                Staked amount {gauge ? `($${formatCurrency(gaugeLPValue)})` : ''}
               </Typography>
             </div>
           </div>
@@ -209,6 +216,7 @@ export default function Boost () {
             variant="outlined"
             fullWidth
             placeholder="0.00"
+            onFocus={() => clearPlaceholder()}
             value={stakeAmount}
             error={stakeAmountError}
             onChange={(e) => {
@@ -229,6 +237,7 @@ export default function Boost () {
             variant="outlined"
             fullWidth
             placeholder="0.00"
+            onFocus={() => clearPlaceholder()}
             value={lockAmount}
             error={lockAmountError}
             onChange={(e) => {
@@ -281,15 +290,15 @@ export default function Boost () {
             </Typography>
             {gauge ? (
               <Typography variant="h5">
-                Total staked in gauge: ${formatCurrency(gaugeValue)}
+                Total staked in gauge: ${formatCurrency(gaugeLPValue)}
               </Typography>
             ) : (
               ''
             )}
           </div>
           <div>
-            <Typography variant="h4">Boost: {formatCurrency(calculatedBoost(gauge, stakeAmount, lockAmount, selectedDate))}</Typography>
-            {gauge ? <Typography>Estimated APR: {formatCurrency(userAPR(gauge, stakeAmount, lockAmount, selectedDate))}%</Typography> : ''}
+            <Typography variant="h4">Boost: {formatCurrency(userBoost(pair, stakeAmount, lockAmount, selectedDate))}</Typography>
+            {pair ? <Typography>Estimated APR: {formatCurrency(userAPR(pair, stakeAmount, lockAmount, selectedDate))}%</Typography> : ''}
           </div>
         </div>
       </div>

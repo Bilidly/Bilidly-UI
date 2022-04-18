@@ -46,11 +46,11 @@ export default function ffVoteOverview() {
 
   const ssUpdated = () => {
     const nfts = stores.stableSwapStore.getStore('vestNFTs');
-    let votingPower = 0;
-    for(let i = 0; i < nfts.length; i++) {
-      votingPower += Number(stores.stableSwapStore.getStore('vestNFTs')[i].lockValue) || 0
+    let existingLock = 0
+    for(let nft of nfts) {
+      existingLock += Number(nft.lockValue)
     }
-    setVotingPower(votingPower)
+    setVotingPower(existingLock)
   }
 
   useEffect(() => {

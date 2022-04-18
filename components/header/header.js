@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from "next/router";
 
-import { Typography, Switch, Button, SvgIcon, Badge, IconButton, Menu, MenuItem, ListItemIcon, ListItemText } from '@material-ui/core';
+import { Typography, Container, Switch, Button, SvgIcon, Badge, IconButton, Menu, MenuItem, ListItemIcon, ListItemText } from '@material-ui/core';
 import { withStyles, withTheme } from '@material-ui/core/styles';
 import HelpIcon from '@material-ui/icons/Help';
 import ListIcon from '@material-ui/icons/List';
@@ -10,6 +10,7 @@ import AccountBalanceWalletOutlinedIcon from '@material-ui/icons/AccountBalanceW
 import DashboardOutlinedIcon from '@material-ui/icons/DashboardOutlined';
 
 import Navigation from '../navigation'
+import Subnavigation from '../subnavigation'
 import Unlock from '../unlock';
 import TransactionQueue from '../transactionQueue';
 
@@ -334,6 +335,13 @@ function Header(props) {
         </div>
       </div>
     ) : null}
+      <div>
+        {router.pathname.startsWith('/governance') ?     
+        <Container className={ classes.subHeaderContainer}>
+          <Subnavigation className={ classes.subHeader} changeTheme={props.changeTheme} />
+        </Container> 
+        : ''}
+        </div>
     </div>
   );
 }
