@@ -17,11 +17,10 @@ function a11yProps(index) {
   return {
     id: `item-tabs-${index}`,
     "aria-controls": `item-tabspanel-${index}`,
-    children: index + 1,
   };
 }
 
-const StyledTab = withStyles(() => ({
+const StyledTab = withStyles((t) => ({
   root: {
     padding: ".5rem 2rem",
     textTransform: "capitalize",
@@ -36,6 +35,11 @@ const StyledTab = withStyles(() => ({
         color: "#fff",
       },
     },
+    [t.breakpoints.down("xs")]: {
+      minWidth: "90px",
+      padding: ".5rem 1rem",
+      fontSize: "0.75rem",
+    }
   },
 }))(Tab);
 
@@ -82,12 +86,19 @@ const EnhancedTableToolbar = (props) => {
   }
 
   return (
-    <Toolbar className={ classes.toolbar }>
-
-        <Grid lg='auto' md={12} sm={12} xs={12} item>
+        <Grid lg='auto' md={12} sm={12} xs={12} item style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          margin: `20px 0`,
+          maxWidth: '100vw',
+          padding: '0px 10px',
+          boxSize: 'border-box',
+        }}>
           <Button
             variant="contained"
             color="secondary"
+            fullWidth
             startIcon={<EnhancedEncryptionOutlinedIcon />}
             size='large'
             className={ classes.buttonOverride }
@@ -96,10 +107,6 @@ const EnhancedTableToolbar = (props) => {
             <Typography className={ classes.actionButtonText }>Create Lock</Typography>
           </Button>
         </Grid>
-        <Grid item lg={true} md={true} sm={false} xs={false}></Grid>
-
-
-    </Toolbar>
   );
 };
 
@@ -108,51 +115,46 @@ const SubHeader = ({ children,}) => {
   const router = useRouter();
   const classes = useStyles();
   const indicator = useRef(null);
-  const [active, setActive] = useState(null);
+  const [active, setActive] = useState(false);
   function handleNavigate(route) {
     router.push(route, null, { shallow: true });
   }
 
   useEffect(() => {
     const activePath = router.asPath;
-    if (activePath.includes("vest")) {
-      setActive("vest");
-    }
-    if (activePath.includes("vote")) {
-      setActive("vote");
-    }
-    if (activePath.includes("bribe")) {
-      setActive("bribe");
-    }
-    if (activePath.includes("whitelist")) {
-      setActive("whitelist");
-    }
+    links.forEach((link) => {
+      if (activePath.includes(link)) {
+        setActive(link);
+        if (indicator.current) {
+          const isForward = links.indexOf(link) > links.indexOf(active);
+          indicator.current.style.setProperty(
+          "--transform-origin",
+          isForward ? "right" : "left"
+          );
+          indicator.current.classList.add(styles["moving-indicator"]);
+          clearTimeout(window.indicatorTimeout);
+          window.indicatorTimeout = setTimeout(() => {
+          indicator.current?.classList.remove(styles["moving-indicator"]);
+          }, 300);
+          return ()=> {
+            clearTimeout(window.indicatorTimeout);
+          }
+          }
+      }
+    });
   }, [router.asPath]);
   
   const handleChange = (e, val) => {
     if (val) {
-      if (indicator.current) {
-        const isForward = links.indexOf(val) > links.indexOf(active);
-        indicator.current.style.setProperty(
-        "--transform-origin",
-        isForward ? "right" : "left"
-        );
-        indicator.current.classList.add(styles["moving-indicator"]);
-        clearTimeout(window.indicatorTimeout);
-        window.indicatorTimeout = setTimeout(() => {
-        indicator.current?.classList.remove(styles["moving-indicator"]);
-        }, 300);
-        }
-        setActive(val);
-        handleNavigate("/governance/" + val);
-      }
-    };
+      handleNavigate("/governance/" + val);
+    }
+  };
   return (
     <div className={classes.container}>
-    <Grid container spacing={1}>
+    <Grid container alignItems="center" spacing={1}>
          <EnhancedTableToolbar />
             <Tabs
-              style={{ padding: 20 }}
+              style={{ padding: 15, maxWidth: '100vw' }}
               TabIndicatorProps={{
                 className: classes.indicator,
                 ref: indicator,
@@ -175,7 +177,7 @@ const SubHeader = ({ children,}) => {
                 />
               ))}
             </Tabs>
-            </Grid>
+      </Grid>
         <main>{children}</main>
       </div>
   );

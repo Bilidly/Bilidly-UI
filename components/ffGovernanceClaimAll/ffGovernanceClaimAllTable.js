@@ -267,11 +267,7 @@ export default function EnhancedTable({ claimable, crv, ibEUR, rKP3R }) {
       <TableContainer className={ classes.tableContainer }>
         <Table className={classes.table} aria-labelledby="tableTitle" size={'medium'} aria-label="enhanced table">
           <TableBody>
-            {stableSort(claimable, getComparator(order, orderBy)).map((row) => {
-              if (!row) {
-                return null;
-              }
-
+            {stableSort(claimable, getComparator(order, orderBy)).filter(r=> r).map((row) => {
               return (
                 <TableRow key={row.type+'_'+row.description}>
                   <TableCell className={classes.cell}>
