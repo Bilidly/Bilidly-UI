@@ -349,10 +349,8 @@ export default function EnhancedTable({ vestNFTs, govToken, veToken }) {
             <TableBody>
               {stableSort(vestNFTs, getComparator(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .filter(r=> r)
                 .map((row, index) => {
-                if (!row) {
-                  return null;
-                }
                 const labelId = `enhanced-table-checkbox-${index}`;
 
                 return (

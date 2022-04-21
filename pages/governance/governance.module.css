@@ -6,7 +6,7 @@
   margin-top: 40px;
   padding-top: 40px;
   position: relative;
-  margin-left: 130px;
+  padding-left: 130px;
 }
 
 .viewCollateral,
@@ -144,7 +144,7 @@
 @media screen and (max-width: 1300px) {
 
   .ffContainer {
-    margin-left: 0px;
+    padding-left: 0px;
   }
 
 }

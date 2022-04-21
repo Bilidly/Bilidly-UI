@@ -24,7 +24,7 @@ export default function ssVotes() {
   const [ voteLoading, setVoteLoading ] = useState(false)
   const [ votes, setVotes ] = useState([])
   const [ veToken, setVeToken ] = useState(null)
-  const [ token, setToken ] = useState(null)
+  const [ token, setToken ] = useState("")
   const [ vestNFTs, setVestNFTs ] = useState([])
   const [ search, setSearch ] = useState('')
   const [ govTokenPrice, setGovTokenPrice] = useState(0)
@@ -97,7 +97,7 @@ export default function ssVotes() {
       setVoteLoading(false)
     }
 
-    ssUpdated()
+    setTimeout(ssUpdated, 300)
 
     // stores.dispatcher.dispatch({ type: ACTIONS.GET_VEST_NFTS, content: {} })
 
@@ -153,9 +153,7 @@ export default function ssVotes() {
                   fullWidth
                   value={ value }
                   onChange={handleChange}
-                  InputProps={{
-                    className: classes.mediumInput,
-                  }}
+                  className={classes.mediumInput}
                 >
                   { options && options.map((option) => {
                     return (
