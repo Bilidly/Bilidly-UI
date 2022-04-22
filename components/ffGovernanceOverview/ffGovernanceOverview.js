@@ -55,13 +55,14 @@ export default function ffOverview() {
     const as = stores.stableSwapStore.getStore('assets')
     setAssets(as)
 
-    const nfts = stores.stableSwapStore.getStore('vestNFTs');
+    const nfts = stores.stableSwapStore.getStore('vestNFTs')
     let govTokenBalance = stores.stableSwapStore.getStore('govToken')
-    let vestedBalance = 0;
+
+    let vestedBalance = 0
     let rewards = 0
-    for(let i = 0; i < nfts.length; i++) {
-      vestedBalance += Number(stores.stableSwapStore.getStore('vestNFTs')[i].lockAmount) || 0
-      rewards += Number(stores.stableSwapStore.getStore('rewards').rewards[i]) || 0
+    for(let nft of nfts) {
+      vestedBalance += Number(nft.lockAmount)
+      rewards += Number(nft.rewards)
     }
 
     setGovToken(govTokenBalance)

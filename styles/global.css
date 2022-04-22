@@ -10,67 +10,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   z-index: 9;
 }
 
-@font-face {
-  font-family: "CottonCandies";
-  src: url("/fonts/CottonCandies/CottonCandies.ttf");
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Monument";
-  src: url("/fonts/MonumentExt/MonumentExtended-Regular.otf");
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Monument Bold";
-  src: url("/fonts/MonumentExt/MonumentExtended-Bold.otf");
-  font-style: medium;
-  font-weight: 700;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Monument Light";
-  src: url("/fonts/MonumentExt/MonumentExtended-Light.otf");
-  font-style: thin;
-  font-weight: 100;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Inter";
-  src: url("/fonts/Inter/Inter-Regular.ttf");
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Inter Bold";
-  src: url("/fonts/Inter/Inter-Bold.ttf");
-  font-style: medium;
-  font-weight: 700;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Inter Light";
-  src: url("/fonts/Inter/Inter-Light.ttf");
-  font-style: thin;
-  font-weight: 100;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Druk Wide Bold";
-  src: url("/fonts/Druk/Druk Wide Bold.ttf");
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-}
-
-
 button {
   text-transform: none !important;
 }

@@ -19,7 +19,7 @@ import { formatAddress } from '../../utils';
 import styles from './subnavigation.module.css';
 import EnhancedEncryptionOutlinedIcon from '@material-ui/icons/EnhancedEncryptionOutlined';
 
-const StyledTab = withStyles(() => ({
+const StyledTab = withStyles((t) => ({
   root: {
     padding: ".5rem 2rem",
     textTransform: "capitalize",
@@ -27,12 +27,18 @@ const StyledTab = withStyles(() => ({
     zIndex: 1,
     //backgroundColor: "white",
     "&.Mui-selected": {
+      borderRadius: "3px",
       position: "relative",
       zIndex: 1,
       color: "#fff",
       "& a": {
         color: "#fff",
       },
+    [t.breakpoints.down("xs")]: {
+      minWidth: "90px",
+      padding: ".5rem 1rem",
+      fontSize: "0.75rem",
+    }
     },
   },
 }))(Tab);
@@ -40,12 +46,6 @@ const StyledTab = withStyles(() => ({
 const links = ["vest", "vote", "bribe", "whitelist"];
 
 const useStyles = makeStyles((t) => ({
-  indicator: {
-    borderRadius: "100px",
-    backgroundColor: `${t.palette.primary.main} !important`,
-    height: "100%",
-    transition: "all 0.3s ease",
-  },
   buttonOverride: {
     color: 'rgb(255,180,5)',
     background: 'rgb(84, 80, 80)',
@@ -58,10 +58,8 @@ const useStyles = makeStyles((t) => ({
   },
   toolbar: {
     margin: '14px 0px',
-    padding: '0px',
     alignItem: 'center',
     position: 'relative',
-    marginLeft: '180px'
   },
   actionButtonText: {
     fontSize: '15px',
@@ -92,34 +90,36 @@ const EnhancedTableToolbar = (props) => {
   }
 
   return (
-    <Toolbar className={ classes.toolbar }>
-
-        <Grid lg='auto' md={12} sm={12} xs={12} item>
-          <Button
-            variant="contained"
-            color="secondary"
-            startIcon={<EnhancedEncryptionOutlinedIcon />}
-            size='large'
-            className={ classes.buttonOverride }
-            onClick={ onCreate }
-          >
-            <Typography className={ classes.actionButtonText }>Create Lock</Typography>
-          </Button>
-        </Grid>
-        <Grid item lg={true} md={true} sm={false} xs={false}></Grid>
-
-
-    </Toolbar>
+    <Grid lg='auto' md={12} sm={12} xs={12} item style={{
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      margin: `20px 0`,
+      maxWidth: '100vw',
+      padding: '0px 10px',
+      boxSize: 'border-box',
+    }}>
+      <Button
+        variant="contained"
+        color="secondary"
+        fullwidth
+        startIcon={<EnhancedEncryptionOutlinedIcon />}
+        size='large'
+        className={ classes.buttonOverride }
+        onClick={ onCreate }
+      >
+        <Typography className={ classes.actionButtonText }>Create Lock</Typography>
+      </Button>
+    </Grid>
   );
 };
 
 
 const Subnavigation = (props) => {
-  console.log("HELLOOOOO")
   const router = useRouter();
   const classes = useStyles();
   const indicator = useRef(null);
-  const [active, setActive] = useState(null);
+  const [active, setActive] = useState(false);
   function handleNavigate(route) {
     router.push(route, null, { shallow: true });
   }
@@ -160,21 +160,12 @@ const Subnavigation = (props) => {
     };
   return (
     <div className={classes.container}>
-    <Grid container spacing={2}>
+    <Grid container alignItems="center" spacing={1}>
          <EnhancedTableToolbar />
             <Tabs
-              style={{ padding: 20 }}
-              TabIndicatorProps={{
-                className: classes.indicator,
-                ref: indicator,
-              }}
-              classes={{
-                scroller: styles["px-3"],
-              }}
               value={active}
-              variant="scrollable"
-              scrollButtons="auto"
               onChange={handleChange}
+              className={classes.toolbar}
             >
             {links.map((link, index) => (
               <StyledTab
@@ -186,7 +177,7 @@ const Subnavigation = (props) => {
               />
             ))}
             </Tabs>
-            </Grid>
+          </Grid>
       </div>
   );
 }

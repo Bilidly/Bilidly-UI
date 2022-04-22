@@ -166,12 +166,12 @@ function Navigation(props) {
           'liquidity',
         )}
         {renderSubNav(
-          'Governance',
-          'governance',
-        )}
-        {renderSubNav(
           'Rewards',
           'rewards',
+        )}
+        {renderSubNav(
+          'Governance',
+          'governance',
         )}
       </ToggleButtonGroup>
     );

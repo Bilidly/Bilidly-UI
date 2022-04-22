@@ -4,7 +4,7 @@
   display: block;
   flex-direction: column;
   margin: auto;
-  margin-top: 48px;
+  margin-top: 24px;
   margin-bottom: 60px;
 }
 
@@ -96,7 +96,7 @@
   border-radius: 10px;
   width: 100%;
   align-items: center;
-  background: rgb(56, 56, 56);
+  background: rgb(77, 70, 70);
   padding: 0 20px;
 }
 

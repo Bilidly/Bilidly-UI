@@ -24,7 +24,7 @@ export default function ssVotes() {
   const [ voteLoading, setVoteLoading ] = useState(false)
   const [ votes, setVotes ] = useState([])
   const [ veToken, setVeToken ] = useState(null)
-  const [ token, setToken ] = useState(null)
+  const [ token, setToken ] = useState("")
   const [ vestNFTs, setVestNFTs ] = useState([])
   const [ search, setSearch ] = useState('')
   const [ govTokenPrice, setGovTokenPrice] = useState(0)

@@ -301,7 +301,7 @@
   cursor: pointer;
   padding: 6px;
   font-size: 30px !important;
-  background: rgb(56, 56, 56);
+  background: rgb(77, 70, 70);
   margin: 4px;
   border-radius: 6px;
 }
@@ -316,7 +316,7 @@
   border-radius: 10px;
   width: 100%;
   align-items: center;
-  background: rgb(56, 56, 56);
+  background: rgb(77, 70, 70);
 }
 
 .massiveInputAssetSelect {
@@ -348,7 +348,7 @@
 .displayAssetIcon {
   border: 1px solid rgba(128, 128, 128, 0.5);
   border-radius: 50px;
-  background: rgb(56, 56, 56);
+  background: rgb(77, 70, 70);
   width: 100px;
   height: 100px;
   padding: 10px;
@@ -360,7 +360,7 @@
   border-radius: 10px;
   width: 100%;
   align-items: center;
-  background: rgb(56, 56, 56);
+  background: rgb(77, 70, 70);
   min-height: 50px;
 }
 
@@ -393,7 +393,7 @@
 .mediumdisplayAssetIcon {
   border: 1px solid rgba(128, 128, 128, 0.5);
   border-radius: 50px;
-  background: rgb(56, 56, 56);
+  background: rgb(77, 70, 70);
   width: 50px;
   height: 50px;
   padding: 5px;
@@ -574,7 +574,7 @@
 .displayAssetIconSmall {
   border: 1px solid rgba(153, 144, 126, 0.5);
   border-radius: 30px;
-  background: rgb(56, 56, 56);
+  background: rgb(77, 70, 70);
   padding: 6px;
 }
 
@@ -612,7 +612,7 @@
   border-radius: 10px;
   width: 100%;
   align-items: center;
-  background: rgb(56, 56, 56);
+  background: rgb(77, 70, 70);
   max-width: 80px;
   min-height: 50px;
   padding: 20px 12px 4px 12px ;

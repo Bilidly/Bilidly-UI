@@ -267,9 +267,13 @@ function MyComponent(props) {
           display = "Coinbase Wallet";
           url = "/connectors/coinbaseWalletIcon.svg";
           descriptor = "Connect to your Coinbase wallet";
-        } else if (name === "Frame") {
-          return "";
-        }
+        } else if (name === "BSC") {
+          url = "/connectors/binance.svg";
+          descriptor = "Connect to your Binance wallet";
+        } /*else if (name === "Frame") {
+          url = "/connectors/frame.svg";
+          descriptor = "Connect to your Frame wallet";
+        }*/
 
         return (
           <div
@@ -283,7 +287,7 @@ function MyComponent(props) {
             <Button
               style={{
                 width: width > 576 ? "350px" : "calc(100vw - 100px)",
-                height: "200px",
+                height: "150px",
                 backgroundColor: "rgba(0,0,0,0.05)",
                 border: "1px solid rgba(108,108,123,0.2)",
                 color: "rgba(108,108,123,1)"

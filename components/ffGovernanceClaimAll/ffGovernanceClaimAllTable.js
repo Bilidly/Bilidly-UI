@@ -8,8 +8,10 @@ import classes from './ffGovernanceClaimAll.module.css';
 
 import stores from '../../stores'
 import { ACTIONS } from '../../stores/constants';
+import { CONTRACTS } from '../../stores/constants';
 
 import { formatCurrency } from '../../utils';
+import { SystemUpdateRounded } from '@material-ui/icons';
 
 function descendingComparator(a, b, orderBy) {
   if (!a || !b) {
@@ -30,6 +32,7 @@ function getComparator(order, orderBy) {
 }
 
 function stableSort(array, comparator) {
+  console.log("THE ARRAY " + array)
   const stabilizedThis = array.map((el, index) => [el, index]);
   stabilizedThis.sort((a, b) => {
     const order = comparator(a[0], b[0]);
@@ -163,8 +166,6 @@ const useStyles = makeStyles((theme) => ({
   buttonOverride: {
     boxShadow: 'none !important',
     minWidth: '100%',
-    background: 'gold',
-    color: '#000',
     padding: '12px 24px !important',
     borderRadius: '40px !important',
     marginLeft: '-25px',
@@ -204,11 +205,20 @@ export default function EnhancedTable({ claimable, crv, ibEUR, rKP3R }) {
   const [orderBy, setOrderBy] = React.useState('balance');
   const [claimLoading, setClaimLoading ] = React.useState(false)
   const [claimedAsset, setClaimedAsset] = React.useState()
+  const [govTokenPrice, setGovTokenPrice] = React.useState()
+
+  const ssUpdated = async() => {
+    const govTokenInfo = await stores.stableSwapStore.getBaseAsset(CONTRACTS.GOV_TOKEN_ADDRESS)
+    setGovTokenPrice(govTokenInfo.priceUSD)
+    console.log("EARNED " + JSON.stringify(claimable) + " PRICE " + govTokenInfo.priceUSD)
+  }
 
   React.useEffect(() => {
     const rewardClaimed = () => {
       setClaimLoading(false)
     }
+
+    ssUpdated()
 
     stores.emitter.on(ACTIONS.FIXED_FOREX_CURVE_REWARD_CLAIMED, rewardClaimed);
     stores.emitter.on(ACTIONS.FIXED_FOREX_DISTRIBUTION_REWARD_CLAIMED, rewardClaimed);
@@ -238,12 +248,15 @@ export default function EnhancedTable({ claimable, crv, ibEUR, rKP3R }) {
     if(asset.gauge) {
       // this is a gauge
       stores.dispatcher.dispatch({ type: ACTIONS.FIXED_FOREX_CLAIM_CURVE_REWARDS, content: { asset: asset.gauge }})
-    } else if(asset.type === 'Solidly' && asset.description === 'Fee Claim') {
+    } else if(asset.type === 'Bilidly' && asset.description === 'Fee Claim') {
       stores.dispatcher.dispatch({ type: ACTIONS.FIXED_FOREX_CLAIM_DISTRIBUTION_REWARD, content: {  }})
-    } else if(asset.type === 'Solidly' && asset.description === 'Vesting Rewards') {
+    } else if(asset.type === 'Bilidly' && asset.description === 'Vesting Rewards') {
       stores.dispatcher.dispatch({ type: ACTIONS.FIXED_FOREX_CLAIM_VESTING_REWARD, content: {  }})
-    } else if(asset.type === 'Solidly' && asset.description === 'Redeemable KP3R') {
+    /*} else if(asset.type === 'Solidly' && asset.description === 'Redeemable KP3R') {
       stores.dispatcher.dispatch({ type: ACTIONS.FIXED_FOREX_CLAIM_RKP3R, content: {  }})
+    }*/
+    } else if(asset.type === 'Bilidly' && asset.description === 'LP Rewards') {
+      stores.dispatcher.dispatch({ type: ACTIONS.CLAIM_REWARD, content: {  }})
     }
   }
 
@@ -267,11 +280,7 @@ export default function EnhancedTable({ claimable, crv, ibEUR, rKP3R }) {
       <TableContainer className={ classes.tableContainer }>
         <Table className={classes.table} aria-labelledby="tableTitle" size={'medium'} aria-label="enhanced table">
           <TableBody>
-            {stableSort(claimable, getComparator(order, orderBy)).map((row) => {
-              if (!row) {
-                return null;
-              }
-
+            {stableSort(claimable, getComparator(order, orderBy)).filter(r=> r).map((row) => {
               return (
                 <TableRow key={row.type+'_'+row.description}>
                   <TableCell className={classes.cell}>
@@ -286,9 +295,9 @@ export default function EnhancedTable({ claimable, crv, ibEUR, rKP3R }) {
 
                             <Grid item lg={3} md={2} sm={2} xs={2}>
                               {
-                              row?.type === 'Solidly' && <img className={ classes.imgLogo } src={`/images/ff-icon.svg`} width='35' height='35' alt='' />}
+                              row?.type === 'Bilidly' && <img className={ classes.imgLogo } src={`${process.env.NEXT_PUBLIC_TEST_URL}Solidly-O.svg`} width='35' height='35' alt='' />}
                               {
-                              row?.type !== 'Solidly' && <img className={ classes.imgLogo } src={`https://raw.githubusercontent.com/yearn/yearn-assets/master/icons/multichain-tokens/1/${row.address}/logo-128.png`} width='35' height='35' alt='' />
+                              row?.type !== 'Bilidly' && <img className={ classes.imgLogo } src={`https://raw.githubusercontent.com/yearn/yearn-assets/master/icons/multichain-tokens/1/${row.address}/logo-128.png`} width='35' height='35' alt='' />
                               }
                             </Grid>
 
@@ -325,10 +334,13 @@ export default function EnhancedTable({ claimable, crv, ibEUR, rKP3R }) {
                                 {
                                   (row.symbol === 'rKP3R' || row.symbol === 'kp3R') &&
                                   formatCurrency(BigNumber(row?.earned).times(rKP3R?.price))
-
                                 }
                                 {
-                                  !['CRV', 'ibEUR', 'rKP3R', 'kp3R'].includes(row.symbol) &&
+                                  (row.symbol === process.env.NEXT_PUBLIC_GOV_TOKEN_TICKER) &&
+                                  formatCurrency(BigNumber(row?.earned).times(govTokenPrice))
+                                }
+                                {
+                                  !['CRV', 'ibEUR', 'rKP3R', 'kp3R', process.env.NEXT_PUBLIC_GOV_TOKEN_TICKER].includes(row.symbol) &&
                                   formatCurrency(0)
                                 }
                               </Typography>
@@ -337,7 +349,7 @@ export default function EnhancedTable({ claimable, crv, ibEUR, rKP3R }) {
                             <Grid item lg={3} md={3} sm={3} xs={3} className={classes.alignR}>
                               <Button
                                 className={ classes.buttonOverride }
-                                variant='contained'
+                                variant='outlined'
                                 size='large'
                                 color='primary'
                                 disabled={ claimLoading && (!claimedAsset || claimedAsset.symbol === row.symbol) }

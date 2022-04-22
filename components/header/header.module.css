@@ -141,7 +141,7 @@
   align-items: center;
   margin-left: 14px !important;
   min-height: 50px;
-  background-color: rgb(56, 56, 56) !important;
+  background-color: rgb(77, 70, 70) !important;
   border: 0 !important;
   border-radius: 40px !important;
   color: rgba(255, 255, 255, 0.87) !important;
@@ -241,6 +241,9 @@
 }
 .trust {
   background-image: url('/connectors/trustWallet.png');
+}
+.binance {
+  background-image: url('/connectors/binance.png');
 }
 
 .themeSelectContainer {
@@ -345,7 +348,7 @@
   font-weight: 200 !important;
   border: 1px solid rgba(255, 180, 5, 1) !important;
   border-radius: 10px;
-  background: rgba(56, 56, 56, 1) !important;
+  background: rgba(77, 70, 70, 1) !important;
   padding: 16px !important;
 }
 

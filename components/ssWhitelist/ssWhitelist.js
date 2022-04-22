@@ -16,7 +16,7 @@ export default function ssWhitelist() {
   const [ loading, setLoading ] = useState(false)
   const [ whitelistLoading, setWhitelistLoading ] = useState(false)
   const [ search, setSearch ] = useState('')
-  const [ token, setToken ] = useState(null)
+  const [ token, setToken ] = useState("")
   const [ nfts, setNFTS ] = useState([])
   const [ nft, setNFT ] = useState(null)
   const [ veToken, setVeToken ] = useState(null)
@@ -115,9 +115,9 @@ export default function ssWhitelist() {
     setNFT(event.target.value)
   }
 
-  const renderToken = (token) => {
+  const renderToken = (token, idx) => {
     return (
-        <Grid item xs={9} sm={4} md={3}>
+        <Grid item xs={9} sm={4} md={3} key={idx}>
         <Paper className={ token.isWhitelisted ? classes.tokenContainerList : classes.tokenContainer }>
           <div className={ classes.inline }>
             <div>
@@ -254,8 +254,8 @@ export default function ssWhitelist() {
       <div className={ classes.results }>
       <Grid container spacing={4}>
         { 
-        token && token.map((token) => {
-          return renderToken(token)
+        token && token.map((token,idx) => {
+          return renderToken(token, idx)
           })
         }
         </Grid>

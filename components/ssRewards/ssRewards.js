@@ -61,7 +61,6 @@ export default function ssRewards() {
     if(rew) {
       if(rew && rew.bribes && rew.fees && rew.rewards && rew.rewards[0] && rew.rewards[0].gauge && rew.veDist && rew.bribes.length >= 0 && rew.fees.length >= 0 && rew.rewards.length >= 0) {
         
-        console.log("FFFFFS ")
         for(let pair of rew.rewards) {
           const govTokenInfo = await stores.stableSwapStore.getBaseAsset(CONTRACTS.GOV_TOKEN_ADDRESS)
           const govTokenPrice = govTokenInfo.priceUSD
@@ -95,7 +94,6 @@ export default function ssRewards() {
           }
 
           if(boost >= 2.5) {
-            console.log("HI <#")
             const remainingStake = userRemainingStake(balance, totalSupply, nftLockValue, veTotalSupply, boost)
             possibleAddedStake = (remainingStake / balance) + (remainingStake / totalSupply)
           }

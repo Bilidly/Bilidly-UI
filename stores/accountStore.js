@@ -10,7 +10,10 @@ import {
   injected,
   walletconnect,
   walletlink,
-  network
+  network,
+  bscConnector,
+  torusConnector,
+  //frameConnector
 } from './connectors';
 
 import Web3 from 'web3';
@@ -27,9 +30,12 @@ class Store {
       tokens: [],
       connectorsByName: {
         MetaMask: injected,
-        TrustWallet: injected,
+        BSC: bscConnector,
+        TrustWallet: walletconnect,
         WalletConnect: walletconnect,
         WalletLink: walletlink,
+        Torus: torusConnector
+        //Frame:frameConnector
       },
       gasPrices: {
         standard: 90,
@@ -68,9 +74,13 @@ class Store {
     injected.isAuthorized().then((isAuthorized) => {
       const { supportedChainIds } = injected;
       // fall back to ethereum mainnet if chainId undefined
-      const { chainId = process.env.NEXT_PUBLIC_CHAINID } = window.ethereum || {};
+      // Currently Binance wallet's chain id might not be fetch if another wallet is installed
+      //   
+      const { chainId = process.env.NEXT_PUBLIC_CHAINID } = window.ethereum || window.BinanceChain || {}
       const parsedChainId = parseInt(chainId, 16);
       const isChainSupported = supportedChainIds.includes(parsedChainId);
+
+    console.log("with data " + JSON.stringify(injected))
       if (!isChainSupported) {
         this.setStore({ chainInvalid: true });
         this.emitter.emit(ACTIONS.ACCOUNT_CHANGED);

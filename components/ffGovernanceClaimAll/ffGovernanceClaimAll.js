@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Paper, Typography, Button, CircularProgress, SvgIcon, Grid } from '@material-ui/core';
 import BigNumber from 'bignumber.js';
 import classes from './ffGovernanceClaimAll.module.css';
@@ -17,101 +17,113 @@ function NoRewardsIcon(props) {
 }
 
 export default function ffClaimAll() {
+  const [, updateState] = useState();
+  const forceUpdate = useCallback(() => updateState({}), []);
 
+  const [ rewards, setRewards ] = useState([])
+  const [ vestNFTs, setVestNFTs ] = useState([])
+  const [ search, setSearch ] = useState('')
+  const [ anchorEl, setAnchorEl ] = useState(null)
+  const [ token, setToken ] = useState(null)
+  const [ veToken, setVeToken ] = useState(null)
+  const [ loading, setLoading ] = useState(false)
+  const [ claimable, setClaimable ] = useState(false)
   const [ claimLoading, setClaimLoading ] = useState(false)
-  const [ claimable, setClaimable ] = useState([])
-  const [ crv, setCRV ] = useState(null)
-  const [ ibEUR, setIBEUR ] = useState(null)
-  const [ rKP3R, setRKP3R ] = useState(null)
 
-  const ssUpdated = () => {
-    getClaimable()
-    setGetIBEUR()
-    setCRV(stores.stableSwapStore.getStore('crv'))
-    setRKP3R(stores.stableSwapStore.getStore('rKP3R'))
+  const stableSwapUpdated = (rew) => {
+    const nfts = stores.stableSwapStore.getStore('vestNFTs')
+
+    setVestNFTs(nfts)
+    setVeToken(stores.stableSwapStore.getStore('veToken'))
+
+    if(nfts && nfts.length > 0) {
+      if(!token) {
+        setToken(nfts[0])
+        window.setTimeout(() => {
+          stores.dispatcher.dispatch({ type: ACTIONS.GET_REWARD_BALANCES, content: { tokenID: nfts[0].id } })
+        })
+      } else {
+        window.setTimeout(() => {
+          stores.dispatcher.dispatch({ type: ACTIONS.GET_REWARD_BALANCES, content: { tokenID: token.id } })
+        })
+      }
+    } else {
+      window.setTimeout(() => {
+        stores.dispatcher.dispatch({ type: ACTIONS.GET_REWARD_BALANCES, content: { tokenID: 0 } })
+      })
+    }
+
+    forceUpdate()
   }
 
-  useEffect(() => {
-    const stableSwapUpdated = () => {
-      ssUpdated()
-    }
+  const rewardBalancesReturned = async (rew) => {
 
-    ssUpdated()
-
-    const claimReturned = () => {
-      setClaimLoading(false)
-    }
-
-    stores.emitter.on(ACTIONS.FIXED_FOREX_UPDATED, stableSwapUpdated);
-    stores.emitter.on(ACTIONS.FIXED_FOREX_ALL_CLAIMED, claimReturned);
-    stores.emitter.on(ACTIONS.ERROR, claimReturned);
-    return () => {
-      stores.emitter.removeListener(ACTIONS.FIXED_FOREX_UPDATED, stableSwapUpdated);
-      stores.emitter.removeListener(ACTIONS.FIXED_FOREX_ALL_CLAIMED, claimReturned);
-      stores.emitter.removeListener(ACTIONS.ERROR, claimReturned);
-    };
-  }, []);
-
-  const setGetIBEUR = () => {
-    const assets = stores.stableSwapStore.getStore('assets')
-    const ibEURArr = assets.filter((as) => {
-      return as.address === CONTRACTS.IBEUR_ADDRESS
-    })
-
-    if(ibEURArr.length > 0) {
-      setIBEUR(ibEURArr[0])
-    }
-  }
-
-  const getClaimable = () => {
-    const gauges = stores.stableSwapStore.getStore('assets')
-    const rewards = stores.stableSwapStore.getStore('rewards')
-    const rKP3R = stores.stableSwapStore.getStore('rKP3R')
-
-    const cl = []
-
-    if(rewards && rewards.feeDistribution && BigNumber(rewards.feeDistribution.earned).gt(0)) {
-      cl.push({
-        type: 'Solidly',
-        description: 'Fee Claim',
-        earned: rewards.feeDistribution.earned,
-        symbol: 'ibEUR'
-      })
-    }
-    if(rewards && rewards.veIBFFDistribution && BigNumber(rewards.veIBFFDistribution.earned).gt(0)) {
-      cl.push({
-        type: 'Solidly',
-        description: 'Vesting Rewards',
-        earned: rewards.veIBFFDistribution.earned,
-        symbol: 'rKP3R'
-      })
-    }
-    if(rKP3R && BigNumber(rKP3R.balance).gt(0)) {
-      cl.push({
-        type: 'Solidly',
-        description: 'Redeemable KP3R',
-        earned: rKP3R.balance,
-        symbol: 'rKP3R'
-      })
-    }
-
-    if(gauges) {
-      for(let i = 0; i < gauges.length; i++) {
-        if(gauges[i].gauge && BigNumber(gauges[i].gauge.earned).gt(0)) {
-          cl.push({
-            type: 'Curve Gauge Rewards',
-            description: gauges[i].name,
-            earned: gauges[i].gauge.earned,
-            symbol: 'CRV',
-            address: gauges[i].address,
-            gauge: gauges[i]
-          })
+    if(rew) {
+      if(rew && rew.bribes && rew.fees && rew.rewards && rew.veDist && rew.bribes.length >= 0 && rew.fees.length >= 0 && rew.rewards.length >= 0) {
+        
+        console.log("THE REWARD IS " + JSON.stringify(rewards))
+        setRewards([...rew.bribes, ...rew.fees, ...rew.rewards, ...rew.veDist])
+        const cl = [];
+        let lpRewards = 0
+        for(let reward of rew.rewards) {
+          lpRewards += Number(reward.gauge.rewardsEarned)
+          console.log("LPN REW " + lpRewards)
         }
+        cl.push({
+          type: 'Bilidly',
+          description: 'LP Rewards',
+          earned: lpRewards,
+          symbol: process.env.NEXT_PUBLIC_GOV_TOKEN_TICKER
+        })
+        setClaimable(cl)
+      }
+    } else {
+        let re = stores.stableSwapStore.getStore('rewards')
+        if(re && re.bribes && re.fees && re.rewards && re.veDist && re.bribes.length >= 0 && re.fees.length >= 0 && re.rewards.length >= 0) {
+        setRewards([...re.bribes, ...re.fees, ...re.rewards, ...re.veDist])
       }
     }
 
-    setClaimable(cl)
   }
+
+  useEffect(() => {
+
+    rewardBalancesReturned()
+    stableSwapUpdated()
+
+    stores.emitter.on(ACTIONS.UPDATED, stableSwapUpdated);
+    stores.emitter.on(ACTIONS.REWARD_BALANCES_RETURNED, rewardBalancesReturned);
+    return () => {
+      stores.emitter.removeListener(ACTIONS.UPDATED, stableSwapUpdated);
+      stores.emitter.removeListener(ACTIONS.REWARD_BALANCES_RETURNED, rewardBalancesReturned);
+    };
+  }, [token]);
+
+  useEffect(() => {
+
+    const claimReturned = () => {
+      setLoading(false)
+    }
+
+    const claimAllReturned = () => {
+      setLoading(false)
+    }
+
+    stableSwapUpdated()
+
+    stores.emitter.on(ACTIONS.CLAIM_BRIBE_RETURNED, claimReturned);
+    stores.emitter.on(ACTIONS.CLAIM_REWARD_RETURNED, claimReturned);
+    stores.emitter.on(ACTIONS.CLAIM_PAIR_FEES_RETURNED, claimReturned);
+    stores.emitter.on(ACTIONS.CLAIM_VE_DIST_RETURNED, claimReturned);
+    stores.emitter.on(ACTIONS.CLAIM_ALL_REWARDS_RETURNED, claimAllReturned);
+    return () => {
+      stores.emitter.removeListener(ACTIONS.CLAIM_BRIBE_RETURNED, claimReturned);
+      stores.emitter.removeListener(ACTIONS.CLAIM_REWARD_RETURNED, claimReturned);
+      stores.emitter.removeListener(ACTIONS.CLAIM_PAIR_FEES_RETURNED, claimReturned);
+      stores.emitter.removeListener(ACTIONS.CLAIM_VE_DIST_RETURNED, claimReturned);
+      stores.emitter.removeListener(ACTIONS.CLAIM_ALL_REWARDS_RETURNED, claimAllReturned);
+    };
+  }, [])
 
   const onClaim = () => {
     setClaimLoading(true)
@@ -121,10 +133,10 @@ export default function ffClaimAll() {
   return (
     <Paper elevation={0} className={classes.container}>
 
-      {claimable.length>0 ?
+      {rewards.length>0 ?
 
         <div className={classes.hasRewards}>
-          <RewardsTable claimable={ claimable } crv={ crv } ibEUR={ ibEUR } rKP3R={ rKP3R } />
+          <RewardsTable claimable={ claimable } LP={ claimable } Bribes={ '' } />
           <div className={ classes.actionButtons }>
             <Button
               className={ classes.buttonOverride }

@@ -225,6 +225,37 @@ function Header(props) {
     }
   }
 
+  const addChain = async () => {
+    /*if (!(account && account.address)) {
+      setUnlockOpen(true);
+      return;
+    }*/
+    let hexChain = '0x'+Number(process.env.NEXT_PUBLIC_CHAINID).toString(16)
+    const params = {
+      chainId: hexChain, // A 0x-prefixed hexadecimal string
+      chainName: process.env.NEXT_PUBLIC_CHAIN_NAME,
+      nativeCurrency: {
+        name: process.env.NEXT_PUBLIC_CHAIN_TOKEN_NAME,
+        symbol: process.env.NEXT_PUBLIC_CHAIN_TOKEN_SYMBOL, // 2-6 characters long
+        decimals: 18,
+      },
+      rpcUrls: [process.env.NEXT_PUBLIC_CHAIN_RPC],
+      blockExplorerUrls: [
+        process.env.NEXT_PUBLIC_CHAIN_EXPLORER,
+      ],
+    };
+
+  try {
+    await window.ethereum.request({
+      method: 'wallet_addEthereumChain',
+      params: [params],
+    });
+  } catch (switchError) {
+    console.log("switch error",switchError)
+  }
+   
+  }
+
   const setQueueLength = (length) => {
     setTransactionQueueLength(length)
   }
@@ -329,9 +360,10 @@ function Header(props) {
         <div className={classes.ErrorContent}>
           <WrongNetworkIcon className={ classes.networkIcon } />
           <Typography className={classes.ErrorTxt}>
-            The chain you're connected to isn't supported. Please check that your wallet is connected to BSC Testnet.
+            Switch to { process.env.NEXT_PUBLIC_CHAINID == '97' ? 'BSC Testnet' : 'BSC Mainnet' } <br/> or add it to your wallet networks.
           </Typography>
           <Button className={classes.switchNetworkBtn} variant="contained" onClick={()=>switchChain()} >Switch to { process.env.NEXT_PUBLIC_CHAINID == '97' ? 'BSC Testnet' : 'BSC Mainnet' }</Button>
+          <Button className={classes.switchNetworkBtn} variant="contained" onClick={() =>addChain()}>Add { process.env.NEXT_PUBLIC_CHAINID == '97' ? 'BSC Testnet' : 'BSC Mainnet' } to wallet</Button>
         </div>
       </div>
     ) : null}

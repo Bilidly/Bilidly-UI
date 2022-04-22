@@ -343,7 +343,7 @@
   border-radius: 10px;
   width: 100%;
   align-items: center;
-  background: rgb(56, 56, 56);
+  background: rgb(77, 70, 70);
 }
 
 .massiveInputAssetSelect {
@@ -376,7 +376,7 @@
 .displayAssetIcon {
   border: 1px solid rgba(176,151,126, 0.2);
   border-radius: 50px;
-  background: rgb(56, 56, 56);
+  background: rgb(77, 70, 70);
   width: 100px;
   height: 100px;
   padding: 10px;
@@ -385,7 +385,7 @@
 .displayAssetIconWhite {
   border: 1px solid rgba(128, 128, 128, 0.5);
   border-radius: 50px;
-  background: rgb(56, 56, 56);
+  background: rgb(77, 70, 70);
   width: 100px;
   height: 100px;
   padding: 10px;
