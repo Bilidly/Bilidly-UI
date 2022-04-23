@@ -9,7 +9,8 @@ import {
   Tab,
   withStyles,
   makeStyles, 
-  Toolbar } from '@material-ui/core';
+  Toolbar, 
+  ButtonBase} from '@material-ui/core';
 import { withTheme } from '@material-ui/core/styles';
 
 import SSWarning  from '../ssWarning';
@@ -18,6 +19,20 @@ import stores from '../../stores';
 import { formatAddress } from '../../utils';
 import styles from './subnavigation.module.css';
 import EnhancedEncryptionOutlinedIcon from '@material-ui/icons/EnhancedEncryptionOutlined';
+
+// Join Classes
+const joinClasses = (...classes) => classes.filter(c => c).join(' ')
+
+const MyButton = ({children, active,...props})=> {
+  return <ButtonBase component="button" className={joinClasses(styles["svg-wrapper"], active ? styles["active"] : "")} {...props}>
+  <svg height="40" width="100%" className={styles["svg"]} xmlns="http://www.w3.org/2000/svg">
+    <rect className={styles["shape"]} height="40" width="100%" />
+  </svg>
+  <div className={styles["text"]}>
+    <span href=""><span className={styles["spot"]}/>{children}</span>
+  </div>
+</ButtonBase>
+}
 
 const StyledTab = withStyles((t) => ({
   root: {
@@ -126,57 +141,28 @@ const Subnavigation = (props) => {
 
   useEffect(() => {
     const activePath = router.asPath;
-    if (activePath.includes("vest")) {
-      setActive("vest");
-    }
-    if (activePath.includes("vote")) {
-      setActive("vote");
-    }
-    if (activePath.includes("bribe")) {
-      setActive("bribe");
-    }
-    if (activePath.includes("whitelist")) {
-      setActive("whitelist");
-    }
+    links.forEach((link) => {
+      if (activePath.includes(link)) {
+        setActive(link);
+      }
+    });
   }, [router.asPath]);
   
-  const handleChange = (e, val) => {
-    if (val) {
-      if (indicator.current) {
-        const isForward = links.indexOf(val) > links.indexOf(active);
-        indicator.current.style.setProperty(
-        "--transform-origin",
-        isForward ? "right" : "left"
-        );
-        indicator.current.classList.add(classes["moving-indicator"]);
-        clearTimeout(window.indicatorTimeout);
-        window.indicatorTimeout = setTimeout(() => {
-        indicator.current?.classList.remove(classes["moving-indicator"]);
-        }, 300);
-        }
-        setActive(val);
-        handleNavigate("/governance/" + val);
-      }
-    };
   return (
     <div className={classes.container}>
-    <Grid container alignItems="center" spacing={1}>
+    <Grid container alignItems="center" spacing={3}>
          <EnhancedTableToolbar />
-            <Tabs
-              value={active}
-              onChange={handleChange}
-              className={classes.toolbar}
-            >
-            {links.map((link, index) => (
-              <StyledTab
-                disableRipple
-                key={link}
-                value={link}
-                label={link}
-                {...a11yProps(link)}
-              />
-            ))}
-            </Tabs>
+            {links.map(el=> {
+              return (
+                  <MyButton
+                    active={active === el}
+                    onClick={() => handleNavigate("/governance/" + el)}
+                  >
+                    {el}
+                  </MyButton>
+              );
+            })}
+
           </Grid>
       </div>
   );

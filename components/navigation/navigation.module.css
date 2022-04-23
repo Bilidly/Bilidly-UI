@@ -31,6 +31,8 @@ a.linkz { cursor: pointer !important; }
 
 .navigationContent {
   width: 100%;
+  z-index: 10000;
+  position: relative;
 }
 
 .ffTitle {
@@ -310,7 +312,7 @@ a.linkz { cursor: pointer !important; }
     width: 100%;
     padding: 20px;
     height: 100vh;
-    z-index: 9;
+    z-index: 100;
     align-items: center;
     border-radius: 0 !important;
     text-align: center !important;
