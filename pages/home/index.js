@@ -7,11 +7,15 @@ import classes from './home.module.css';
 import React, { useState, useEffect } from 'react';
 import { useRouter } from "next/router";
 
+
+import Faucet from '../../components/faucet';
+
 function Transition(props) {
   return <Slide direction="up" {...props} />;
 }
 
 function SiteLogo(props) {
+
   const { color, className } = props;
   return (
     <SvgIcon viewBox="0 0 147.7 17.5" className={className}>
@@ -65,6 +69,7 @@ function Socials() {
 
 function Home({ changeTheme }) {
 
+
   function handleNavigate(route) {
     router.push(route);
   }
@@ -73,6 +78,7 @@ function Home({ changeTheme }) {
 
   const scrollTo = useScrollTo();
 
+  
   return (
     <div className={classes.ffContainer}>
 
@@ -89,10 +95,11 @@ function Home({ changeTheme }) {
           </Grid>
           <Grid item lg={12} md={12} sm={12} xs={12}>
             <Grid container spacing={2}>
-              <Grid item lg={6} md={6} sm={12} xs={12}>
+              <Grid item lg={3} md={3} sm={12} xs={12}>
                 <Button className={classes.buttonInfo} onClick={() => scrollTo({ top: 1000, left: 0, behavior: 'smooth' })}>Learn More</Button>
               </Grid>
-              <Grid item lg={6} md={6} sm={12} xs={12}>
+              <Faucet />
+              <Grid item lg={3} md={3} sm={12} xs={12}>
                 <Button className={classes.buttonEnter} onClick={() => router.push('/swap')}>Swap</Button>
               </Grid>
             </Grid>

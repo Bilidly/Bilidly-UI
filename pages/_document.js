@@ -11,6 +11,7 @@ export default class MyDocument extends Document {
           <link rel="stylesheet" href="/fonts/Inter/Inter.css" />
           <link rel="stylesheet" href="/fonts/MonumentExt/Monument.css" />
           <link rel="stylesheet" href="/fonts/Druk/Druk.css" />
+          <link rel="stylesheet" href="/fonts/CottonCandies/CottonCandies.css" />
         </Head>
         <body>
           <Main />

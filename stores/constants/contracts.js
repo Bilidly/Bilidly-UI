@@ -54,3 +54,4 @@ export const BRIBE_ABI = abis.bribeABI
 export const TOKEN_ABI = abis.tokenABI
 
 export const MULTICALL_ADDRESS = '0x41263cba59eb80dc200f3e2544eda4ed6a90e76c'
+

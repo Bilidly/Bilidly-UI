@@ -37,12 +37,11 @@ export default function Layout({
           as="font"
           crossOrigin=""
         />
-
-          <link
-          rel="preload"
-          href="/fonts/CottonCandies/CottonCandies.otf"
-          as="font"
-          crossOrigin=""
+        <link
+        rel="preload"
+        href="/fonts/CottonCandies/CottonCandies.otf"
+        as="font"
+        crossOrigin=""
         />
 
         <meta name="description" content="Bilidly is a low cost decentralized exchange for all types of pairs on BNB chain." />

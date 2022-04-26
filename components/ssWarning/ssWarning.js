@@ -18,7 +18,7 @@ export default function ffWarning({ close }) {
             Use of the Bilidly.exchange website, services, dapp, or application is subject to the following terms and conditions and I hereby confirm that by proceeding and interacting with the protocol I am aware of these and accept them in full:
             </span>
             <br /><br />
-            Bilidly.exchange is a smart contract protocol forked from Andre Cronje's Solidly code, which is still in early stage. Modifications have been made on the smart contracts which haven't been audited.
+            Bilidly.exchange is a smart contract protocol forked from Andre Cronje's Solidly, which is still in early stage. Modifications have been made on the smart contracts which haven't been audited.
             <br /><br />
             Any interactions that I have with the associated Bilidly protocol apps, smart contracts or any related functions may place my funds at risk, and I hereby release the Bilidly protocol and its contributors, team members, and service providers from any and all liability associated with my use of the above-mentioned functions.
             <br /><br />

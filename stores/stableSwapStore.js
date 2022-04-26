@@ -157,6 +157,11 @@ class Store {
           case ACTIONS.WHITELIST_TOKEN:
             this.whitelistToken(payload)
             break;
+
+          // TESTNET FAUCET
+          case ACTIONS.USE_FAUCET:
+            this.useFaucet(payload)
+            break;
           default: {
           }
         }
@@ -4682,6 +4687,49 @@ class Store {
         }, 2)
 
         this.emitter.emit(ACTIONS.WHITELIST_TOKEN_RETURNED)
+      })
+    } catch(ex) {
+      console.error(ex)
+      this.emitter.emit(ACTIONS.ERROR, ex)
+    }
+  }
+
+  useFaucet = async () => {
+    try {
+      const account = stores.accountStore.getStore("account")
+      if (!account) {
+        console.warn('account not found')
+        return null
+      }
+
+      const web3 = await stores.accountStore.getWeb3Provider()
+      if (!web3) {
+        console.warn('web3 not found')
+        return null
+      }
+
+      // ADD TRNASCTIONS TO TRANSACTION QUEUE DISPLAY
+      let testnetTokenTXID = this.getTXUUID()
+
+      this.emitter.emit(ACTIONS.TX_ADDED, { title: `Request fund from faucet`, verb: 'Received faucet tokens', transactions: [
+        {
+          uuid: testnetTokenTXID,
+          description: `Requesting BUSD, USDC, BETH, BBTC, RenBTC, CAKE, ALPACA`,
+          status: 'WAITING'
+        }
+      ]})
+
+      const gasPrice = await stores.accountStore.getGasPrice()
+
+      // SUBMIT FAUCET TRANSACTION
+      const faucetContract = new web3.eth.Contract(CONTRACTS.FAUCET_ABI, CONTRACTS.FAUCET_ADDRESS)
+
+      this._callContractWait(web3, faucetContract, 'sendMultiTokens', [[CONTRACTS.BUSD_ADDRESS, CONTRACTS.USDC_ADDRESS, CONTRACTS.ALPACA_ADDRESS, CONTRACTS.CAKE_ADDRESS, CONTRACTS.BETH_ADDRESS, CONTRACTS.BBTC_ADDRESS, CONTRACTS.RENBTC_ADDRESS], account.address], account, gasPrice, null, null, testnetTokenTXID, async (err) => {
+        if (err) {
+          return this.emitter.emit(ACTIONS.ERROR, err)
+        }
+
+        this.emitter.emit(ACTIONS.USE_FAUCET_RETURNED)
       })
     } catch(ex) {
       console.error(ex)
