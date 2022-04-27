@@ -37,7 +37,7 @@ export default function MyApp({ Component, pageProps }) {
   };
 
   const accountConfigureReturned = () => {
-    setAccountConfigured(false);
+    setAccountConfigured(true);
   };
 
   const stableSwapConfigureReturned = () => {

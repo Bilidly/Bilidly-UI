@@ -50,7 +50,7 @@ export default function faucet() {
             onClick={ onUseFaucet }
             className={ classes.buttonFaucet }
             disabled={ faucetLoading }
-          >{ faucetLoading ? `Requesting tokens` : `Get testnet tokens` }
+          >{ faucetLoading ? `Requesting tokens` : `Get testnet token set` }
           { faucetLoading && <CircularProgress size={10} className={ classes.loadingCircle } /> }
         </Button>
         </Grid>

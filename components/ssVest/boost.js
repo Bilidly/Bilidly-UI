@@ -51,8 +51,6 @@ export default function Boost () {
   const onGaugeSelectChanged = async (event, pair) => {
     setPair(pair);
 
-    console.log("SELECTED " + JSON.stringify(pair))
-
     const gaugeValue = pair.token0.priceUSD * pair.gauge.reserve0 + pair.token1.priceUSD * pair.gauge.reserve1
     setGaugeLPValue(gaugeValue)
     

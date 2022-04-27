@@ -13,7 +13,7 @@ export default [{
   decimals: 18,
   logo: 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/binance/assets/USDC-CD2/logo.png'
 },{
-  address: '0x90944f4b4f13ad13e29b9DD5E9F1ba41038c08c2',
+  address: '0x5a2f8dfd60d2127b9d48752f824232a73ab551a2',
   name: 'test',
   symbol: 'TEST',
   decimals: 18,

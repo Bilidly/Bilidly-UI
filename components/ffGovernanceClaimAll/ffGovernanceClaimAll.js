@@ -61,13 +61,11 @@ export default function ffClaimAll() {
     if(rew) {
       if(rew && rew.bribes && rew.fees && rew.rewards && rew.veDist && rew.bribes.length >= 0 && rew.fees.length >= 0 && rew.rewards.length >= 0) {
         
-        console.log("THE REWARD IS " + JSON.stringify(rewards))
         setRewards([...rew.bribes, ...rew.fees, ...rew.rewards, ...rew.veDist])
         const cl = [];
         let lpRewards = 0
         for(let reward of rew.rewards) {
           lpRewards += Number(reward.gauge.rewardsEarned)
-          console.log("LPN REW " + lpRewards)
         }
         cl.push({
           type: 'Bilidly',

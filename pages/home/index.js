@@ -96,7 +96,7 @@ function Home({ changeTheme }) {
           <Grid item lg={12} md={12} sm={12} xs={12}>
             <Grid container spacing={2}>
               <Grid item lg={3} md={3} sm={12} xs={12}>
-                <Button className={classes.buttonInfo} onClick={() => scrollTo({ top: 1000, left: 0, behavior: 'smooth' })}>Learn More</Button>
+                <Button className={classes.buttonInfo} onClick={() => scrollTo({ top: 1000, left: 0, behavior: 'smooth' })}>Learn</Button>
               </Grid>
               <Faucet />
               <Grid item lg={3} md={3} sm={12} xs={12}>

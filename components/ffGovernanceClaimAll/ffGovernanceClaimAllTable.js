@@ -32,7 +32,6 @@ function getComparator(order, orderBy) {
 }
 
 function stableSort(array, comparator) {
-  console.log("THE ARRAY " + array)
   const stabilizedThis = array.map((el, index) => [el, index]);
   stabilizedThis.sort((a, b) => {
     const order = comparator(a[0], b[0]);
@@ -210,7 +209,6 @@ export default function EnhancedTable({ claimable, crv, ibEUR, rKP3R }) {
   const ssUpdated = async() => {
     const govTokenInfo = await stores.stableSwapStore.getBaseAsset(CONTRACTS.GOV_TOKEN_ADDRESS)
     setGovTokenPrice(govTokenInfo.priceUSD)
-    console.log("EARNED " + JSON.stringify(claimable) + " PRICE " + govTokenInfo.priceUSD)
   }
 
   React.useEffect(() => {
