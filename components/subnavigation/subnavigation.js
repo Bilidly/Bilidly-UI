@@ -105,7 +105,7 @@ const EnhancedTableToolbar = (props) => {
   }
 
   return (
-    <Grid lg='auto' md={12} sm={12} xs={12} item style={{
+    <Grid lg='auto' md='auto' sm='auto' xs={12} item style={{
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
