@@ -1,0 +1,55 @@
+.ffContainer {
+  height: 100%;
+  width: auto;
+  margin-top: 0px;
+  position: relative;
+}
+
+.homeContentMain {
+  text-align: center !important;
+  max-width: 50vw;
+  height: auto;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+}
+
+.buttonFaucet {
+  background: #545050 !important;
+  font-family: 'Monument' !important;
+  padding: 12px 20px 10px 20px !important;
+  min-width: 100% !important;
+  text-transform: capitalize !important;
+  color: #ffb405 !important;
+  animation: buttonFaucetAnim 1s ease 1;
+  animation-delay: 400ms;
+  animation-fill-mode: forwards;
+  position: relative;
+  bottom: 0;
+  opacity: 0;
+}
+
+.loadingCircle {
+  margin-left: 6px !important;
+}
+
+@keyframes buttonFaucetAnim {
+  0% {
+  bottom: -100px;
+  opacity: 0;
+  }
+  100% {
+  bottom: 0;
+  opacity: 1;
+  }
+}
+
+@media screen and (max-width: 960px) {
+  .buttonFaucet {
+    width: 100% !important;
+    margin: 0 !important;
+    float: none !important;
+  }
+}

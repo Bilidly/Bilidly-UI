@@ -763,7 +763,7 @@ export default function EnhancedTable({ rewards, vestNFTs, tokenID }) {
                                 {formatCurrency(row.gauge.rewardsEarned)}
                               </Typography>
                               <Typography variant='h5' className={`${classes.textSpaced} ${classes.symbol}`} color='textSecondary'>
-                                SOLID
+                                BI
                               </Typography>
                             </div>
                           </>

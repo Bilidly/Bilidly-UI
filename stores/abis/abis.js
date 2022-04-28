@@ -11,6 +11,7 @@ import { veDistABI } from './veDistABI'
 import { minterABI } from './minterABI'
 import { wftmABI } from './wftmABI'
 import { solidlyLibraryABI } from './solidlyLibraryABI'
+import { faucetABI } from './faucetABI'
 
 export default {
   erc20ABI,
@@ -25,5 +26,6 @@ export default {
   tokenABI,
   minterABI,
   wftmABI,
-  solidlyLibraryABI
+  solidlyLibraryABI,
+  faucetABI
 }

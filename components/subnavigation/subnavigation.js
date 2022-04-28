@@ -150,9 +150,9 @@ const Subnavigation = (props) => {
   
   return (
     <div className={classes.container}>
-    <Grid container alignItems="center" spacing={3}>
+     <Grid container alignItems="center" spacing={3}>
          <EnhancedTableToolbar />
-            {links.map(el=> {
+         {links.map(el=> {
               return (
                   <MyButton
                     active={active === el}
@@ -162,7 +162,6 @@ const Subnavigation = (props) => {
                   </MyButton>
               );
             })}
-
           </Grid>
       </div>
   );
