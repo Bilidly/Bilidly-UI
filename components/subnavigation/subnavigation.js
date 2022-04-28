@@ -150,7 +150,7 @@ const Subnavigation = (props) => {
   
   return (
     <div className={classes.container}>
-     <Grid container alignItems="center" spacing={3}>
+     <Grid container alignItems="center" justifyContent='center' spacing={3}>
          <EnhancedTableToolbar />
          {links.map(el=> {
               return (
