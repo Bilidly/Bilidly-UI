@@ -151,7 +151,8 @@ export default function BribeCard({ pair, bribe }) {
   }
 
   return (
-    <Paper elevation={ 1 } className={ getContainerClass() } >
+    <Grid lg={3} md={4} sm={6} xs={12} className={ getContainerClass() } >
+      <Paper elevation={1}>
       <ThemeProvider theme={theme}>
         <div className={ classes.topInfo }>
           <PieChartIcon className={ classes.avatar } />
@@ -163,6 +164,7 @@ export default function BribeCard({ pair, bribe }) {
           }
         </div>
       </ThemeProvider>
-    </Paper>
+      </Paper>
+    </Grid>
   )
 }

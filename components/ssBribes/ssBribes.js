@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Paper } from '@material-ui/core';
+import { Grid, Paper } from '@material-ui/core';
 
 import classes from './ssBribes.module.css';
 
@@ -36,13 +36,15 @@ export default function ssBribes() {
   return (
     <div className={ classes.container}>
       <div className={ classes.bribesContainer}>
-        {
-          (pairs && pairs && pairs.length > 0) && pairs.map((pair) => {
-            return pair.gauge.bribes.map((bribe, idx) => {
-              return (<BribeCard pair={ pair } key={idx} bribe={ bribe } />)
+        <Grid container spacing={5}>
+          {
+            (pairs && pairs && pairs.length > 0) && pairs.map((pair) => {
+              return pair.gauge.bribes.map((bribe, idx) => {
+                return (<BribeCard pair={ pair } key={idx} bribe={ bribe } />)
+              })
             })
-          })
-        }
+          }
+        </Grid>
       </div>
     </div>
   );

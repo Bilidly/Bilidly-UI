@@ -109,7 +109,7 @@ const EnhancedTableToolbar = (props) => {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      margin: `20px 0`,
+      margin: `30px 0`,
       maxWidth: '100vw',
       padding: '0px 10px',
       boxSize: 'border-box',
