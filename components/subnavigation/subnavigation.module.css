@@ -48,19 +48,25 @@
     position: absolute;
     width: 100%;
   }
-
-  @media (max-width: 768px) {
+  
+  @media (max-width: 960px) {
     .svg-wrapper {
       margin: 5px !important;
       max-width: 80px;
-    }
-  
-    .shape {
-      stroke-dasharray: 40 400;
-      stroke-dashoffset: -140;
-    }
-  
-    .text span {
-      font-size: 0.8rem;
-    }
   }
+  
+  .shape {
+    stroke-dasharray: 40 400;
+    stroke-dashoffset: -140;
+  }
+  
+  .text span {
+    font-size: 0.9rem;
+  }
+}
+
+@media screen and (max-width: 560px) {
+  .text span {
+    font-size: 0.8rem;
+  }
+}

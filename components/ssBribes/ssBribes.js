@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Paper } from '@material-ui/core';
+import { useRouter } from "next/router";
+import { Grid, Paper, Button, Typography } from '@material-ui/core';
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 
 import classes from './ssBribes.module.css';
 
@@ -9,6 +11,8 @@ import stores from '../../stores'
 import { ACTIONS } from '../../stores/constants';
 
 export default function ssBribes() {
+
+  const router = useRouter()
 
   const [, updateState] = useState();
   const forceUpdate = useCallback(() => updateState({}), []);
@@ -33,16 +37,35 @@ export default function ssBribes() {
     };
   }, []);
 
+  const onBribe = () => {
+    router.push('/governance/bribe/create')
+  }
+
   return (
     <div className={ classes.container}>
+
       <div className={ classes.bribesContainer}>
-        {
-          (pairs && pairs && pairs.length > 0) && pairs.map((pair) => {
-            return pair.gauge.bribes.map((bribe, idx) => {
-              return (<BribeCard pair={ pair } key={idx} bribe={ bribe } />)
+          {
+            <Button
+              variant="contained"
+              color="secondary"
+              className={classes.button}
+              startIcon={<AddCircleOutlineIcon />}
+              size='large'
+              className={ classes.buttonOverride }
+              color='primary'
+              onClick={ onBribe }
+            >
+              <Typography className={ classes.actionButtonText }>{ `Create Bribe` }</Typography>
+            </Button>
+          }
+          {
+            (pairs && pairs && pairs.length > 0) && pairs.map((pair) => {
+              return pair.gauge.bribes.map((bribe, idx) => {
+                return (<BribeCard pair={ pair } key={idx} bribe={ bribe } />)
+              })
             })
-          })
-        }
+          }
       </div>
     </div>
   );

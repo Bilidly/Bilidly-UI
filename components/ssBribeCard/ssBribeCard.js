@@ -163,6 +163,6 @@ export default function BribeCard({ pair, bribe }) {
           }
         </div>
       </ThemeProvider>
-    </Paper>
+      </Paper>
   )
 }

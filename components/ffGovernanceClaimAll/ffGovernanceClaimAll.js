@@ -125,7 +125,11 @@ export default function ffClaimAll() {
 
   const onClaim = () => {
     setClaimLoading(true)
-    stores.dispatcher.dispatch({ type: ACTIONS.FIXED_FOREX_CLAIM_ALL, content: { claimable }})
+    let sendTokenID = 0
+    if(token && token.id) {
+      sendTokenID = token.id
+    }
+    stores.dispatcher.dispatch({ type: ACTIONS.CLAIM_ALL_REWARDS, content: { pairs: rewards, tokenID: sendTokenID } })
   }
 
   return (

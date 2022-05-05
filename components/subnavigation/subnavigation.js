@@ -34,7 +34,6 @@ const MyButton = ({children, active,...props})=> {
 </ButtonBase>
 }
 
-
 const StyledTab = withStyles((t) => ({
   root: {
     padding: ".5rem 2rem",
@@ -106,11 +105,11 @@ const EnhancedTableToolbar = (props) => {
   }
 
   return (
-    <Grid lg='auto' md={12} sm={12} xs={12} item style={{
+    <Grid lg='auto' md='auto' sm='auto' xs={12} item style={{
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      margin: `20px 0`,
+      margin: `30px 0`,
       maxWidth: '100vw',
       padding: '0px 10px',
       boxSize: 'border-box',
@@ -151,7 +150,7 @@ const Subnavigation = (props) => {
   
   return (
     <div className={classes.container}>
-     <Grid container alignItems="center" spacing={3}>
+     <Grid container alignItems="center" justifyContent='center' spacing={3}>
          <EnhancedTableToolbar />
          {links.map(el=> {
               return (
