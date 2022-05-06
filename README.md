@@ -138,7 +138,7 @@ Gauge bribes are natively supported by the protocol, Bribes inherit from Gauges 
 
 Users that voted can claim their bribes via calling 
 ```solidity
-    function getReward(address token) public
+function getReward(address token) public
 ```
 
 Fees accrued by `Gauges` are distributed to `Bribes`
