@@ -1164,7 +1164,9 @@ class Store {
       console.log(`_getBaseAssetInfo took ${time} MS`)
 
       this.setStore({ baseAssets })
-      this.emitter.emit(ACTIONS.UPDATED)
+      setTimeout(()=> {
+        this.emitter.emit(ACTIONS.UPDATED)
+      },1000)
     } catch (ex) {
       console.log(ex)
     }
