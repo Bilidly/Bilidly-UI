@@ -165,6 +165,9 @@ export default function BribeCard({ pair, bribe }) {
         </div>
       </ThemeProvider>
       </Paper>
+<<<<<<< HEAD
     </Grid>
+=======
+>>>>>>> fe44e0b27ef3b5806e6f835eb5ece356d8181a76
   )
 }

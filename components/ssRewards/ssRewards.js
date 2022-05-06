@@ -29,6 +29,7 @@ export default function ssRewards() {
   const [ token, setToken ] = useState(null)
   const [ veToken, setVeToken ] = useState(null)
   const [ loading, setLoading ] = useState(false)
+  const [ maxVeNeeded, setMaxVeNeeded ] = useState(null)
 
   const stableSwapUpdated = (rew) => {
     const nfts = stores.stableSwapStore.getStore('vestNFTs')
@@ -61,6 +62,7 @@ export default function ssRewards() {
     if(rew) {
       if(rew && rew.bribes && rew.fees && rew.rewards && rew.rewards[0] && rew.rewards[0].gauge && rew.veDist && rew.bribes.length >= 0 && rew.fees.length >= 0 && rew.rewards.length >= 0) {
         
+        const allNeedVeForMaxBoost = []; // used to check needed Ve to get max boost on all pools
         for(let pair of rew.rewards) {
           const govTokenInfo = await stores.stableSwapStore.getBaseAsset(CONTRACTS.GOV_TOKEN_ADDRESS)
           const govTokenPrice = govTokenInfo.priceUSD
@@ -99,14 +101,17 @@ export default function ssRewards() {
           }
           else {
             needVeForMaxBoost = balance / (totalSupply - balance) * (veTotalSupply - nftLockValue) - nftLockValue
+            if(needVeForMaxBoost != Infinity) allNeedVeForMaxBoost.push(Math.round(BigNumber(needVeForMaxBoost).div(10**18)))
           }
 
           pair.gauge.boost = boost
           pair.gauge.possibleAddedStake = possibleAddedStake
           pair.gauge.neededForMaxBoost = BigNumber(needVeForMaxBoost).div(10**18).toFixed(18)
           pair.gauge.apr = apr
-
         }
+
+        // Get max Ve needed to boost all pools
+        setMaxVeNeeded(Math.max(...allNeedVeForMaxBoost).toLocaleString(undefined))
         
         setRewards([...rew.bribes, ...rew.fees, ...rew.rewards, ...rew.veDist])
       }
@@ -122,6 +127,8 @@ export default function ssRewards() {
   useEffect(() => {
 
     rewardBalancesReturned()
+
+
     stableSwapUpdated()
 
     stores.emitter.on(ACTIONS.UPDATED, stableSwapUpdated);
@@ -234,7 +241,7 @@ export default function ssRewards() {
           </Grid>
           <Grid item lg={true} md={true} sm={false} xs={false}>
             <div className={ classes.disclaimerContainer }>
-              <Typography className={ classes.disclaimer }>Rewards are an estimation that aren't exact till the supply - rewardPerToken calculations have run</Typography>
+              <Typography className={ classes.disclaimer }>One veNFT simultaneously boosts all its attached pools. {maxVeNeeded? `Add ${maxVeNeeded} veBI to your lock to get the max 2.5x boost on all your pools.` : ``}</Typography>
             </div>
           </Grid>
           <Grid item lg='auto' md='auto' sm='12' xs='12'>

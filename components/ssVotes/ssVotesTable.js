@@ -318,7 +318,6 @@ const useStyles = makeStyles((theme) => ({
     marginRight: '12px'
   },
   tableContainer: {
-    
   },
   overrideTableHead: {
     borderBottom: '1px solid rgba(122, 111, 104,0.2) !important',

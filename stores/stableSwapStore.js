@@ -1006,6 +1006,8 @@ class Store {
             pair.claimable0 = BigNumber(claimable0).div(10**pair.token0.decimals).toFixed(pair.token0.decimals)
             pair.claimable1 = BigNumber(claimable1).div(10**pair.token1.decimals).toFixed(pair.token1.decimals)
 
+            //console.log("ALL 1" + JSON.stringify(pair.token0) + " 2 " + JSON.stringify(pair.token1) + " 3 " + pair.balance + " 4 " + pair.totalSupply + " 5 " + pair.reserve0, pair.reserve1, pair.claimable0,  pair.claimable1)
+
             return pair
           } catch (ex) {
             console.log('EXCEPTION 1')

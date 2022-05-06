@@ -9,6 +9,55 @@
   margin-bottom: 24px !important;
 }
 
+.actionButtons {
+  padding: 10px 0;
+  min-width: 560px !important;
+  background: #383838 !important;
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translatex(-50%);
+  border-radius: 12 !important;
+  border: 1px solid rgba(176,151,126, 0.2);
+  z-index: 20 !important;
+}
+
+.actionButton {
+  width: 200px;
+}
+
+.actionButtonText {
+  font-size: 15px !important;
+  text-transform: capitalize !important;
+  font-weight: 700 !important;
+}
+
+.buttonOverride {
+  background: rgb(84, 80, 80) !important;
+  color: rgb(255,180,5) !important;
+  font-weight: 700 !important;
+  width: 100%;
+  min-width: 200px !important;
+}
+
+.buttonOverride:hover {
+  background: rgb(122, 118, 118) !important;
+}
+
+
+.buttonOverrideFixed {
+  background: rgb(84, 80, 80) !important;
+  color: rgb(255,180,5) !important;
+  font-weight: 700 !important;
+  min-width: 200px !important;
+  max-height: 48px;
+}
+
+.buttonOverrideFixed:hover {
+  background: rgb(84, 80, 80) !important;
+}
+
+
 .bribesContainer {
   width: 100%;
   display: grid;

@@ -117,7 +117,11 @@ export default function ssWhitelist() {
 
   const renderToken = (token, idx) => {
     return (
+<<<<<<< HEAD
         <Grid item xs={12} sm={4} md={3} key={idx}>
+=======
+      <Grid item xs={12} sm={4} md={3} key={idx}>
+>>>>>>> fe44e0b27ef3b5806e6f835eb5ece356d8181a76
         <Paper className={ token.isWhitelisted ? classes.tokenContainerList : classes.tokenContainer }>
           <div className={ classes.inline }>
             <div>

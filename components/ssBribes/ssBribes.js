@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Grid, Paper } from '@material-ui/core';
+import { useRouter } from "next/router";
+import { Grid, Paper, Button, Typography } from '@material-ui/core';
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 
 import classes from './ssBribes.module.css';
 
@@ -9,6 +11,8 @@ import stores from '../../stores'
 import { ACTIONS } from '../../stores/constants';
 
 export default function ssBribes() {
+
+  const router = useRouter()
 
   const [, updateState] = useState();
   const forceUpdate = useCallback(() => updateState({}), []);
@@ -33,8 +37,13 @@ export default function ssBribes() {
     };
   }, []);
 
+  const onBribe = () => {
+    router.push('/governance/bribe/create')
+  }
+
   return (
     <div className={ classes.container}>
+
       <div className={ classes.bribesContainer}>
         <Grid container spacing={5}>
           {

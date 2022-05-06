@@ -344,7 +344,7 @@ export default function EnhancedTable({ claimable, crv, ibEUR, rKP3R }) {
                               </Typography>
                             </Grid>
 
-                            <Grid item lg={3} md={3} sm={3} xs={3} className={classes.alignR}>
+                            {/*<Grid item lg={3} md={3} sm={3} xs={3} className={classes.alignR}>
                               <Button
                                 className={ classes.buttonOverride }
                                 variant='outlined'
@@ -356,7 +356,7 @@ export default function EnhancedTable({ claimable, crv, ibEUR, rKP3R }) {
                                 { claimLoading && (!claimedAsset || claimedAsset.symbol === row.symbol) && <CircularProgress size={10} className={ classes.loadingCircle } /> }
                               </Button>
 
-                            </Grid>
+                              </Grid>*/}
 
                             <div className={classes.divider}></div>
 

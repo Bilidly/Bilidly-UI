@@ -184,22 +184,6 @@ export default function ssVotes() {
       <div className={ classes.topBarContainer }>
 
         <Grid container spacing={1}>
-          <Grid item lg='auto' sm={12} xs={12}>
-            {/*
-              <Button
-                variant="contained"
-                color="secondary"
-                className={classes.button}
-                startIcon={<AddCircleOutlineIcon />}
-                size='large'
-                className={ classes.buttonOverride }
-                color='primary'
-                onClick={ onBribe }
-              >
-                <Typography className={ classes.actionButtonText }>{ `Create Bribe` }</Typography>
-              </Button>
-            */}
-          </Grid>
           <Grid item lg={true} md={true} sm={12} xs={12}>
             <TextField
               className={classes.searchContainer}

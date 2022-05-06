@@ -3,7 +3,6 @@
   flex-direction: column;
   align-items: flex-start;
   margin: auto;
-  margin-top: 90px;
   max-width: 485px;
   width: calc(100% - 180px);
 }
@@ -379,7 +378,7 @@
   position: absolute;
   left: 0px;
   top: 10px;
-  border: 5px solid #4a0000;
+  border: 5px solid #ffb405;
   border-radius: 100px;
 }
 .img2Logo {
@@ -387,7 +386,7 @@
   left: 60px;
   z-index: 1;
   top: 10px;
-  border: 5px solid #4a0000;
+  border: 5px solid #ffb405;
   border-radius: 100px;
 }
 .doubleImages {
@@ -543,7 +542,7 @@
   align-items: center;
   justify-content: center;
   background: none;
-  border: 1px solid #4a0000;
+  border: 1px solid #ffb405;
   border-radius: 10px;
   width: calc(100% - 52px);
   margin: 25px 25px 0px 25px;

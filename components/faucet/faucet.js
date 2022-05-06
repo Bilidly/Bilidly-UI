@@ -8,8 +8,6 @@ import { ACTIONS } from '../../stores/constants'
 
 export default function faucet() {
 
-  console.log("IN FAUCET!")
-
     const [ web3, setWeb3 ] = useState(null)
     const [ faucetLoading, setFaucetLoading ] = useState(false)
 
