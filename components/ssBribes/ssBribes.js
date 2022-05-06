@@ -45,6 +45,17 @@ export default function ssBribes() {
     <div className={ classes.container}>
 
       <div className={ classes.bribesContainer}>
+      <Button
+              variant="contained"
+              color="secondary"
+              className={classes.button + " " + classes.buttonOverride}
+              startIcon={<AddCircleOutlineIcon />}
+              size='large'
+              color='primary'
+              onClick={ onBribe }
+            >
+              <Typography className={ classes.actionButtonText }>{ `Create Bribe` }</Typography>
+            </Button>
         <Grid container spacing={5}>
           {
             (pairs && pairs && pairs.length > 0) && pairs.map((pair) => {
