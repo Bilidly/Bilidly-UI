@@ -81,7 +81,7 @@ Anyone can create a pool permissionlessly.
 
 Base V1 router is a wrapper contract and the default entry point into Stable V1 pools.
 
-```
+```solidity
 
 function addLiquidity(
     address tokenA,
@@ -138,7 +138,7 @@ Fees accrued by `Gauges` are distributed to `Bribes`
 
 Gauge factory permissionlessly creates gauges for `pools` created by `BaseV1Factory`. Further it handles voting for 100% of the incentives to `pools`.
 
-```
+```solidity
 function vote(address[] calldata _poolVote, uint[] calldata _weights) external
 function distribute(address token) external
 ```
