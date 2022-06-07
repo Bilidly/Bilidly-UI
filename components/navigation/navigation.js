@@ -173,6 +173,10 @@ function Navigation(props) {
           'Governance',
           'governance',
         )}
+        {renderSubNav(
+          'Marketplace',
+          'marketplace',
+        )}
       </ToggleButtonGroup>
     );
   };

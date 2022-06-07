@@ -12,6 +12,7 @@ import { minterABI } from './minterABI'
 import { wftmABI } from './wftmABI'
 import { solidlyLibraryABI } from './solidlyLibraryABI'
 import { faucetABI } from './faucetABI'
+import { marketplaceABI } from './marketplaceABI'
 
 export default {
   erc20ABI,
@@ -27,5 +28,6 @@ export default {
   minterABI,
   wftmABI,
   solidlyLibraryABI,
-  faucetABI
+  faucetABI,
+  marketplaceABI
 }

@@ -8,6 +8,7 @@ import Rewards from "./rewards";
 import Whitelist from "./governance/whitelist";
 import Bribe from "./governance/bribe/create";
 import Governance from "./governance"
+import Marketplace from "./marketplace"
 
 import { useRouter } from "next/router";
 
@@ -37,6 +38,8 @@ function Route({ changeTheme, ...props }) {
     return <Bribe props={props} changeTheme={changeTheme} />;
   } else if (activePath.includes("/")) {
     return <Home props={props} changeTheme={changeTheme} />;
+  } else if (activePath.includes("/marketplace")) {
+    return <Marketplace props={props} changeTheme={changeTheme} />;
   } else {
     return <Home props={props} changeTheme={changeTheme} />;
   }

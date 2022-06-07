@@ -69,7 +69,6 @@ export default function ssLiquidityManage() {
   const [ slippageError, setSlippageError ] = useState(false)
 
   const ssUpdated = async () => {
-    console.log(router.query.address)
 
     const storeAssetOptions = stores.stableSwapStore.getStore('baseAssets')
     const nfts = stores.stableSwapStore.getStore('vestNFTs')
@@ -107,25 +106,19 @@ export default function ssLiquidityManage() {
       if(pp && BigNumber(pp.balance).gt(0)) {
         setAdvanced(true)
       }
-    } else {
-      let aa0 = asset0
-      let aa1 = asset1
-      if(storeAssetOptions.length > 0 && asset0 == null) {
-        setAsset0(storeAssetOptions[0])
-        aa0 = storeAssetOptions[0]
-      }
-      if(storeAssetOptions.length > 0 && asset1 == null) {
-        setAsset1(storeAssetOptions[1])
-        aa1 = storeAssetOptions[1]
-      }
-      if(withdrawAassetOptions.length > 0 && withdrawAsset == null) {
-        setWithdrawAsset(withdrawAassetOptions[1])
-      }
-
-      if(aa0 && aa1) {
-        const p = await stores.stableSwapStore.getPair(aa0.address, aa1.address, stable)
-        setPair(p)
-      }
+      useEffect(()=> {
+        if(asset0 && asset1) {
+          stores.stableSwapStore.getPair(asset0.address, asset1.address, stable).then(setPair)
+        }
+      },[asset0, asset1]);
+      useEffect(()=> {
+        if(assetOptions.length > 0 && asset0 == null) {
+          setAsset0(assetOptions[0])
+        }
+        if(assetOptions.length > 0 && asset1 == null) {
+          setAsset1(assetOptions[1])
+        }
+      },[assetOptions])
     }
   }
 
@@ -173,7 +166,8 @@ export default function ssLiquidityManage() {
     }
 
     const assetsUpdated = () => {
-      setAssetOptions(stores.stableSwapStore.getStore('baseAssets'))
+      const baseAssets = stores.stableSwapStore.getStore('baseAssets');
+      setAssetOptions(baseAssets)
     }
 
     stores.emitter.on(ACTIONS.UPDATED, ssUpdated)
@@ -190,7 +184,7 @@ export default function ssLiquidityManage() {
     stores.emitter.on(ACTIONS.BASE_ASSETS_UPDATED, assetsUpdated)
     stores.emitter.on(ACTIONS.ERROR, errorReturned)
 
-    ssUpdated()
+    // ssUpdated()
 
     return () => {
       stores.emitter.removeListener(ACTIONS.UPDATED, ssUpdated)
@@ -1312,7 +1306,7 @@ function AssetSelect({ type, value, assetOptions, onSelect, disabled }) {
     setOpen(true)
   };
 
-  useEffect(async function() {
+  useEffect(function() {
 
     let ao = assetOptions.filter((asset) => {
       if(search && search !== '') {
@@ -1332,13 +1326,6 @@ function AssetSelect({ type, value, assetOptions, onSelect, disabled }) {
 
     setFilteredAssetOptions(ao)
 
-    //no options in our default list and its an address we search for the address
-    if(ao.length === 0 && search && search.length === 42) {
-      const baseAsset = await stores.stableSwapStore.getBaseAsset(event.target.value, true, true)
-    }
-
-    return () => {
-    }
   }, [assetOptions, search]);
 
 

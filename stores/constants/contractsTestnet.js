@@ -65,3 +65,6 @@ export const CAKE_ADDRESS = '0xd8215b742f9825071ad318b54539dd20a62d8839'
 export const BETH_ADDRESS = '0xd46ab0a9bfd56fffaf5f31dec12f4d17bac0d77a'
 export const BBTC_ADDRESS = '0xf742dc29844cc43524365fe2c438cda8493a71af'
 export const RENBTC_ADDRESS = '0xa3746e22af7ffc9f85d10ba2767d0d036dbb8e5f'
+
+export const MARKETPLACE_ADDRESS = '0xB9c983DD3479421Ddf54CDa89e96798b849Ea083'
+export const MARKETPLACE_ABI = abis.marketplaceABI

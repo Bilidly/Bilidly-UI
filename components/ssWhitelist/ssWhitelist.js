@@ -143,7 +143,7 @@ export default function ssWhitelist() {
               </div>
               {
                 !token.isWhitelisted &&
-                <Tooltip title='Listing fee either needs to be locked in your veToken NFT or be paid and burnt on list'>
+                <Tooltip title='Listing fee either needs be paid and burnt on list'>
                   <div>
                     <Typography className={ classes.listingFee} color='textSecondary'>Listing Fee</Typography>
                     <Typography className={ classes.listingFee}>{formatCurrency(token.listingFee)} {veToken?.symbol}</Typography>

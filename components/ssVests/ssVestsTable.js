@@ -1,14 +1,34 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-import { makeStyles } from '@material-ui/core/styles';
-import Skeleton from '@material-ui/lab/Skeleton';
-import { Paper, Button, Table, TableBody, TableCell, InputAdornment, TableContainer, TableHead, TableRow, TableSortLabel, TablePagination, Typography, Tooltip, Toolbar, Grid } from '@material-ui/core';
+import React, { useState, useEffect } from "react";
+import PropTypes from "prop-types";
+import { makeStyles } from "@material-ui/core/styles";
+import Skeleton from "@material-ui/lab/Skeleton";
+import {
+  Paper,
+  Button,
+  Table,
+  TableBody,
+  TableCell,
+  InputAdornment,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TableSortLabel,
+  TablePagination,
+  Typography,
+  Tooltip,
+  Toolbar,
+  Grid,
+  TextField,
+} from "@material-ui/core";
 import { useRouter } from "next/router";
-import BigNumber from 'bignumber.js';
-import FunctionIcon from '@material-ui/icons/Functions';
-import moment from 'moment';
+import BigNumber from "bignumber.js";
+import FunctionIcon from "@material-ui/icons/Functions";
+import moment from "moment";
 
-import { formatCurrency } from '../../utils';
+import stores from "../../stores";
+import { ACTIONS } from "../../stores/constants";
+
+import { formatCurrency } from "../../utils";
 
 function descendingComparator(a, b, orderBy) {
   if (!a || !b) {
@@ -25,7 +45,9 @@ function descendingComparator(a, b, orderBy) {
 }
 
 function getComparator(order, orderBy) {
-  return order === 'desc' ? (a, b) => descendingComparator(a, b, orderBy) : (a, b) => -descendingComparator(a, b, orderBy);
+  return order === "desc"
+    ? (a, b) => descendingComparator(a, b, orderBy)
+    : (a, b) => -descendingComparator(a, b, orderBy);
 }
 
 function stableSort(array, comparator) {
@@ -39,30 +61,42 @@ function stableSort(array, comparator) {
 }
 
 const headCells = [
-  { id: 'NFT', numeric: false, disablePadding: false, label: 'Pair' },
+  { id: "NFT", numeric: false, disablePadding: false, label: "Pair" },
   {
-    id: 'Locked Amount',
+    id: "Locked Amount",
     numeric: true,
     disablePadding: false,
-    label: 'Vest Amount',
+    label: "Vest Amount",
   },
   {
-    id: 'Lock Value',
+    id: "Lock Value",
     numeric: true,
     disablePadding: false,
-    label: 'Vest Value',
+    label: "Vest Value",
   },
   {
-    id: 'Lock Expires',
+    id: "Lock Expires",
     numeric: true,
     disablePadding: false,
-    label: 'Vest Expires',
+    label: "Vest Expires",
   },
   {
-    id: '',
+    id: "",
     numeric: true,
     disablePadding: false,
-    label: 'Actions',
+    label: "",
+  },
+  {
+    id: "",
+    numeric: true,
+    disablePadding: false,
+    label: "",
+  },
+  {
+    id: "",
+    numeric: true,
+    disablePadding: false,
+    label: "",
   },
 ];
 
@@ -79,13 +113,23 @@ function EnhancedTableHead(props) {
           <TableCell
             className={classes.overrideTableHead}
             key={headCell.id}
-            align={headCell.numeric ? 'right' : 'left'}
-            padding={'normal'}
+            align={headCell.numeric ? "right" : "left"}
+            padding={"normal"}
             sortDirection={orderBy === headCell.id ? order : false}
           >
-            <TableSortLabel active={orderBy === headCell.id} direction={orderBy === headCell.id ? order : 'asc'} onClick={createSortHandler(headCell.id)}>
-              <Typography variant='h5' className={ classes.headerText }>{headCell.label}</Typography>
-              {orderBy === headCell.id ? <span className={classes.visuallyHidden}>{order === 'desc' ? 'sorted descending' : 'sorted ascending'}</span> : null}
+            <TableSortLabel
+              active={orderBy === headCell.id}
+              direction={orderBy === headCell.id ? order : "asc"}
+              onClick={createSortHandler(headCell.id)}
+            >
+              <Typography variant="h5" className={classes.headerText}>
+                {headCell.label}
+              </Typography>
+              {orderBy === headCell.id ? (
+                <span className={classes.visuallyHidden}>
+                  {order === "desc" ? "sorted descending" : "sorted ascending"}
+                </span>
+              ) : null}
             </TableSortLabel>
           </TableCell>
         ))}
@@ -97,201 +141,201 @@ function EnhancedTableHead(props) {
 EnhancedTableHead.propTypes = {
   classes: PropTypes.object.isRequired,
   onRequestSort: PropTypes.func.isRequired,
-  order: PropTypes.oneOf(['asc', 'desc']).isRequired,
+  order: PropTypes.oneOf(["asc", "desc"]).isRequired,
   orderBy: PropTypes.string.isRequired,
 };
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    width: '100%',
+    width: "100%",
   },
   assetTableRow: {
-    '&:hover': {
-      background: 'rgba(122, 111, 104,0.05)',
+    "&:hover": {
+      background: "rgba(122, 111, 104,0.05)",
     },
   },
   paper: {
-    width: '100%',
+    width: "100%",
     marginBottom: theme.spacing(2),
   },
   visuallyHidden: {
     border: 0,
-    clip: 'rect(0 0 0 0)',
+    clip: "rect(0 0 0 0)",
     height: 1,
     margin: -1,
-    overflow: 'hidden',
+    overflow: "hidden",
     padding: 0,
-    position: 'absolute',
+    position: "absolute",
     top: 20,
     width: 1,
   },
   inline: {
-    display: 'flex',
-    alignItems: 'center',
+    display: "flex",
+    alignItems: "center",
   },
   icon: {
-    marginRight: '12px',
+    marginRight: "12px",
   },
   textSpaced: {
-    lineHeight: '1.5',
-    fontWeight: '200',
-    fontSize: '12px'
+    lineHeight: "1.5",
+    fontWeight: "200",
+    fontSize: "12px",
   },
   headerText: {
-    fontWeight: '200',
-    fontSize: '12px'
+    fontWeight: "200",
+    fontSize: "12px",
   },
   cell: {},
   cellSuccess: {
-    color: '#4eaf0a',
+    color: "#4eaf0a",
   },
   cellAddress: {
-    cursor: 'pointer',
+    cursor: "pointer",
   },
   aligntRight: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'flex-end',
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "flex-end",
   },
   skelly: {
-    marginBottom: '12px',
-    marginTop: '12px',
+    marginBottom: "12px",
+    marginTop: "12px",
   },
   skelly1: {
-    marginBottom: '12px',
-    marginTop: '24px',
+    marginBottom: "12px",
+    marginTop: "24px",
   },
   skelly2: {
-    margin: '12px 6px',
+    margin: "12px 6px",
   },
   tableBottomSkelly: {
-    display: 'flex',
-    justifyContent: 'flex-end',
+    display: "flex",
+    justifyContent: "flex-end",
   },
   assetInfo: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
     flex: 1,
-    padding: '24px',
-    width: '100%',
-    flexWrap: 'wrap',
-    borderBottom: '1px solid rgba(104, 108, 122, 0.25)',
-    background: 'radial-gradient(circle, rgba(255, 190, 49,0.7) 0%, rgba(237, 177, 47,0.7) 48%) rgba(255, 190, 49,0.7) 100%',
+    padding: "24px",
+    width: "100%",
+    flexWrap: "wrap",
+    borderBottom: "1px solid rgba(104, 108, 122, 0.25)",
+    background:
+      "radial-gradient(circle, rgba(255, 190, 49,0.7) 0%, rgba(237, 177, 47,0.7) 48%) rgba(255, 190, 49,0.7) 100%",
   },
   assetInfoError: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
     flex: 1,
-    padding: '24px',
-    width: '100%',
-    flexWrap: 'wrap',
-    borderBottom: '1px rgba(104, 108, 122, 0.25)',
-    background: '#dc3545',
+    padding: "24px",
+    width: "100%",
+    flexWrap: "wrap",
+    borderBottom: "1px rgba(104, 108, 122, 0.25)",
+    background: "#dc3545",
   },
   infoField: {
     flex: 1,
   },
   flexy: {
-    padding: '6px 0px',
+    padding: "6px 0px",
   },
   overrideCell: {
-    padding: '0px',
+    padding: "0px",
   },
   hoverRow: {
-    cursor: 'pointer',
+    cursor: "pointer",
   },
   statusLiquid: {
-    color: '#dc3545',
+    color: "#dc3545",
   },
   statusWarning: {
-    color: '#FF9029',
+    color: "#FF9029",
   },
   statusSafe: {
-    color: 'green',
+    color: "green",
   },
   img1Logo: {
-    position: 'absolute',
-    left: '0px',
-    top: '0px',
-    borderRadius: '30px'
+    position: "absolute",
+    left: "0px",
+    top: "0px",
+    borderRadius: "30px",
   },
   img2Logo: {
-    position: 'absolute',
-    left: '20px',
-    zIndex: '1',
-    top: '0px'
+    position: "absolute",
+    left: "20px",
+    zIndex: "1",
+    top: "0px",
   },
   overrideTableHead: {
-    borderBottom: '1px solid rgba(122, 111, 104,0.2) !important',
+    borderBottom: "1px solid rgba(122, 111, 104,0.2) !important",
   },
   doubleImages: {
-    display: 'flex',
-    position: 'relative',
-    width: '70px',
-    height: '35px'
+    display: "flex",
+    position: "relative",
+    width: "70px",
+    height: "35px",
   },
   buttonOverride: {
-    color: 'rgb(255,180,5)',
-    background: 'rgb(84, 80, 80)',
-    fontWeight: '700',
-    width: '100%',
-    '&:hover': {
-      background: 'rgb(84, 80, 80)'
+    color: "rgb(255,180,5)",
+    background: "rgb(84, 80, 80)",
+    fontWeight: "700",
+    width: "100%",
+    "&:hover": {
+      background: "rgb(84, 80, 80)",
     },
   },
   toolbar: {
-    margin: '24px 0px',
-    padding: '0px',
+    margin: "24px 0px",
+    padding: "0px",
   },
   tableContainer: {
-    border: '1px solid rgba(104, 108, 122, 0.25)',
-    width: '100%',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'flex-end'
+    border: "1px solid rgba(104, 108, 122, 0.25)",
+    width: "100%",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "flex-end",
   },
   actionButtonText: {
-    fontSize: '15px',
-    fontWeight: '700',
-  }
+    fontSize: "15px",
+    fontWeight: "700",
+  },
 }));
 
 const EnhancedTableToolbar = (props) => {
-  const classes = useStyles()
-  const router = useRouter()
+  const classes = useStyles();
+  const router = useRouter();
 
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
 
   const onSearchChanged = (event) => {
     setSearch(event.target.value);
   };
 
   const onBoost = () => {
-    router.push('/governance/vest/boost')
-  }
+    router.push("/governance/vest/boost");
+  };
 
   return (
-    <Toolbar className={ classes.toolbar }>
-
+    <Toolbar className={classes.toolbar}>
       <Grid container spacing={1}>
         <Grid lg={12} md={12} sm={12} xs={12} item>
           <Button
             variant="contained"
             color="secondary"
             startIcon={<FunctionIcon />}
-            size='large'
-            className={ classes.buttonOverride }
-            onClick={ onBoost }
+            size="large"
+            className={classes.buttonOverride}
+            onClick={onBoost}
           >
-            <Typography className={ classes.actionButtonText }>Boost Calculator</Typography>
+            <Typography className={classes.actionButtonText}>
+              Boost Calculator
+            </Typography>
           </Button>
         </Grid>
         <Grid item lg={true} md={true} sm={false} xs={false}></Grid>
       </Grid>
-
-
     </Toolbar>
   );
 };
@@ -300,10 +344,40 @@ export default function EnhancedTable({ vestNFTs, govToken, veToken }) {
   const classes = useStyles();
   const router = useRouter();
 
-  const [order, setOrder] = React.useState('desc');
-  const [orderBy, setOrderBy] = React.useState('balance');
+  const [order, setOrder] = React.useState("desc");
+  const [orderBy, setOrderBy] = React.useState("balance");
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [page, setPage] = useState(0);
+
+  const [listingFee, setListingFee] = useState("");
+  /*async function updateNFT (index, tokenId) {
+    //const updatedNFt = await mapCreatedAndOwnedTokenIdsAsMarketItems(marketplaceContract, nftContract, account)(tokenId)
+    const updatedNFt = await stores.stableSwapStore.mapCreatedAndOwnedTokenIdsAsMarketItems()(tokenId)
+    setNfts(prevNfts => {
+      const updatedNfts = [...prevNfts]
+      updatedNfts[index] = updatedNFt
+      return updatedNfts
+    })
+  }*/
+
+  useEffect(() => {
+    const fee = async () => await stores.stableSwapStore.getAndSetListingFee();
+    setListingFee(fee);
+
+    const errorReturned = () => {};
+
+    stores.emitter.on(ACTIONS.ERROR, errorReturned);
+    stores.emitter.on(ACTIONS.APPROVE_NFT_RETURNED, errorReturned);
+    stores.emitter.on(ACTIONS.SELL_NFT_RETURNED, errorReturned);
+    return () => {
+      stores.emitter.removeListener(ACTIONS.ERROR, errorReturned);
+      stores.emitter.removeListener(
+        ACTIONS.APPROVE_NFT_RETURNED,
+        errorReturned
+      );
+      stores.emitter.removeListener(ACTIONS.SELL_NFT_RETURNED, errorReturned);
+    };
+  }, []);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -315,20 +389,50 @@ export default function EnhancedTable({ vestNFTs, govToken, veToken }) {
   };
 
   const handleRequestSort = (event, property) => {
-    const isAsc = orderBy === property && order === 'asc';
-    setOrder(isAsc ? 'desc' : 'asc');
+    const isAsc = orderBy === property && order === "asc";
+    setOrder(isAsc ? "desc" : "asc");
     setOrderBy(property);
   };
 
   if (!vestNFTs) {
     return (
       <div className={classes.root}>
-        <Skeleton variant="rect" width={'100%'} height={40} className={classes.skelly1} />
-        <Skeleton variant="rect" width={'100%'} height={70} className={classes.skelly} />
-        <Skeleton variant="rect" width={'100%'} height={70} className={classes.skelly} />
-        <Skeleton variant="rect" width={'100%'} height={70} className={classes.skelly} />
-        <Skeleton variant="rect" width={'100%'} height={70} className={classes.skelly} />
-        <Skeleton variant="rect" width={'100%'} height={70} className={classes.skelly} />
+        <Skeleton
+          variant="rect"
+          width={"100%"}
+          height={40}
+          className={classes.skelly1}
+        />
+        <Skeleton
+          variant="rect"
+          width={"100%"}
+          height={70}
+          className={classes.skelly}
+        />
+        <Skeleton
+          variant="rect"
+          width={"100%"}
+          height={70}
+          className={classes.skelly}
+        />
+        <Skeleton
+          variant="rect"
+          width={"100%"}
+          height={70}
+          className={classes.skelly}
+        />
+        <Skeleton
+          variant="rect"
+          width={"100%"}
+          height={70}
+          className={classes.skelly}
+        />
+        <Skeleton
+          variant="rect"
+          width={"100%"}
+          height={70}
+          className={classes.skelly}
+        />
       </div>
     );
   }
@@ -337,90 +441,60 @@ export default function EnhancedTable({ vestNFTs, govToken, veToken }) {
     router.push(`/governance/vest/${nft.id}`);
   };
 
-  const emptyRows = rowsPerPage - Math.min(rowsPerPage, vestNFTs.length - page * rowsPerPage);
+  const onSell = (nft, newPrice, setPriceError) => {
+    if (!parseInt(newPrice)) {
+      setPriceError(true);
+      return;
+    }
+    setPriceError(false);
+    stores.dispatcher.dispatch({
+      type: ACTIONS.SELL_NFT,
+      content: { nft, newPrice },
+    });
+    //updateNFT()
+    //return transaction
+  };
+
+  const emptyRows =
+    rowsPerPage - Math.min(rowsPerPage, vestNFTs.length - page * rowsPerPage);
 
   return (
-    <div className={classes.root}>  
+    <div className={classes.root}>
       <EnhancedTableToolbar />
-      <Paper elevation={0} className={ classes.tableContainer}>
+      <Paper elevation={0} className={classes.tableContainer}>
         <TableContainer>
-          <Table className={classes.table} aria-labelledby='tableTitle' size={'medium'} aria-label='enhanced table'>
-            <EnhancedTableHead classes={classes} order={order} orderBy={orderBy} onRequestSort={handleRequestSort} />
+          <Table
+            className={classes.table}
+            aria-labelledby="tableTitle"
+            size={"medium"}
+            aria-label="enhanced table"
+          >
+            <EnhancedTableHead
+              classes={classes}
+              order={order}
+              orderBy={orderBy}
+              onRequestSort={handleRequestSort}
+            />
             <TableBody>
               {stableSort(vestNFTs, getComparator(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .filter(r=> r)
+                .filter((r) => r)
                 .map((row, index) => {
-                const labelId = `enhanced-table-checkbox-${index}`;
+                  const labelId = `enhanced-table-checkbox-${index}`;
 
-                return (
-                  <TableRow
-                    key={labelId}
-                    className={classes.assetTableRow}
-                  >
-                    <TableCell className={classes.cell}>
-                      <div className={classes.inline}>
-                        <div className={ classes.doubleImages}>
-                          <img
-                            className={classes.img1Logo}
-                            src={ govToken?.logoURI }
-                            width='35'
-                            height='35'
-                            alt=''
-                            onError={(e) => {
-                              e.target.onerror = null;
-                              e.target.src = '/tokens/unknown-logo.png';
-                            }}
-                          />
-                        </div>
-                        <div>
-                          <Typography variant='h2' className={classes.textSpaced}>
-                            {row.id}
-                          </Typography>
-                          <Typography variant='h5' className={classes.textSpaced} color='textSecondary'>
-                            NFT ID
-                          </Typography>
-                        </div>
-                      </div>
-                    </TableCell>
-                    <TableCell className={classes.cell} align='right'>
-                      <Typography variant='h2' className={classes.textSpaced}>
-                        {formatCurrency(row.lockAmount)}
-                      </Typography>
-                      <Typography variant='h5' className={classes.textSpaced} color='textSecondary'>
-                        { govToken?.symbol }
-                      </Typography>
-                    </TableCell>
-                    <TableCell className={classes.cell} align='right'>
-                      <Typography variant='h2' className={classes.textSpaced}>
-                        {formatCurrency(row.lockValue)}
-                      </Typography>
-                      <Typography variant='h5' className={classes.textSpaced} color='textSecondary'>
-                        { veToken?.symbol }
-                      </Typography>
-                    </TableCell>
-                    <TableCell className={classes.cell} align='right'>
-                      <Typography variant="h2" className={classes.textSpaced}>
-                        { moment.unix(row.lockEnds).format('YYYY-MM-DD') }
-                      </Typography>
-                      <Typography variant="h5" className={classes.textSpaced} color='textSecondary'>
-                        Expires { moment.unix(row.lockEnds).fromNow() }
-                      </Typography>
-                    </TableCell>
-                    <TableCell className={classes.cell} align='right'>
-                      <Button
-                        variant='outlined'
-                        color='primary'
-                        onClick={() => {
-                          onView(row);
-                        }}
-                      >
-                        Manage
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
+                  return (
+                    <TableRowNFT
+                      key={row.id}
+                      row={row}
+                      onView={onView}
+                      onSell={onSell}
+                      govToken={govToken}
+                      veToken={veToken}
+                      labelId={labelId}
+                      listingFee={listingFee}
+                    />
+                  );
+                })}
             </TableBody>
           </Table>
         </TableContainer>
@@ -437,3 +511,120 @@ export default function EnhancedTable({ vestNFTs, govToken, veToken }) {
     </div>
   );
 }
+
+const TableRowNFT = ({ row, onView, onSell, govToken, labelId, veToken }) => {
+  const [price, setPrice] = useState(10);
+  const [priceError, setPriceError] = useState(false);
+  const classes = useStyles();
+  return (
+    <TableRow key={labelId} className={classes.assetTableRow}>
+      <TableCell className={classes.cell}>
+        <div className={classes.inline}>
+          <div className={classes.doubleImages}>
+            <img
+              className={classes.img1Logo}
+              src={govToken?.logoURI}
+              width="35"
+              height="35"
+              alt=""
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = "/tokens/unknown-logo.png";
+              }}
+            />
+          </div>
+          <div>
+            <Typography variant="h2" className={classes.textSpaced}>
+              {row.id}
+            </Typography>
+            <Typography
+              variant="h5"
+              className={classes.textSpaced}
+              color="textSecondary"
+            >
+              NFT ID
+            </Typography>
+          </div>
+        </div>
+      </TableCell>
+      <TableCell className={classes.cell} align="right">
+        <Typography variant="h2" className={classes.textSpaced}>
+          {formatCurrency(row.lockAmount)}
+        </Typography>
+        <Typography
+          variant="h5"
+          className={classes.textSpaced}
+          color="textSecondary"
+        >
+          {govToken?.symbol}
+        </Typography>
+      </TableCell>
+      <TableCell className={classes.cell} align="right">
+        <Typography variant="h2" className={classes.textSpaced}>
+          {formatCurrency(row.lockValue)}
+        </Typography>
+        <Typography
+          variant="h5"
+          className={classes.textSpaced}
+          color="textSecondary"
+        >
+          {veToken?.symbol}
+        </Typography>
+      </TableCell>
+      <TableCell className={classes.cell} align="right">
+        <Typography variant="h2" className={classes.textSpaced}>
+          {moment.unix(row.lockEnds).format("YYYY-MM-DD")}
+        </Typography>
+        <Typography
+          variant="h5"
+          className={classes.textSpaced}
+          color="textSecondary"
+        >
+          Expires {moment.unix(row.lockEnds).fromNow()}
+        </Typography>
+      </TableCell>
+      <TableCell className={classes.cell} align="right">
+        <Button
+          variant="outlined"
+          color="primary"
+          onClick={() => {
+            onView(row);
+          }}
+        >
+          Manage
+        </Button>
+      </TableCell>
+      <TableCell className={classes.cell} align="right">
+      <TextField
+          variant="outlined"
+          label="Sell Price"
+          value={price}
+          onChange={(e) => {
+            setPrice(e.target.value);
+          }}
+          error={priceError}
+          style={{
+            width: "100px",
+          }}
+          helperText={priceError ? "Price must be greater than 0" : ""}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">{veToken?.symbol}</InputAdornment>
+            ),
+          }}
+        />
+      </TableCell>
+      <TableCell className={classes.cell} align="right">
+        <Button
+          variant="outlined"
+          color="primary"
+          onClick={() => {
+            onSell(row, price, setPriceError);
+          }}
+        >
+          Sell
+        </Button>
+      </TableCell>
+    </TableRow>
+  );
+};

@@ -80,7 +80,6 @@ class Store {
       const parsedChainId = parseInt(chainId, 16);
       const isChainSupported = supportedChainIds.includes(parsedChainId);
 
-    console.log("with data " + JSON.stringify(injected))
       if (!isChainSupported) {
         this.setStore({ chainInvalid: true });
         this.emitter.emit(ACTIONS.ACCOUNT_CHANGED);
