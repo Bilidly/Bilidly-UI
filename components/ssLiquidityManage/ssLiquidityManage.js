@@ -69,6 +69,7 @@ export default function ssLiquidityManage() {
   const [ slippageError, setSlippageError ] = useState(false)
 
   const ssUpdated = async () => {
+
     const storeAssetOptions = stores.stableSwapStore.getStore('baseAssets')
     const nfts = stores.stableSwapStore.getStore('vestNFTs')
     const veTok = stores.stableSwapStore.getStore('veToken')
@@ -105,21 +106,22 @@ export default function ssLiquidityManage() {
       if(pp && BigNumber(pp.balance).gt(0)) {
         setAdvanced(true)
       }
+      useEffect(()=> {
+        if(asset0 && asset1) {
+          stores.stableSwapStore.getPair(asset0.address, asset1.address, stable).then(setPair)
+        }
+      },[asset0, asset1]);
+      useEffect(()=> {
+        if(assetOptions.length > 0 && asset0 == null) {
+          setAsset0(assetOptions[0])
+        }
+        if(assetOptions.length > 0 && asset1 == null) {
+          setAsset1(assetOptions[1])
+        }
+      },[assetOptions])
     }
   }
-  useEffect(()=> {
-    if(asset0 && asset1) {
-      stores.stableSwapStore.getPair(asset0.address, asset1.address, stable).then(setPair)
-    }
-  },[asset0, asset1]);
-  useEffect(()=> {
-    if(assetOptions.length > 0 && asset0 == null) {
-      setAsset0(assetOptions[0])
-    }
-    if(assetOptions.length > 0 && asset1 == null) {
-      setAsset1(assetOptions[1])
-    }
-  },[assetOptions])
+
   useEffect(() => {
     const depositReturned = () => {
       setDepositLoading(false)
@@ -1323,6 +1325,7 @@ function AssetSelect({ type, value, assetOptions, onSelect, disabled }) {
     })
 
     setFilteredAssetOptions(ao)
+
   }, [assetOptions, search]);
 
 

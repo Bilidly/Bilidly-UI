@@ -51,7 +51,7 @@ This is based off of ve(3,3) as proposed [here](https://andrecronje.medium.com/v
 * balance is moved to `tokenId` instead of `address`
 * Locks are unique as NFTs, and not on a per `address` basis
 
-```solidity
+```
 function balanceOfNFT(uint) external returns (uint)
 ```
 
@@ -59,7 +59,7 @@ function balanceOfNFT(uint) external returns (uint)
 
 Base V1 pair is the base pair, referred to as a `pool`, it holds two (2) closely correlated assets (example MIM-UST) if a stable pool or two (2) uncorrelated assets (example FTM-SPELL) if not a stable pool, it uses the standard UniswapV2Pair interface for UI & analytics compatibility.
 
-```solidity
+```
 function mint(address to) external returns (uint liquidity)
 function burn(address to) external returns (uint amount0, uint amount1)
 function swap(uint amount0Out, uint amount1Out, address to, bytes calldata data) external
@@ -71,10 +71,7 @@ Fees are not accrued in the base pair themselves, but are transfered to `BaseV1F
 
 ### BaseV1Factory
 
-Base V1 factory allows for the creation of `pools` via 
-```solidity
-function createPair(address tokenA, address tokenB, bool stable) external returns (address pair)
-```
+Base V1 factory allows for the creation of `pools` via ```function createPair(address tokenA, address tokenB, bool stable) external returns (address pair)```
 
 Base V1 factory uses an immutable pattern to create pairs, further reducing the gas costs involved in swaps
 
@@ -84,7 +81,7 @@ Anyone can create a pool permissionlessly.
 
 Base V1 router is a wrapper contract and the default entry point into Stable V1 pools.
 
-```solidity
+```
 
 function addLiquidity(
     address tokenA,
@@ -123,10 +120,7 @@ function swapExactTokensForTokens(
 
 Gauges distribute arbitrary `token(s)` rewards to BaseV1Pair LPs based on voting weights as defined by `ve` voters.
 
-Arbitrary rewards can be added permissionlessly via 
-```solidity
-function notifyRewardAmount(address token, uint amount) external
-```
+Arbitrary rewards can be added permissionlessly via ```function notifyRewardAmount(address token, uint amount) external```
 
 Gauges are completely overhauled to separate reward calculations from deposit and withdraw. This further protect LP while allowing for infinite token calculations.
 
@@ -136,10 +130,7 @@ Previous iterations would track rewardPerToken as a shift everytime either total
 
 Gauge bribes are natively supported by the protocol, Bribes inherit from Gauges and are automatically adjusted on votes.
 
-Users that voted can claim their bribes via calling 
-```solidity
-function getReward(address token) public
-```
+Users that voted can claim their bribes via calling ```function getReward(address token) public```
 
 Fees accrued by `Gauges` are distributed to `Bribes`
 
@@ -147,7 +138,7 @@ Fees accrued by `Gauges` are distributed to `Bribes`
 
 Gauge factory permissionlessly creates gauges for `pools` created by `BaseV1Factory`. Further it handles voting for 100% of the incentives to `pools`.
 
-```solidity
+```
 function vote(address[] calldata _poolVote, uint[] calldata _weights) external
 function distribute(address token) external
 ```

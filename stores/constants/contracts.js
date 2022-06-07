@@ -55,3 +55,6 @@ export const TOKEN_ABI = abis.tokenABI
 
 export const MULTICALL_ADDRESS = '0x41263cba59eb80dc200f3e2544eda4ed6a90e76c'
 
+export const MARKETPLACE_ADDRESS = '0x35fca904b08f4ce95e68da86b9344ee3e0aae665'
+export const MARKETPLACE_ABI = abis.marketplaceABI
+

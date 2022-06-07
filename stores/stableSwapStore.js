@@ -12,8 +12,11 @@ import { formatCurrency } from '../utils'
 import stores from "./"
 
 import BigNumber from "bignumber.js"
-import { ContactsOutlined } from "@material-ui/icons"
+import { ContactsOutlined, ContactSupportOutlined } from "@material-ui/icons"
 const fetch = require("node-fetch")
+
+import axios from 'axios'
+
 
 class Store {
   constructor(dispatcher, emitter) {
@@ -162,6 +165,23 @@ class Store {
           case ACTIONS.USE_FAUCET:
             this.useFaucet(payload)
             break;
+
+          // MARKETPLACE
+          case ACTIONS.MAP_ITEMS:
+            this.mapAvailableMarketItems(payload)
+            break;
+          case ACTIONS.MAP_TOKENS:
+            this.mapCreatedAndOwnedTokenIdsAsMarketItems(payload)
+            break;
+          case ACTIONS.BUY_NFT:
+            this.buyNft(payload)
+            break;
+          case ACTIONS.CANCEL_NFT:
+            this.cancelNft(payload)
+            break;
+          case ACTIONS.SELL_NFT:
+            this.sellNft(payload)
+            break;
           default: {
           }
         }
@@ -179,6 +199,414 @@ class Store {
     return this.emitter.emit(ACTIONS.STORE_UPDATED)
   }
 
+  // MARKETPLACE STUFF
+
+  loadNFTs = async () => {
+    try {
+      const web3 = await stores.accountStore.getWeb3Provider()
+      if (!web3) {
+        console.warn('web3 not found')
+        return null
+      }
+      const account = stores.accountStore.getStore("account")
+      if (!account) {
+        console.warn('account not found')
+        return null
+      }
+      const veToken = this.getStore('veToken')
+      const govToken = this.getStore('govToken');
+      console.log('veToken', veToken)
+      console.log('govToken', govToken)
+      const marketplaceContract = new web3.eth.Contract(CONTRACTS.MARKETPLACE_ABI, CONTRACTS.MARKETPLACE_ADDRESS)
+      const vestingContract = new web3.eth.Contract(CONTRACTS.VE_TOKEN_ABI, CONTRACTS.VE_TOKEN_ADDRESS)
+      //console.log("marketplace " + JSON.stringify(marketplaceContract))
+      const data = await marketplaceContract.methods.fetchAvailableMarketItems().call()
+      const items = await Promise.all(data.map(this.mapAvailableMarketItems()));
+      if(!veToken || !govToken) {
+        return items;
+      }
+      const promises = items.map(async(item,idx)=> {
+        if (item.seller.toLowerCase() == account.address) item.ownedByAccount = true;
+        const tokenIndex = await vestingContract.methods.tokenOfOwnerByIndex(account.address, idx).call()
+        const locked = await vestingContract.methods.locked(tokenIndex).call();
+        const lockValue = await vestingContract.methods.balanceOfNFT(tokenIndex).call();
+        return {
+          ...item,
+          lockEnds: locked.end,
+          lockAmount: BigNumber(locked.amount).div(10**govToken.decimals).toFixed(govToken.decimals),
+          lockValue: BigNumber(lockValue).div(10**veToken.decimals).toFixed(veToken.decimals)
+        };
+      })
+      console.log('promises', promises)
+      const newItems = await Promise.all(promises);
+      console.log(newItems, "newItems")
+      return newItems;
+    } catch(ex) {
+      console.error(ex)
+    }
+  }
+  
+/*
+  getItemsDetails = async (item) => {
+    try {
+      const web3 = await stores.accountStore.getWeb3Provider()
+      if (!web3) {
+        console.warn('web3 not found')
+        return null
+      }
+      const account = stores.accountStore.getStore("account")
+      if (!account) {
+        console.warn('account not found')
+        return null
+      }
+      const veToken = this.getStore('veToken')
+      const govToken = this.getStore('govToken')
+      const vestingContract = new web3.eth.Contract(CONTRACTS.VE_TOKEN_ABI, CONTRACTS.VE_TOKEN_ADDRESS)
+      if (item.seller.toLowerCase() == account.address) item.ownedByAccount = true;
+      const locked = await vestingContract.methods.locked(tokenIndex).call()
+      const lockValue = await vestingContract.methods.balanceOfNFT(tokenIndex).call()
+      item = {
+        lockEnds: locked.end,
+        lockAmount: BigNumber(locked.amount).div(10**govToken.decimals).toFixed(govToken.decimals),
+        lockValue: BigNumber(lockValue).div(10**veToken.decimals).toFixed(veToken.decimals)
+      }
+      return item
+    } catch(ex) {
+    console.error(ex)
+  }
+  }
+  */
+
+  _getTokenMetadataByTokenId = async (vestingContract, tokenID) => {
+      try {
+
+        const tokenURI = await vestingContract.methods.tokenURI(tokenID).call()
+        const { data: metadata } = await axios.get(tokenURI)
+
+        return metadata
+    
+
+      } catch(ex) {
+        console.error(ex)
+      }
+  }
+
+ mapAvailableMarketItems (payload) {
+      return async (marketItem) => {
+        const web3 = await stores.accountStore.getWeb3Provider()
+        if (!web3) {
+          console.warn('web3 not found')
+          return null
+        }
+        const account = stores.accountStore.getStore("account")
+        if (!account) {
+          console.warn('account not found')
+          return null
+        }
+        const vestingContract = new web3.eth.Contract(CONTRACTS.VE_TOKEN_ABI, CONTRACTS.VE_TOKEN_ADDRESS)
+        const metadata = await this._getTokenMetadataByTokenId(vestingContract, marketItem.tokenId)
+        const items = this._mapMarketItem(marketItem, metadata);
+        
+        return items
+        //this.emitter.emit(ACTIONS.MAP_ITEMS_RETURNED, items);
+      }
+  }
+
+  mapCreatedAndOwnedTokenIdsAsMarketItems = async (payload) => {
+      return async (tokenID) => {
+
+        const web3 = await stores.accountStore.getWeb3Provider()
+        if (!web3) {
+          console.warn('web3 not found')
+          return null
+        }
+        const account = stores.accountStore.getStore("account")
+        if (!account) {
+          console.warn('account not found')
+          return null
+        }
+
+        const vestingContract = new web3.eth.Contract(CONTRACTS.VE_TOKEN_ABI, CONTRACTS.VE_TOKEN_ADDRESS)
+        const marketplaceContract = new web3.eth.Contract(CONTRACTS.MARKETPLACE_ABI, CONTRACTS.MARKETPLACE_ADDRESS)
+
+        const metadata = await this._getTokenMetadataByTokenId(vestingContract, tokenID)
+        const approveAddress = await vestingContract.methods.getApproved(tokenID).call()
+        const hasMarketApproval = approveAddress === marketplaceContract.address
+        const [foundMarketItem, hasFound] = await marketplaceContract.methods.getLatestMarketItemByTokenId(tokenID).call()
+        const marketItem = hasFound ? foundMarketItem : {}
+        return this._mapMarketItem(marketItem, metadata, tokenID, account, hasMarketApproval)
+      }
+  }
+  
+  _mapMarketItem = async (marketItem, metadata, tokenID, account, hasMarketApproval) => {
+      return {
+        price: marketItem.price ? marketItem.price : undefined,
+        tokenId: marketItem.tokenId || tokenID,
+        marketItemId: marketItem.marketItemId || undefined,
+        //creator: marketItem.creator || account,
+        seller: marketItem.seller || undefined,
+        owner: marketItem.owner || account,
+        sold: marketItem.sold || false,
+        canceled: marketItem.canceled || false,
+        image: metadata.image,
+        name: metadata.name,
+        description: metadata.description,
+        hasMarketApproval: hasMarketApproval || false
+      }
+  }
+
+  getAndSetListingFee = async () => {
+    const account = stores.accountStore.getStore("account")
+    if (!account) {
+      console.warn('account not found')
+      return null
+    }
+
+    const web3 = await stores.accountStore.getWeb3Provider()
+    if (!web3) {
+      console.warn('web3 not found')
+      return null
+    }
+    const marketplaceContract = new web3.eth.Contract(CONTRACTS.MARKETPLACE_ABI, CONTRACTS.MARKETPLACE_ADDRESS)
+    const listingFee = await marketplaceContract.methods.getListingFee().call()
+    return listingFee
+  }
+
+  _getMarketplaceAllowance = async (web3, token, account) => {
+    try {
+      const tokenContract = new web3.eth.Contract(CONTRACTS.ERC20_ABI, token.address)
+      const allowance = await tokenContract.methods.allowance(account.address, CONTRACTS.MARKETPLACE_ADDRESS).call()
+      return BigNumber(allowance).div(10**token.decimals).toFixed(token.decimals)
+    } catch (ex) {
+      console.error(ex)
+      return null
+    }
+  }
+
+buyNft  = async (payload) => {
+  try {
+    const account = stores.accountStore.getStore("account")
+    if (!account) {
+      console.warn('account not found')
+      return null
+    }
+
+    const web3 = await stores.accountStore.getWeb3Provider()
+    if (!web3) {
+      console.warn('web3 not found')
+      return null
+    }
+
+    const { nft } = payload.content
+    const govToken = this.getStore('govToken')
+    const marketplaceContract = new web3.eth.Contract(CONTRACTS.MARKETPLACE_ABI, CONTRACTS.MARKETPLACE_ADDRESS)
+    const price = nft.price
+
+    let allowanceTXID = this.getTXUUID()
+    let buyNftTXID = this.getTXUUID()
+
+    this.emitter.emit(ACTIONS.TX_ADDED, { title: `Buy NFT ${nft.marketItemId}`, type: 'NFT purchase', verb: 'NFT purchased', transactions: [
+      {
+        uuid: allowanceTXID,
+        description: `Checking your ${govToken.symbol} allowance`,
+        status: 'WAITING'
+      },
+      {
+        uuid: buyNftTXID,
+        description: `Buy NFT`,
+        status: 'WAITING'
+      }
+    ]})
+
+    const allowance = await this._getMarketplaceAllowance(web3, govToken, account)
+
+    if(BigNumber(allowance).lt(price)) {
+      this.emitter.emit(ACTIONS.TX_STATUS, {
+        uuid: allowanceTXID,
+        description: `Allow the marketplace contract to use your ${govToken.symbol}`
+      })
+    } else {
+      this.emitter.emit(ACTIONS.TX_STATUS, {
+        uuid: allowanceTXID,
+        description: `Allowance on ${govToken.symbol} sufficient`,
+        status: 'DONE'
+      })
+    }
+
+    const gasPrice = await stores.accountStore.getGasPrice()
+
+    const allowanceCallsPromises = []
+
+    // SUBMIT REQUIRED ALLOWANCE TRANSACTIONS
+    if(BigNumber(allowance).lt(price)) {
+      const tokenContract = new web3.eth.Contract(CONTRACTS.ERC20_ABI, govToken.address)
+
+      const tokenPromise = new Promise((resolve, reject) => {
+        this._callContractWait(web3, tokenContract, 'approve', [CONTRACTS.MARKETPLACE_ADDRESS, MAX_UINT256], account, gasPrice, null, null, allowanceTXID, (err) => {
+          if (err) {
+            reject(err)
+            return
+          }
+
+          resolve()
+        })
+      })
+
+      allowanceCallsPromises.push(tokenPromise)
+    }
+
+    const done = await Promise.all(allowanceCallsPromises)
+
+    this._callContractWait(web3, marketplaceContract, 'createMarketSale', [CONTRACTS.VE_TOKEN_ADDRESS, nft.marketItemId, price], account, gasPrice, null, null, buyNftTXID, async (err) => {
+      if (err) {
+        return this.emitter.emit(ACTIONS.ERROR, err)
+      }
+      //return approveTx
+      this.emitter.emit(ACTIONS.BUY_NFT_RETURNED)
+    })
+
+  }
+  catch(ex) {
+    console.error(ex)
+    this.emitter.emit(ACTIONS.ERROR, ex)
+  }
+}
+
+cancelNft = async (payload) => {
+  try {
+    const account = stores.accountStore.getStore("account")
+    if (!account) {
+      console.warn('account not found')
+      return null
+    }
+
+    const web3 = await stores.accountStore.getWeb3Provider()
+    if (!web3) {
+      console.warn('web3 not found')
+      return null
+    }
+
+    const { nft } = payload.content
+    let cancelNftTXID = this.getTXUUID()
+
+    this.emitter.emit(ACTIONS.TX_ADDED, { title: `Cancel listing for NFT ${nft.marketItemId}`, type: 'Listing', verb: 'Listing cancelled', transactions: [
+      {
+        uuid: cancelNftTXID,
+        description: `Cancel listing`,
+        status: 'WAITING'
+      }
+    ]})
+
+    const gasPrice = await stores.accountStore.getGasPrice()
+
+    const marketplaceContract = new web3.eth.Contract(CONTRACTS.MARKETPLACE_ABI, CONTRACTS.MARKETPLACE_ADDRESS)
+    this._callContractWait(web3, marketplaceContract, 'cancelMarketItem', [CONTRACTS.VE_TOKEN_ADDRESS, nft.marketItemId], account, gasPrice, null, null, cancelNftTXID, async (err) => {
+      if (err) {
+        return this.emitter.emit(ACTIONS.ERROR, err)
+      }
+
+      this.emitter.emit(ACTIONS.CANCEL_NFT_RETURNED)
+    })
+  }
+  catch(ex) {
+    console.error(ex)
+    this.emitter.emit(ACTIONS.ERROR, ex)
+  }
+}
+
+sellNft = async (payload) => {
+  try {
+    const account = stores.accountStore.getStore("account")
+    if (!account) {
+      console.warn('account not found')
+      return null
+    }
+
+    const web3 = await stores.accountStore.getWeb3Provider()
+    if (!web3) {
+      console.warn('web3 not found')
+      return null
+    }
+
+    const { nft, newPrice } = payload.content
+
+    // ADD TRNASCTIONS TO TRANSACTION QUEUE DISPLAY
+    let nftAllowanceTXID = this.getTXUUID()
+    let sellNftTXID = this.getTXUUID()
+
+    this.emitter.emit(ACTIONS.TX_ADDED, { title: `List NFT ${nft.id}`, type: 'Listing', verb: 'NFT listed for sell', transactions: [
+      {
+        uuid: nftAllowanceTXID,
+        description: `Checking your veNFT ${nft.id} allowance`,
+        status: 'WAITING'
+      },
+      {
+        uuid: sellNftTXID,
+        description: `List NFT`,
+        status: 'WAITING'
+      }
+    ]})
+
+    // CHECK ALLOWANCES AND SET TX DISPLAY
+    const marketplaceContract = new web3.eth.Contract(CONTRACTS.MARKETPLACE_ABI, CONTRACTS.MARKETPLACE_ADDRESS)
+    const vestingContract = new web3.eth.Contract(CONTRACTS.VE_TOKEN_ABI, CONTRACTS.VE_TOKEN_ADDRESS)
+    const priceInWei = newPrice
+    
+    const nftAllowance = await vestingContract.methods.isApprovedForAll(account.address, CONTRACTS.MARKETPLACE_ADDRESS).call()
+
+    if(!nftAllowance) {
+      this.emitter.emit(ACTIONS.TX_STATUS, {
+        uuid: nftAllowanceTXID,
+        description: `Allow the marketplace contract to use your veNFTs`
+      })
+    } else {
+      this.emitter.emit(ACTIONS.TX_STATUS, {
+        uuid: nftAllowanceTXID,
+        description: `Marketplace allowed to use your veNFTs`,
+        status: 'DONE'
+      })
+    }
+
+
+    const gasPrice = await stores.accountStore.getGasPrice()
+
+    const allowanceCallsPromises = []
+
+    // SUBMIT NFT ALLOWANCE TRANSACTIONS
+    if(!nftAllowance) {
+
+      const nftPromise = new Promise((resolve, reject) => {
+        this._callContractWait(web3, vestingContract, 'setApprovalForAll', [CONTRACTS.MARKETPLACE_ADDRESS, true], account, gasPrice, null, null, nftAllowanceTXID, (err) => {
+          if (err) {
+            reject(err)
+            return
+          }
+
+          resolve()
+        })
+      })
+
+      allowanceCallsPromises.push(nftPromise)
+    }
+
+    const done = await Promise.all(allowanceCallsPromises)
+
+    // SUBMIT LISTING TRANSACTION
+    this._callContractWait(web3, marketplaceContract, 'createMarketItem', [CONTRACTS.VE_TOKEN_ADDRESS, nft.id, priceInWei ], account, gasPrice, null, null, sellNftTXID, async (err) => {
+      if (err) {
+        return this.emitter.emit(ACTIONS.ERROR, err)
+      }
+
+      //return transaction
+      this.emitter.emit(ACTIONS.SELL_NFT_RETURNED)
+    })
+
+  }
+  catch(ex) {
+    console.error(ex)
+    this.emitter.emit(ACTIONS.ERROR, ex)
+  }
+}
 
   // COMMON GETTER FUNCTIONS Assets, BaseAssets, Pairs etc
   getAsset = (address) => {
@@ -225,7 +653,6 @@ class Store {
 
       const veToken = this.getStore('veToken')
       const govToken = this.getStore('govToken')
-
       const vestingContract = new web3.eth.Contract(CONTRACTS.VE_TOKEN_ABI, CONTRACTS.VE_TOKEN_ADDRESS)
 
       const nftsLength = await vestingContract.methods.balanceOf(account.address).call()
@@ -3175,7 +3602,8 @@ class Store {
         output: bestAmountOut,
         priceImpact: priceImpact
       }
-      this.emitter.emit(ACTIONS.QUOTE_SWAP_RETURNED, returnValue)
+
+      this.emitter.emit(ACTIONS.QUOTE_SWAP_RETURNED, returnValue);
 
     } catch(ex) {
       console.error(ex)
@@ -3383,7 +3811,7 @@ class Store {
       const nftsLength = await vestingContract.methods.balanceOf(account.address).call()
       const arr = Array.from({length: parseInt(nftsLength)}, (v, i) => i)
 
-      const nfts = await Promise.all(
+      const nfts = await Promise.all(+
         arr.map(async (idx) => {
 
           const tokenIndex = await vestingContract.methods.tokenOfOwnerByIndex(account.address, idx).call()
